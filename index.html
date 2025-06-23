@@ -248,37 +248,38 @@
             position: relative;
         }
 
-        .progress-indicators {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
+        .progress-indicators-bottom {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            padding: 1rem;
-            font-size: 0.9rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
             backdrop-filter: blur(10px);
         }
 
         .progress-item {
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 1rem;
         }
 
+        .progress-item:last-child {
+            margin-bottom: 0;
+        }
+
         .progress-bar-container {
-            width: 80px;
-            height: 6px;
+            width: 120px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
         }
 
         .progress-bar-fill {
             height: 100%;
             background: #10b981;
-            border-radius: 3px;
+            border-radius: 4px;
             transition: width 0.3s ease;
         }
 
@@ -294,9 +295,10 @@
             margin-top: 1rem;
             padding-top: 1rem;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             opacity: 0;
             transition: opacity 0.3s ease;
+            text-align: center;
         }
 
         .easter-egg-counter.visible {
@@ -349,33 +351,76 @@
 
         .email-easter-egg {
             background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 6px;
-            padding: 0.5rem;
-            margin: 0.5rem 0;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
             font-size: 0.9rem;
             color: #1e40af;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            user-select: none;
+            font-weight: 500;
         }
 
         .email-easter-egg:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: rgba(59, 130, 246, 0.4);
-            transform: translateX(2px);
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateX(3px) scale(1.02);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .email-easter-egg:hover::before {
+            content: "💡 Click to discover clue";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 0.5rem;
+            animation: tooltipFadeIn 0.2s ease;
         }
 
         .email-easter-egg.discovered {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
             color: #065f46;
+            cursor: default;
+            transform: none;
+            animation: easterEggFound 0.6s ease;
         }
 
         .email-easter-egg.discovered::after {
-            content: " ✓ Found";
-            font-weight: 600;
+            content: " ✓ Clue Discovered";
+            font-weight: 700;
             color: #10b981;
+        }
+
+        .email-easter-egg.discovered:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .email-easter-egg.discovered:hover::before {
+            display: none;
+        }
+
+        @keyframes tooltipFadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(5px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes easterEggFound {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); background: rgba(16, 185, 129, 0.3); }
+            100% { transform: scale(1); }
         }
 
         .analysis-grid {
@@ -732,35 +777,11 @@
             </div>
 
             <div class="analysis-section">
-                <div class="progress-indicators">
-                    <div class="progress-item">
-                        <span>Problems:</span>
-                        <div>
-                            <span id="problemsCount">0/4</span>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar-fill" id="problemsProgress"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="progress-item">
-                        <span>Analysis:</span>
-                        <div>
-                            <span id="analysisCount">0/100</span>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar-fill" id="analysisProgress"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="easter-egg-counter" id="easterEggCounter">
-                        🎯 Detective: <span id="easterEggCount">0/8</span> clues found
-                    </div>
-                </div>
-
                 <h3>🎯 Crisis Analysis</h3>
                 <p>From the emails above, identify the 4 REAL problems that require immediate action, then justify your analysis.</p>
                 
                 <div class="micro-challenge">
-                    <strong>💡 Pro Tip:</strong> Look carefully for hidden clues in the emails. Each team will need specific information to succeed in Phase 2. The more details you gather now, the better prepared your chosen team will be.
+                    <strong>💡 Important:</strong> Analyze each email carefully for hidden details and connections. Teams will need specific information from these communications to succeed in Phase 2. Look for technical specifications, deadlines, contact information, financial data, and legal references.
                 </div>
                 
                 <div class="analysis-grid">
@@ -788,6 +809,27 @@
 
 Be specific and use evidence from the emails to support your analysis."
                         ></textarea>
+                    </div>
+                </div>
+
+                <div class="progress-indicators-bottom">
+                    <div class="progress-item">
+                        <span><strong>Problems Selected:</strong></span>
+                        <div class="progress-info">
+                            <span id="problemsCount">0/4</span>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="problemsProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <span><strong>Analysis Length:</strong></span>
+                        <div class="progress-info">
+                            <span id="analysisCount">0/100</span>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="analysisProgress"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -920,196 +962,241 @@ Be specific and use evidence from the emails to support your analysis."
     <div class="notification" id="notification"></div>
 
     <script>
-        // Email data with optimized content and easter eggs
+        // Email data with realistic business content and integrated intelligence
         const emails = [
             {
                 id: 1,
                 from: "James Morgan, CEO",
-                subject: "Good Morning Team - Big Day Ahead!",
+                subject: "Good Morning Team - #NaturalGlow Launch Day!",
                 time: "08:15 AM",
                 priority: "normal",
                 className: "priority-normal",
                 content: `Team,
 
-Today marks the official launch of our #NaturalGlow campaign! Marketing tells me we're expecting 2M+ impressions in the first 24 hours.
+Today's the big day! #NaturalGlow campaign goes live and Marketing estimates we'll hit 2M+ impressions in the first 24 hours.
 
-Our Q3 numbers look strong - 47% growth in subscriber base, CAC down to $23. Board meeting next week should be very positive.
+Q3 numbers just came in - 47% growth in subscriber base, CAC down to $23, and retention holding steady at 89%. Board meeting next week is going to be a celebration.
 
-Quick reminder: compliance review deadline is Friday. Sarah, make sure we're ready for any FTC questions about our organic claims.
+Sarah, just a reminder that our compliance review deadline is Friday. With our "100% Natural" claims, we want to be bulletproof if FTC comes knocking.
 
-Let's make today count!
+Let's make this launch legendary!
+
 James
 
-<div class="email-easter-egg">📊 Easter Egg - Strategy Team: Q3 KPIs - 47% growth, $23 CAC, 2M impression target</div>`
+P.S. - IT, thanks for the late-night system update. Hope everything deployed smoothly.`
             },
             {
                 id: 2,
                 from: "Alex Chen, IT Director",
-                subject: "URGENT: Campaign Display Issue Detected",
+                subject: "URGENT: Critical Campaign System Failure",
                 time: "09:42 AM",
                 priority: "urgent",
                 className: "priority-high",
-                content: `ALL HANDS,
+                content: `ALL TEAMS - CRITICAL ISSUE
 
-Critical bug detected in our campaign management system. Our #NaturalGlow ads are displaying competitor slogans instead of ours. 
+Major system failure detected in our campaign management platform. The routine update that deployed at 03:47 AM has caused a catastrophic bug.
 
-TECHNICAL DETAILS:
-- Bug introduced at 03:47 AM during routine update
-- Affecting: Instagram, Facebook, TikTok campaigns
-- Current status: "Glow Naturally with PureBeauty" showing instead of our slogan
-- Estimated reach before detection: 500K+ users
+SITUATION: Our #NaturalGlow ads are displaying PureBeauty's slogans instead of ours across all platforms.
 
-Emergency shutdown initiated. Need immediate crisis protocol activation.
+IMPACT ASSESSMENT:
+- Instagram, Facebook, TikTok campaigns affected
+- Estimated 500,000+ users exposed to competitor messaging
+- Real-time analytics show "Glow Naturally with PureBeauty" appearing where our copy should be
 
-Alex
+I've initiated emergency shutdown protocols. Need immediate crisis response team activation.
 
-<div class="email-easter-egg">🔧 Easter Egg - Crisis Analysis: Bug timestamp 03:47 AM, system logs available, 500K+ affected users</div>`
+This is not a drill. Our biggest campaign launch just became free advertising for our main competitor.
+
+Alex Chen
+IT Director
+Emergency contact: alex.chen@bloomtech.com`
             },
             {
                 id: 3,
-                from: "Sarah Kim (@SarahGlowUp)",
-                subject: "WTF BloomTech?? This is UNACCEPTABLE",
+                from: "Sarah Kim",
+                subject: "RE: Partnership Violation - THIS IS UNACCEPTABLE",
                 time: "10:15 AM",
                 priority: "urgent",
                 className: "priority-high",
-                content: `Are you KIDDING me right now???
+                content: `BloomTech Team,
 
-I just woke up to 50+ DMs asking why I'm promoting PureBeauty (your biggest competitor) when I have an EXCLUSIVE deal with BloomTech???
+I cannot believe what I woke up to this morning. My DMs are EXPLODED with followers asking why I'm promoting PureBeauty when I have an EXCLUSIVE partnership with you.
 
-My engagement rate is through the ROOF but for THE WRONG BRAND. This is humiliating.
+My analytics dashboard shows my engagement rate skyrocketing - but for YOUR COMPETITOR. Do you understand how this destroys my credibility?
 
-I'm posting at NOON if I don't get answers and compensation. My 2.1M followers deserve better than this amateur hour BS.
+Facts you need to know:
+- I have 2.1 million followers across platforms
+- Our partnership rate is $15,000 per sponsored post
+- I'm contractually bound to exclusivity until March 2025
 
-Fix this NOW or I'm exposing everything.
+I'm posting a clarification statement at NOON if I don't get answers and compensation. My audience deserves better than this amateur-hour mistake.
+
+This better be fixed immediately.
 
 Sarah Kim
-@SarahGlowUp (2.1M followers)
-Partnership rate: $15K per post
-
-<div class="email-easter-egg">📱 Easter Egg - Influencer Relations: @SarahGlowUp - 2.1M followers, $15K rate, posting deadline NOON</div>`
+@SarahGlowUp
+Influencer & Brand Partner
+Contact: sarah@sarahglowup.com`
             },
             {
                 id: 4,
                 from: "Michael Torres, Legal Counsel",
-                subject: "FTC Inquiry - Immediate Response Required",
+                subject: "FTC Compliance Inquiry - IMMEDIATE RESPONSE REQUIRED",
                 time: "10:33 AM",
                 priority: "urgent",
                 className: "priority-high",
-                content: `Team,
+                content: `Legal Team & Senior Management,
 
-Just received formal inquiry from FTC regarding our "100% Natural" claims in the #NaturalGlow campaign.
+Federal Trade Commission has initiated formal inquiry into BloomTech's marketing claims. This is not routine.
 
-COMPLIANCE ISSUES IDENTIFIED:
-- Synthetic ingredients detected in lab analysis (Batch #BT-2024-Q3)
-- Misleading organic certification claims
-- Missing disclosure requirements on influencer partnerships
+COMPLIANCE VIOLATIONS IDENTIFIED:
+- Product batch BT-2024-Q3 contains synthetic compounds contradicting "100% Natural" claims
+- Missing mandatory disclosures on influencer partnership agreements
+- Misleading organic certification statements in advertising materials
 
-Response deadline: 5 PM TODAY. Criminal penalties possible if we're found to have knowingly misled consumers.
+LEGAL REQUIREMENTS:
+- Response deadline: 5:00 PM TODAY
+- Documentation package required for all affected batches
+- Potential criminal penalties if willful misrepresentation is established
 
-Need immediate strategy meeting. This could shut us down.
+I need Strategy and Marketing to conference immediately. We're potentially looking at class-action exposure and regulatory sanctions.
+
+This could shut down operations if not handled correctly.
 
 Michael Torres, JD
 Senior Legal Counsel
-
-<div class="email-easter-egg">⚖️ Easter Egg - Legal Team: FTC deadline 5 PM, Batch #BT-2024-Q3, criminal penalties risk</div>`
+Direct line: 555-0198
+mtorres@bloomtech-legal.com`
             },
             {
                 id: 5,
-                from: "Emma Rodriguez, Marketing Director",
-                subject: "Media Shitstorm Incoming - URGENT",
+                from: "Emma Rodriguez, Marketing Director", 
+                subject: "Media Crisis - Multiple Outlets Investigating",
                 time: "11:07 AM",
                 priority: "urgent",
                 className: "priority-high",
-                content: `Crisis team assemble NOW.
+                content: `Crisis Communications Team,
 
-TechCrunch contacted me about the campaign bug. They're running a story at 1 PM titled "BloomTech's Epic Marketing Fail Helps Competitor Go Viral."
+Media shitstorm incoming. Multiple publications are pursuing negative coverage simultaneously.
 
-OTHER MEDIA INQUIRIES:
-- Forbes: investigating greenwashing allegations
-- Vogue Business: influencer contract story
-- BuzzFeed: "Beauty Brand Accidentally Promotes Rival"
+ACTIVE INVESTIGATIONS:
+- TechCrunch: Story titled "BloomTech's Epic Marketing Fail" scheduled for 1:00 PM publication
+- Forbes: Deep-dive into greenwashing allegations, interviewing former employees
+- Vogue Business: Influencer contract investigation, focusing on disclosure violations
+- BuzzFeed: Viral article "Beauty Brand Accidentally Promotes Rival"
 
-I need talking points in 30 minutes. Legal clearance required before ANY statements.
+SOCIAL MEDIA STATUS:
+- #BloomTechFail trending on Twitter
+- Negative sentiment analysis: 73% across platforms
+- Competitor brands already capitalizing with response campaigns
 
-This is damage control mode. We're trending on Twitter for the wrong reasons.
+I need legal clearance for ALL public statements. Cannot issue any communications without compliance review given FTC situation.
+
+Recommend immediate war room formation.
 
 Emma Rodriguez
 Marketing Director
-
-<div class="email-easter-egg">📰 Easter Egg - Media Team: TechCrunch 1 PM deadline, Forbes greenwashing angle, trending on Twitter</div>`
+Direct: 555-0187
+erodriguez@bloomtech.com`
             },
             {
                 id: 6,
-                from: "Lisa Park, Customer Success",
-                subject: "Customer Support Overwhelmed",
+                from: "Lisa Park, Customer Success Manager",
+                subject: "Customer Support Queue Critical - Immediate Escalation",
                 time: "11:28 AM",
                 priority: "high",
                 className: "priority-medium",
-                content: `Hi Team,
+                content: `Support Team & Management,
 
-Our support queue just exploded. 847 tickets in the last hour, mostly confusion about the campaign.
+Customer service infrastructure is overwhelmed. Current queue status requires immediate attention.
 
-Common themes:
-- "Why are you promoting PureBeauty?"
-- Subscription cancellation requests (+23% above normal)
-- Demands for refunds on recent orders
+VOLUME METRICS:
+- 847 tickets opened in past 90 minutes (normal daily average: 23)
+- Subscription cancellation requests: +23% above baseline
+- Average response time increased from 2 hours to 8+ hours
 
-I've put together FAQ responses but need official messaging from Marketing before we can respond to the media questions.
+PRIMARY COMPLAINT CATEGORIES:
+- Campaign confusion: "Why are you promoting PureBeauty?"
+- Refund demands on recent orders (particularly batch BT-2024-Q3)
+- Partnership authenticity questions regarding influencer relationships
 
-Our customer satisfaction score dropped from 4.7 to 3.2 overnight.
+Customer satisfaction score dropped from 4.7 to 3.2 overnight. Without official messaging guidelines, agents are providing inconsistent responses.
 
-Lisa`
+Immediate talking points needed from Marketing/Legal before we can effectively respond.
+
+Lisa Park
+Customer Success Manager
+Internal ext: 4422`
             },
             {
                 id: 7,
-                from: "David Kim, BeautyGuruMike",
-                subject: "Partnership Violation - Demanding Explanation",
+                from: "David Kim",
+                subject: "Partnership Contract Violation - Immediate Resolution Required",
                 time: "11:45 AM",
                 priority: "high",
                 className: "priority-medium",
-                content: `BloomTech Team,
+                content: `BloomTech Partnership Team,
 
-As someone with 890K followers who signed an exclusive 6-month partnership with you, I'm extremely concerned about this morning's campaign disaster.
+As exclusive brand partner with 890,000 followers across Instagram, TikTok, and YouTube, I'm deeply concerned about this morning's campaign disaster affecting my professional reputation.
 
-My audience is asking why I appear to be promoting your competitor. This violates our exclusivity agreement and damages my credibility.
+CONTRACT DETAILS:
+- 6-month exclusivity agreement signed December 2024
+- Performance rate: $8,000 per sponsored post
+- Content creation quota: 2 posts monthly, 4 stories weekly
 
-I need:
-1. Immediate explanation
-2. Public statement clearing my involvement
-3. Compensation for reputation damage
+BRAND DAMAGE ASSESSMENT:
+- My audience questioning partnership authenticity
+- Engagement metrics showing confusion about brand allegiance
+- Potential violation of exclusivity clause due to apparent competitor promotion
 
-If not resolved by end of business today, I'm terminating our partnership and going public with the details.
+RESOLUTION REQUIREMENTS:
+1. Public statement clarifying my non-involvement in technical error
+2. Compensation discussion for reputation management
+3. Immediate strategy meeting regarding Q1 content calendar
+
+If unresolved by end of business today, I'll be forced to terminate partnership and pursue public clarification independently.
 
 David Kim
 @BeautyGuruMike
-890K followers, $8K per post rate
-
-<div class="email-easter-egg">📱 Easter Egg - Influencer Relations: @BeautyGuruMike - 890K followers, $8K rate, exclusivity violation</div>`
+Partnership Contact: david@beautygurumike.com
+Management: contact@influencertalent.agency`
             },
             {
                 id: 8,
-                from: "Jennifer Walsh, Board Member",
-                subject: "Emergency Board Call - 2 PM",
-                time: "12:15 PM",
+                from: "Jennifer Walsh, Board Chair",
+                subject: "Emergency Board Meeting - 2:00 PM Today",
+                time: "12:15 PM", 
                 priority: "urgent",
                 className: "priority-high",
-                content: `James and Senior Team,
+                content: `Board of Directors & Executive Team,
 
-The board has been monitoring the situation. Emergency call scheduled for 2 PM.
+Emergency board session scheduled for 2:00 PM. Attendance mandatory.
 
-We need immediate answers:
-- How did this happen?
-- What's our exposure?
-- What's the recovery plan?
+AGENDA ITEMS:
+- Crisis assessment and immediate response strategy
+- Financial exposure analysis and insurance implications
+- Leadership accountability and potential organizational changes
+- Investor relations strategy given pre-market performance
 
-Our stock price is already down 12% in pre-market. Investors are panicking.
+MARKET IMPACT:
+- Stock price down 12% in pre-market trading
+- Major institutional investors requesting immediate briefings
+- Competitor stocks rising on our misfortune
 
-This better have a solution by the board call or we're looking at major changes.
+REQUIRED DELIVERABLES:
+- Comprehensive incident timeline from IT
+- Legal risk assessment with mitigation strategies
+- Financial impact projections for Q4
+- Recovery plan with realistic timelines
+
+Board has full authority to implement immediate changes if situation assessment warrants.
+
+We need solutions, not excuses.
 
 Jennifer Walsh
 Board Chair
-
-<div class="email-easter-egg">👑 Easter Egg - Strategy Team: Board call 2 PM, stock down 12%, investor panic, major changes risk</div>`
+Direct: 555-0199
+jwalsh@bloomtech-board.com`
             }
         ];
 
@@ -1159,7 +1246,14 @@ Board Chair
 
         let selectedProblems = [];
         let phase1Completed = false;
-        let easterEggsFound = [];
+
+        // Initialize simulation
+        function startSimulation() {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('phase1').classList.add('active');
+            loadEmails();
+            loadProblems();
+        }
 
         // Initialize simulation
         function startSimulation() {
@@ -1247,28 +1341,43 @@ Board Chair
             }
         }
 
-        // Setup easter egg tracking - simplified
+        // Setup easter egg tracking - Event delegation approach
         function setupEasterEggTracking() {
+            // Use event delegation on the email container
+            const emailContainer = document.getElementById('emailInbox');
+            if (emailContainer) {
+                emailContainer.addEventListener('click', function(event) {
+                    const easterEgg = event.target.closest('.email-easter-egg');
+                    if (easterEgg && !easterEgg.classList.contains('discovered')) {
+                        const allEasterEggs = document.querySelectorAll('.email-easter-egg');
+                        const index = Array.from(allEasterEggs).indexOf(easterEgg);
+                        discoverEasterEgg(easterEgg, index);
+                    }
+                });
+                
+                console.log('Easter egg tracking setup completed');
+            }
+            
+            // Simplified auto-discovery on scroll (backup method)
             setTimeout(() => {
                 const easterEggs = document.querySelectorAll('.email-easter-egg');
+                console.log(`Found ${easterEggs.length} easter eggs for auto-tracking`);
+                
                 easterEggs.forEach((egg, index) => {
-                    egg.addEventListener('click', () => {
-                        discoverEasterEgg(egg, index);
-                    });
-                    
-                    // Auto-discover on scroll into view (simplified)
                     const observer = new IntersectionObserver((entries) => {
                         entries.forEach(entry => {
-                            if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
+                            if (entry.isIntersecting && entry.intersectionRatio > 0.8) {
                                 setTimeout(() => {
-                                    discoverEasterEgg(egg, index);
-                                }, 1000); // Delay to ensure they actually read it
+                                    if (!egg.classList.contains('discovered')) {
+                                        discoverEasterEgg(egg, index);
+                                    }
+                                }, 2000); // 2 second delay to ensure they read it
                             }
                         });
-                    }, { threshold: 0.7 });
+                    }, { threshold: 0.8 });
                     observer.observe(egg);
                 });
-            }, 500);
+            }, 1000);
         }
 
         // Update validate button state
@@ -1309,24 +1418,84 @@ Board Chair
             }
         }
 
-        // Listen to justification text changes - more robust event binding
+        // Enhanced event listeners with robust error handling
         document.addEventListener('DOMContentLoaded', function() {
-            const justificationTextarea = document.getElementById('justificationText');
-            if (justificationTextarea) {
-                justificationTextarea.addEventListener('input', updateValidateButton);
-                justificationTextarea.addEventListener('keyup', updateValidateButton);
-                justificationTextarea.addEventListener('paste', () => {
-                    setTimeout(updateValidateButton, 100); // Delay for paste to register
-                });
+            console.log('🚀 Initializing BloomTech Crisis Simulation...');
+            
+            try {
+                // Setup textarea listeners with multiple event types
+                const justificationTextarea = document.getElementById('justificationText');
+                if (justificationTextarea) {
+                    ['input', 'keyup', 'paste', 'change'].forEach(eventType => {
+                        justificationTextarea.addEventListener(eventType, () => {
+                            setTimeout(updateValidateButton, eventType === 'paste' ? 100 : 0);
+                        });
+                    });
+                    console.log('✅ Textarea listeners attached');
+                } else {
+                    console.warn('⚠️ Justification textarea not found');
+                }
+                
+                // Initialize progress indicators
+                setTimeout(() => {
+                    updateValidateButton();
+                    console.log('✅ Progress indicators initialized');
+                }, 200);
+                
+                // Setup easter egg tracking
+                setupEasterEggTracking();
+                
+                // Setup auto-save
+                setupAutoSave();
+                
+                // Load any saved draft
+                setTimeout(loadSavedDraft, 500);
+                
+                console.log('🎉 Simulation initialized successfully');
+                
+            } catch (error) {
+                console.error('❌ Initialization error:', error);
+                showNotification('System initialization error - please refresh the page', 'error');
             }
+        });
+
+        // Auto-save functionality
+        setInterval(() => {
+            if (phase1Completed) return;
             
-            // Initialize progress indicators
-            setTimeout(() => {
-                updateValidateButton(); // Initial state
-            }, 100);
-            
-            // Setup easter egg tracking after DOM is ready
-            setupEasterEggTracking();
+            const justification = document.getElementById('justificationText')?.value;
+            if (justification && justification.length > 50) {
+                localStorage.setItem('crisis_analysis_draft', JSON.stringify({
+                    selectedProblems,
+                    justification,
+                    timestamp: new Date().toISOString()
+                }));
+            }
+        }, 30000);
+
+        // Load saved draft on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDraft = localStorage.getItem('crisis_analysis_draft');
+            if (savedDraft) {
+                try {
+                    const draft = JSON.parse(savedDraft);
+                    if (draft.justification) {
+                        document.getElementById('justificationText').value = draft.justification;
+                    }
+                    if (draft.selectedProblems) {
+                        draft.selectedProblems.forEach(problemId => {
+                            const checkbox = document.getElementById(`checkbox-${problemId}`);
+                            if (checkbox) {
+                                checkbox.checked = true;
+                                selectedProblems.push(problemId);
+                            }
+                        });
+                    }
+                    updateValidateButton();
+                } catch (e) {
+                    console.log('Error loading draft:', e);
+                }
+            }
         });
 
         // Validate analysis

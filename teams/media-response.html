@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloomTech Crisis | Media Response Team</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --media-primary: #3b82f6;
+            --media-secondary: #2563eb;
+            --media-accent: #dbeafe;
+            --urgent-red: #ef4444;
+            --warning-orange: #f59e0b;
+            --success-green: #10b981;
+            --neutral-gray: #6b7280;
+            --dark-bg: #111827;
+            --card-bg: #1f2937;
+            --text-white: #f9fafb;
+            --text-gray: #d1d5db;
+            --border-gray: #374151;
+            --blocked-overlay: rgba(107, 114, 128, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header Media Team */
+        .team-header {
+            background: linear-gradient(135deg, var(--media-primary), var(--media-secondary));
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .team-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-icon {
+            font-size: 2rem;
+        }
+
+        .deadline-status {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .deadline-alert {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .deadline-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .deadline-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .deadline-timer.critical {
+            color: var(--urgent-red);
+            animation: pulse 1s infinite;
+        }
+
+        .crisis-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Layout principal */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+
+        .work-section {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .work-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border-gray);
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-status {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-available {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .status-blocked {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .status-urgent {
+            background: var(--urgent-red);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        /* Section bloquée */
+        .blocked-section {
+            position: relative;
+        }
+
+        .blocked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--blocked-overlay);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            backdrop-filter: blur(2px);
+        }
+
+        .blocked-message {
+            background: var(--warning-orange);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .blocked-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .blocked-description {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .waiting-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .waiting-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+            opacity: 0.5;
+            animation: waiting 1.5s infinite;
+        }
+
+        .waiting-dot:nth-child(2) { animation-delay: 0.3s; }
+        .waiting-dot:nth-child(3) { animation-delay: 0.6s; }
+
+        /* Formulaires */
+        .media-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 0.5rem;
+            padding: 0.875rem;
+            color: var(--text-white);
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--media-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+
+        .form-textarea.large {
+            min-height: 200px;
+        }
+
+        /* Press Release Editor */
+        .press-editor {
+            background: white;
+            color: #1f2937;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gray);
+            margin: 1rem 0;
+        }
+
+        .press-header {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .press-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .press-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .press-content {
+            line-height: 1.7;
+            color: #374151;
+        }
+
+        /* Social Media Preview */
+        .social-preview {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .social-post {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            color: #1f2937;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .social-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--media-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .social-info {
+            flex: 1;
+        }
+
+        .social-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .social-handle {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .social-text {
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .social-actions {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        /* Boutons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--media-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--media-secondary);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--urgent-red);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--neutral-gray);
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: grid;
+            gap: 1.5rem;
+            height: fit-content;
+        }
+
+        .sidebar-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Breaking News */
+        .breaking-news {
+            background: linear-gradient(135deg, var(--urgent-red), #dc2626);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .breaking-header {
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .breaking-content {
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        /* Journalist Messages */
+        .journalist-msg {
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--media-primary);
+        }
+
+        .journalist-msg.urgent {
+            border-left-color: var(--urgent-red);
+            background: linear-gradient(135deg, var(--dark-bg), #1f1824);
+        }
+
+        .msg-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .msg-sender {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .msg-time {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .msg-content {
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        /* Dependencies */
+        .dependency-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--neutral-gray);
+        }
+
+        .dependency-item.waiting {
+            border-left-color: var(--warning-orange);
+        }
+
+        .dependency-item.received {
+            border-left-color: var(--success-green);
+        }
+
+        .dependency-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .dependency-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .dependency-status.waiting {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .dependency-status.received {
+            background: var(--success-green);
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        @keyframes waiting {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .team-title {
+                font-size: 1.5rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Media Team -->
+    <header class="team-header">
+        <div class="header-content">
+            <h1 class="team-title">
+                <span class="team-icon">📰</span>
+                Media Response Team
+            </h1>
+            <div class="deadline-status">
+                <div class="deadline-alert">
+                    <div class="deadline-label">Journalist Deadline</div>
+                    <div class="deadline-timer" id="journalistDeadline">01:15:00</div>
+                </div>
+                <div class="crisis-timer" id="crisisTimer">01:30:00</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Section de travail principale -->
+        <section class="work-section">
+            <!-- Crisis Context Analysis (Available) -->
+            <div class="work-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📊</span>
+                        Crisis Context Analysis
+                    </h2>
+                    <div class="card-status status-available">AVAILABLE</div>
+                </div>
+
+                <form class="media-form" id="contextAnalysisForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🎯</span>
+                            Key Messages to Address
+                        </label>
+                        <textarea class="form-textarea" placeholder="What are the main points we MUST address in our response? (competitor copying, product quality, etc.)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>👥</span>
+                            Target Audiences
+                        </label>
+                        <textarea class="form-textarea" placeholder="Who are we speaking to? (customers, investors, media, influencers...)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🎭</span>
+                            Brand Tone Strategy
+                        </label>
+                        <select class="form-select">
+                            <option value="">Select communication tone...</option>
+                            <option value="apologetic">Apologetic & Humble</option>
+                            <option value="confident">Confident & Transparent</option>
+                            <option value="defensive">Defensive & Assertive</option>
+                            <option value="solution-focused">Solution-Focused</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Analysis</button>
+                        <button type="button" class="btn btn-primary">📋 Complete Context</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Press Release (Blocked until Legal input) -->
+            <div class="work-card blocked-section" id="pressReleaseCard">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📄</span>
+                        Official Press Release
+                    </h2>
+                    <div class="card-status status-blocked">BLOCKED</div>
+                </div>
+
+                <div class="blocked-overlay" id="pressBlockedOverlay">
+                    <div class="blocked-message">
+                        <div class="blocked-title">
+                            <span>⏳</span>
+                            Waiting for Legal Position
+                        </div>
+                        <div class="blocked-description">
+                            Cannot write official press release without legal team's approved position on FTC complaints and liability issues.
+                        </div>
+                        <div class="waiting-indicator">
+                            <div class="waiting-dot"></div>
+                            <div class="waiting-dot"></div>
+                            <div class="waiting-dot"></div>
+                        </div>
+                        <div style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.8;">
+                            Legal team is working on response...
+                        </div>
+                    </div>
+                </div>
+
+                <form class="media-form" id="pressReleaseForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>📰</span>
+                            Press Release Headline
+                        </label>
+                        <input type="text" class="form-input" placeholder="BloomTech Addresses Technical Issues in #NaturalGlow Campaign">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>✍️</span>
+                            Official Statement
+                        </label>
+                        <textarea class="form-textarea large" placeholder="Write the official press release content here..."></textarea>
+                    </div>
+
+                    <div class="press-editor">
+                        <div class="press-header">
+                            <div class="press-title">FOR IMMEDIATE RELEASE</div>
+                            <div class="press-date">January 20, 2025</div>
+                        </div>
+                        <div class="press-content" id="pressPreview">
+                            Press release content will appear here as you type...
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Draft</button>
+                        <button type="button" class="btn btn-primary" onclick="submitPressRelease()">📤 Send to Journalists</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Social Media Strategy -->
+            <div class="work-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📱</span>
+                        Social Media Crisis Response
+                    </h2>
+                    <div class="card-status status-available">AVAILABLE</div>
+                </div>
+
+                <form class="media-form" id="socialMediaForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🐦</span>
+                            Primary Social Media Response
+                        </label>
+                        <textarea class="form-textarea" placeholder="Draft the main social media post addressing the crisis..."></textarea>
+                    </div>
+
+                    <div class="social-preview">
+                        <div class="social-post">
+                            <div class="social-header">
+                                <div class="social-avatar">BT</div>
+                                <div class="social-info">
+                                    <div class="social-name">BloomTech</div>
+                                    <div class="social-handle">@bloomtech_official</div>
+                                </div>
+                            </div>
+                            <div class="social-text" id="socialPreview">
+                                Your social media response will appear here...
+                            </div>
+                            <div class="social-actions">
+                                <span>💬 Reply</span>
+                                <span>🔄 Retweet</span>
+                                <span>❤️ Like</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🎯</span>
+                            Response Strategy
+                        </label>
+                        <select class="form-select">
+                            <option value="">Select social media strategy...</option>
+                            <option value="proactive">Proactive - Address directly</option>
+                            <option value="educational">Educational - Explain what happened</option>
+                            <option value="empathetic">Empathetic - Focus on customer impact</option>
+                            <option value="solution-focused">Solution-focused - Highlight fixes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Strategy</button>
+                        <button type="button" class="btn btn-primary" onclick="submitSocialStrategy()">🚀 Activate Social Response</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Breaking News / Journalist Pressure -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>🚨</span>
+                    Breaking Updates
+                </h3>
+                <div id="breakingNews">
+                    <!-- Breaking news will be inserted here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Journalist Messages -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>📞</span>
+                    Journalist Messages
+                </h3>
+                <div id="journalistMessages">
+                    <div class="journalist-msg">
+                        <div class="msg-header">
+                            <div class="msg-sender">Sarah Chen - TechCrunch</div>
+                            <div class="msg-time">10:45 AM</div>
+                        </div>
+                        <div class="msg-content">
+                            We're writing about the BloomTech campaign issue. Need your official response by 1 PM for inclusion in our article.
+                        </div>
+                    </div>
+
+                    <div class="journalist-msg">
+                        <div class="msg-header">
+                            <div class="msg-sender">Mike Rodriguez - Beauty Business</div>
+                            <div class="msg-time">11:00 AM</div>
+                        </div>
+                        <div class="msg-content">
+                            Heard about the competitor slogan mix-up. Planning to publish at 1 PM with or without your comment.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Dependencies -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>🔗</span>
+                    Team Dependencies
+                </h3>
+                <div class="dependency-item waiting" id="legalDependency">
+                    <div class="dependency-name">Legal Position</div>
+                    <div class="dependency-status waiting">WAITING</div>
+                </div>
+                <div class="dependency-item waiting" id="techDependency">
+                    <div class="dependency-name">Crisis Analysis Timeline</div>
+                    <div class="dependency-status waiting">WAITING</div>
+                </div>
+                <p style="font-size: 0.875rem; color: var(--text-gray); margin-top: 1rem;">
+                    ⚠️ Press release blocked until legal approval received.
+                </p>
+            </div>
+
+            <!-- Media Kit -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>📋</span>
+                    Media Kit
+                </h3>
+                <div style="display: grid; gap: 0.5rem;">
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem;">📄 Company Facts</button>
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem;">👥 Executive Bios</button>
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem;">📊 Product Info</button>
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem;">📷 Brand Assets</button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        // État global de l'équipe Media
+        let mediaState = {
+            dependenciesReceived: {
+                legalPosition: false,
+                crisisTimeline: false
+            },
+            deliverablesCompleted: {
+                contextAnalysis: false,
+                pressRelease: false,
+                socialStrategy: false
+            },
+            startTime: new Date(),
+            journalistDeadline: new Date(new Date().getTime() + 75 * 60 * 1000), // 1h15 minutes
+            breakingNewsCounter: 0
+        };
+
+        // Timer management
+        function updateTimers() {
+            const now = new Date();
+            
+            // Crisis timer
+            const elapsed = now - mediaState.startTime;
+            const totalTime = 90 * 60 * 1000; // 90 minutes
+            const remaining = Math.max(0, totalTime - elapsed);
+            
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            
+            const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('crisisTimer').textContent = display;
+
+            // Journalist deadline timer
+            const deadlineRemaining = Math.max(0, mediaState.journalistDeadline - now);
+            const deadlineMinutes = Math.floor(deadlineRemaining / (1000 * 60));
+            const deadlineSeconds = Math.floor((deadlineRemaining % (1000 * 60)) / 1000);
+            
+            const deadlineDisplay = `${Math.floor(deadlineRemaining / (1000 * 60 * 60))}:${deadlineMinutes.toString().padStart(2, '0')}:${deadlineSeconds.toString().padStart(2, '0')}`;
+            const deadlineElement = document.getElementById('journalistDeadline');
+            deadlineElement.textContent = deadlineDisplay;
+
+            // Critical deadline warning
+            if (deadlineRemaining <= 30 * 60 * 1000) { // 30 minutes left
+                deadlineElement.classList.add('critical');
+            }
+
+            if (deadlineRemaining <= 0) {
+                deadlineElement.textContent = 'DEADLINE PASSED';
+                deadlineElement.classList.add('critical');
+                handleDeadlinePassed();
+            }
+        }
+
+        // Check dependencies
+        function checkDependencies() {
+            // Check if Legal team has completed their work
+            const legalStatus = localStorage.getItem('legal_ftc-response_complete') === 'true';
+            const crisisStatus = localStorage.getItem('crisis_analysis_timeline_complete') === 'true';
+
+            if (legalStatus && !mediaState.dependenciesReceived.legalPosition) {
+                receiveLegalPosition();
+            }
+
+            if (crisisStatus && !mediaState.dependenciesReceived.crisisTimeline) {
+                receiveCrisisTimeline();
+            }
+        }
+
+        function receiveLegalPosition() {
+            mediaState.dependenciesReceived.legalPosition = true;
+            
+            // Unblock press release section
+            const blockedOverlay = document.getElementById('pressBlockedOverlay');
+            const cardStatus = document.querySelector('#pressReleaseCard .card-status');
+            const legalDependency = document.getElementById('legalDependency');
+
+            blockedOverlay.style.display = 'none';
+            cardStatus.textContent = 'URGENT';
+            cardStatus.className = 'card-status status-urgent';
+
+            legalDependency.className = 'dependency-item received';
+            legalDependency.querySelector('.dependency-status').textContent = 'RECEIVED';
+            legalDependency.querySelector('.dependency-status').className = 'dependency-status received';
+
+            // Add breaking news
+            addBreakingNews('🚨 URGENT: Legal position received! Press release can now be finalized.');
+            
+            console.log('[Media] Legal position received - Press release unlocked');
+        }
+
+        function receiveCrisisTimeline() {
+            mediaState.dependenciesReceived.crisisTimeline = true;
+            
+            const techDependency = document.getElementById('techDependency');
+            techDependency.className = 'dependency-item received';
+            techDependency.querySelector('.dependency-status').textContent = 'RECEIVED';
+            techDependency.querySelector('.dependency-status').className = 'dependency-status received';
+
+            addBreakingNews('📊 Crisis timeline received from analysis team - use for journalist responses.');
+            
+            console.log('[Media] Crisis timeline received');
+        }
+
+        // Breaking news system
+        function addBreakingNews(message) {
+            const breakingContainer = document.getElementById('breakingNews');
+            const newsItem = document.createElement('div');
+            newsItem.className = 'breaking-news';
+            newsItem.innerHTML = `
+                <div class="breaking-header">🚨 BREAKING UPDATE</div>
+                <div class="breaking-content">${message}</div>
+            `;
+            
+            breakingContainer.insertBefore(newsItem, breakingContainer.firstChild);
+            
+            // Limit to 3 breaking news items
+            while (breakingContainer.children.length > 3) {
+                breakingContainer.removeChild(breakingContainer.lastChild);
+            }
+        }
+
+        // Simulated journalist pressure
+        function simulateJournalistPressure() {
+            const messages = [
+                {
+                    time: 45000, // 45 seconds
+                    sender: "Emma Watson - Cosmetics Weekly",
+                    content: "Following up on the BloomTech story. Our deadline is firm at 1 PM. Will you have a statement ready?",
+                    urgent: false
+                },
+                {
+                    time: 120000, // 2 minutes
+                    sender: "Sarah Chen - TechCrunch",
+                    content: "Seeing more complaints on social media. This story is getting bigger. Need your response ASAP.",
+                    urgent: false
+                },
+                {
+                    time: 300000, // 5 minutes
+                    sender: "Mike Rodriguez - Beauty Business",
+                    content: "⚠️ FINAL NOTICE: We publish in 1 hour with or without your comment. This is your last chance to respond.",
+                    urgent: true
+                },
+                {
+                    time: 600000, // 10 minutes
+                    sender: "Laura Kim - Business Insider",
+                    content: "🔥 URGENT: Competitor EcoGlow just issued statement about 'industry integrity'. Need your response immediately!",
+                    urgent: true
+                }
+            ];
+
+            messages.forEach(msg => {
+                setTimeout(() => {
+                    addJournalistMessage(msg.sender, msg.content, msg.urgent);
+                }, msg.time);
+            });
+        }
+
+        function addJournalistMessage(sender, content, urgent = false) {
+            const container = document.getElementById('journalistMessages');
+            const msgElement = document.createElement('div');
+            msgElement.className = `journalist-msg ${urgent ? 'urgent' : ''}`;
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            
+            msgElement.innerHTML = `
+                <div class="msg-header">
+                    <div class="msg-sender">${sender}</div>
+                    <div class="msg-time">${timeStr}</div>
+                </div>
+                <div class="msg-content">${content}</div>
+            `;
+            
+            container.insertBefore(msgElement, container.firstChild);
+            
+            // Limit to 6 messages
+            while (container.children.length > 6) {
+                container.removeChild(container.lastChild);
+            }
+
+            // Add breaking news for urgent messages
+            if (urgent) {
+                addBreakingNews(`📞 URGENT: ${sender.split(' - ')[0]} demands immediate response!`);
+            }
+        }
+
+        // Form handlers
+        function submitPressRelease() {
+            if (!mediaState.dependenciesReceived.legalPosition) {
+                alert('Cannot submit press release without legal position!');
+                return;
+            }
+
+            mediaState.deliverablesCompleted.pressRelease = true;
+            localStorage.setItem('media_press_release_complete', 'true');
+            
+            const btn = event.target;
+            btn.textContent = '✅ Sent to Journalists';
+            btn.disabled = true;
+            btn.style.background = 'var(--success-green)';
+
+            addBreakingNews('✅ Press release sent to all journalists. Crisis communication activated!');
+            
+            console.log('[Media] Press release submitted');
+        }
+
+        function submitSocialStrategy() {
+            mediaState.deliverablesCompleted.socialStrategy = true;
+            localStorage.setItem('media_social_strategy_complete', 'true');
+            
+            const btn = event.target;
+            btn.textContent = '✅ Social Response Active';
+            btn.disabled = true;
+            btn.style.background = 'var(--success-green)';
+
+            addBreakingNews('📱 Social media crisis response is now live across all platforms.');
+            
+            console.log('[Media] Social strategy activated');
+        }
+
+        // Real-time preview for social media
+        function setupSocialPreview() {
+            const socialInput = document.querySelector('#socialMediaForm textarea');
+            const socialPreview = document.getElementById('socialPreview');
+            
+            if (socialInput && socialPreview) {
+                socialInput.addEventListener('input', (e) => {
+                    const text = e.target.value || 'Your social media response will appear here...';
+                    socialPreview.textContent = text;
+                });
+            }
+        }
+
+        // Deadline passed handler
+        function handleDeadlinePassed() {
+            addBreakingNews('💥 JOURNALIST DEADLINE PASSED: Articles are now publishing without official BloomTech response!');
+            
+            // Show consequences
+            setTimeout(() => {
+                addJournalistMessage(
+                    "NEWS ALERT - Multiple Outlets",
+                    "🚨 PUBLISHED: 'BloomTech Remains Silent on Campaign Crisis' - TechCrunch, Beauty Business, Cosmetics Weekly",
+                    true
+                );
+            }, 2000);
+        }
+
+        // External crisis events (triggered by CEO dashboard)
+        function handleExternalEvents() {
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'ceo_broadcast_message') {
+                    const message = e.newValue;
+                    if (message) {
+                        addBreakingNews(`📢 CEO MESSAGE: ${message}`);
+                    }
+                }
+
+                if (e.key === 'crisis_event_triggered') {
+                    const eventData = JSON.parse(e.newValue || '{}');
+                    handleCrisisEvent(eventData);
+                }
+            });
+        }
+
+        function handleCrisisEvent(eventData) {
+            switch(eventData.type) {
+                case 'viral-tweet':
+                    addBreakingNews('🐦 VIRAL ALERT: Negative tweet about BloomTech has 50K+ retweets and trending!');
+                    addJournalistMessage(
+                        "Social Media Monitor",
+                        "#BloomTechScandal is now trending on Twitter. Multiple journalists asking for immediate comment.",
+                        true
+                    );
+                    break;
+                    
+                case 'competitor-attack':
+                    addBreakingNews('⚔️ COMPETITOR MOVE: EcoGlow launches "integrity guarantee" campaign targeting our crisis!');
+                    addJournalistMessage(
+                        "Industry Reporter",
+                        "EcoGlow just released statement about 'maintaining authentic marketing.' Need your response to this competitive attack.",
+                        true
+                    );
+                    break;
+                    
+                case 'investor-panic':
+                    addBreakingNews('💰 INVESTOR PRESSURE: Major investor threatens to pull funding if crisis not resolved!');
+                    break;
+                    
+                default:
+                    console.log(`[Media] Unhandled crisis event: ${eventData.type}`);
+            }
+        }
+
+        // Auto-save functionality
+        function setupAutoSave() {
+            const forms = ['contextAnalysisForm', 'pressReleaseForm', 'socialMediaForm'];
+            
+            forms.forEach(formId => {
+                const form = document.getElementById(formId);
+                if (form) {
+                    const inputs = form.querySelectorAll('textarea, input, select');
+                    inputs.forEach(input => {
+                        input.addEventListener('input', () => {
+                            localStorage.setItem(`media_${formId}_${input.name || 'content'}`, input.value);
+                        });
+                        
+                        // Load saved content
+                        const savedContent = localStorage.getItem(`media_${formId}_${input.name || 'content'}`);
+                        if (savedContent) {
+                            input.value = savedContent;
+                        }
+                    });
+                }
+            });
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[Media Team] Interface initialized');
+            
+            // Start timers and dependencies checking
+            setInterval(updateTimers, 1000);
+            setInterval(checkDependencies, 5000);
+            
+            // Setup features
+            setupSocialPreview();
+            setupAutoSave();
+            handleExternalEvents();
+            
+            // Start journalist pressure simulation
+            simulateJournalistPressure();
+            
+            // Initial breaking news
+            setTimeout(() => {
+                addBreakingNews('📰 Media crisis escalating: 5 journalists now requesting immediate response.');
+            }, 10000);
+            
+            console.log('[Media Team] All systems active - Crisis communication mode engaged');
+        });
+    </script>
+</body>
+</html>

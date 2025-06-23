@@ -1311,74 +1311,7 @@ jwalsh@bloomtech-board.com`
             updateValidateButton();
         }
 
-        // Track easter eggs - simplified approach
-        function discoverEasterEgg(element, index) {
-            if (!element.classList.contains('discovered')) {
-                element.classList.add('discovered');
-                if (!easterEggsFound.includes(index)) {
-                    easterEggsFound.push(index);
-                    updateEasterEggCounter();
-                    showNotification(`🎯 Clue discovered! (${easterEggsFound.length}/8)`);
-                }
-            }
-        }
 
-        function updateEasterEggCounter() {
-            const counter = document.getElementById('easterEggCounter');
-            const count = document.getElementById('easterEggCount');
-            
-            if (counter && count) {
-                count.textContent = `${easterEggsFound.length}/8`;
-                
-                if (easterEggsFound.length > 0) {
-                    counter.classList.add('visible');
-                }
-                
-                // Achievement unlock
-                if (easterEggsFound.length >= 5) {
-                    showNotification("🎯 Detective Level: Excellent! You're gathering crucial intel for Phase 2");
-                }
-            }
-        }
-
-        // Setup easter egg tracking - Event delegation approach
-        function setupEasterEggTracking() {
-            // Use event delegation on the email container
-            const emailContainer = document.getElementById('emailInbox');
-            if (emailContainer) {
-                emailContainer.addEventListener('click', function(event) {
-                    const easterEgg = event.target.closest('.email-easter-egg');
-                    if (easterEgg && !easterEgg.classList.contains('discovered')) {
-                        const allEasterEggs = document.querySelectorAll('.email-easter-egg');
-                        const index = Array.from(allEasterEggs).indexOf(easterEgg);
-                        discoverEasterEgg(easterEgg, index);
-                    }
-                });
-                
-                console.log('Easter egg tracking setup completed');
-            }
-            
-            // Simplified auto-discovery on scroll (backup method)
-            setTimeout(() => {
-                const easterEggs = document.querySelectorAll('.email-easter-egg');
-                console.log(`Found ${easterEggs.length} easter eggs for auto-tracking`);
-                
-                easterEggs.forEach((egg, index) => {
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting && entry.intersectionRatio > 0.8) {
-                                setTimeout(() => {
-                                    if (!egg.classList.contains('discovered')) {
-                                        discoverEasterEgg(egg, index);
-                                    }
-                                }, 2000); // 2 second delay to ensure they read it
-                            }
-                        });
-                    }, { threshold: 0.8 });
-                    observer.observe(egg);
-                });
-            }, 1000);
-        }
 
         // Update validate button state
         function updateValidateButton() {
@@ -1443,7 +1376,7 @@ jwalsh@bloomtech-board.com`
                 }, 200);
                 
                 // Setup easter egg tracking
-                setupEasterEggTracking();
+                //setupEasterEggTracking();
                 
                 // Setup auto-save
                 //setupAutoSave();

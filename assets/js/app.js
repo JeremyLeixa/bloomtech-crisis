@@ -1,7 +1,7 @@
 /**
  * BLOOMTECH CRISIS SIMULATION
  * JavaScript pour interactions startup modernes
- * Version: 1.0
+ * Version: 1.0 - FIXED
  */
 
 // ===========================
@@ -9,39 +9,22 @@
 // ===========================
 
 const CONFIG = {
-  // Timer settings
   BOARD_MEETING_HOURS: 3,
   BOARD_MEETING_MINUTES: 45,
   BOARD_MEETING_SECONDS: 0,
-  
-  // Animation settings
-  SCROLL_OFFSET: 120, // Offset pour le header sticky
+  SCROLL_OFFSET: 120,
   SMOOTH_SCROLL_DURATION: 800,
-  
-  // Update intervals
-  TIMER_UPDATE_INTERVAL: 1000, // 1 seconde
-  
-  // Local storage keys (si besoin plus tard)
-  STORAGE_KEYS: {
-    START_TIME: 'bloomtech_start_time',
-    USER_PROGRESS: 'bloomtech_progress'
-  }
+  TIMER_UPDATE_INTERVAL: 1000
 };
 
 // ===========================
 // UTILITY FUNCTIONS
 // ===========================
 
-/**
- * Utilitaire pour formater les nombres avec zéro initial
- */
 function padZero(num) {
   return num.toString().padStart(2, '0');
 }
 
-/**
- * Utilitaire pour calculer le temps restant
- */
 function calculateTimeRemaining(targetTime) {
   const now = new Date().getTime();
   const difference = targetTime - now;
@@ -57,9 +40,6 @@ function calculateTimeRemaining(targetTime) {
   return { hours, minutes, seconds, isExpired: false };
 }
 
-/**
- * Utilitaire pour l'animation de scroll smooth
- */
 function smoothScrollTo(target, offset = CONFIG.SCROLL_OFFSET) {
   const targetElement = document.querySelector(target);
   if (!targetElement) return;
@@ -78,7 +58,6 @@ function smoothScrollTo(target, offset = CONFIG.SCROLL_OFFSET) {
     if (timeElapsed < duration) requestAnimationFrame(animation);
   }
   
-  // Fonction d'easing pour une animation plus naturelle
   function ease(t, b, c, d) {
     t /= d / 2;
     if (t < 1) return c / 2 * t * t + b;
@@ -89,12 +68,8 @@ function smoothScrollTo(target, offset = CONFIG.SCROLL_OFFSET) {
   requestAnimationFrame(animation);
 }
 
-/**
- * Gestionnaire d'erreurs global
- */
 function handleError(error, context = 'Unknown') {
   console.error(`[BloomTech Crisis] Error in ${context}:`, error);
-  // En production, on pourrait envoyer ça à un service de monitoring
 }
 
 // ===========================
@@ -107,7 +82,6 @@ class CountdownTimer {
     this.timerInterval = null;
     this.isRunning = false;
     
-    // Elements DOM
     this.countdownElement = document.getElementById('countdown');
     this.missionCountdownElement = document.getElementById('mission-countdown');
     this.timerStatusElement = document.querySelector('.timer-status');
@@ -116,7 +90,6 @@ class CountdownTimer {
   }
   
   init() {
-    // Calculer le temps cible (maintenant + durée configurée)
     const now = new Date();
     this.targetTime = new Date(
       now.getTime() + 
@@ -132,7 +105,7 @@ class CountdownTimer {
     if (this.isRunning) return;
     
     this.isRunning = true;
-    this.updateDisplay(); // Mise à jour immédiate
+    this.updateDisplay();
     
     this.timerInterval = setInterval(() => {
       this.updateDisplay();
@@ -156,7 +129,6 @@ class CountdownTimer {
         return;
       }
       
-      // Mise à jour du timer principal
       if (this.countdownElement) {
         const hoursElement = this.countdownElement.querySelector('.time-hours');
         const minutesElement = this.countdownElement.querySelector('.time-minutes');
@@ -167,13 +139,11 @@ class CountdownTimer {
         if (secondsElement) secondsElement.textContent = padZero(timeRemaining.seconds);
       }
       
-      // Mise à jour du timer de mission
       if (this.missionCountdownElement) {
         this.missionCountdownElement.textContent = 
           `${timeRemaining.hours}h ${padZero(timeRemaining.minutes)}m`;
       }
       
-      // Changement de style selon l'urgence
       this.updateUrgencyStyles(timeRemaining);
       
     } catch (error) {
@@ -184,7 +154,6 @@ class CountdownTimer {
   updateUrgencyStyles(timeRemaining) {
     const totalMinutesLeft = (timeRemaining.hours * 60) + timeRemaining.minutes;
     
-    // Changement de couleur selon l'urgence
     if (totalMinutesLeft <= 30 && this.timerStatusElement) {
       this.timerStatusElement.textContent = 'EMERGENCY';
       this.timerStatusElement.style.background = 'var(--danger-primary)';
@@ -198,7 +167,6 @@ class CountdownTimer {
   handleTimeExpired() {
     this.stopTimer();
     
-    // Mise à jour de l'affichage
     if (this.countdownElement) {
       this.countdownElement.innerHTML = '<span style="color: var(--danger-primary); font-weight: 800;">TIME\'S UP!</span>';
     }
@@ -213,12 +181,10 @@ class CountdownTimer {
       this.timerStatusElement.style.animation = 'pulse 0.5s ease-in-out infinite';
     }
     
-    // Animation d'alerte
     this.triggerTimeExpiredAlert();
   }
   
   triggerTimeExpiredAlert() {
-    // Création d'une notification visuelle
     const alertElement = document.createElement('div');
     alertElement.innerHTML = `
       <div style="
@@ -242,7 +208,6 @@ class CountdownTimer {
     
     document.body.appendChild(alertElement);
     
-    // Suppression automatique après 5 secondes
     setTimeout(() => {
       if (alertElement.parentNode) {
         alertElement.parentNode.removeChild(alertElement);
@@ -264,11 +229,9 @@ class NavigationManager {
   init() {
     this.setupSmoothScrolling();
     this.setupScrollSpy();
-    this.setupMobileMenuToggle();
   }
   
   setupSmoothScrolling() {
-    // Gestion des liens d'ancrage
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href^="#"]');
       if (!link) return;
@@ -277,20 +240,16 @@ class NavigationManager {
       const targetId = link.getAttribute('href');
       
       if (targetId === '#') {
-        // Retour en haut
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
       
       smoothScrollTo(targetId);
-      
-      // Tracking de l'interaction (pour analytics futures)
-      this.trackNavigation(targetId);
+      console.log(`[Navigation] User navigated to: ${targetId}`);
     });
   }
   
   setupScrollSpy() {
-    // Observer pour mettre en surbrillance la section active
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
     
@@ -320,54 +279,6 @@ class NavigationManager {
       }
     });
   }
-  
-  setupMobileMenuToggle() {
-    // Gestion responsive de la navigation
-    const nav = document.querySelector('.quick-nav');
-    if (!nav) return;
-    
-    let isMenuOpen = false;
-    
-    // Création d'un bouton menu mobile si nécessaire
-    this.createMobileMenuButton(nav);
-  }
-  
-  createMobileMenuButton(nav) {
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
-    
-    if (mediaQuery.matches && !nav.querySelector('.mobile-menu-toggle')) {
-      const toggleButton = document.createElement('button');
-      toggleButton.className = 'mobile-menu-toggle';
-      toggleButton.innerHTML = '☰';
-      toggleButton.style.cssText = `
-        display: block;
-        background: var(--primary-gradient);
-        color: white;
-        border: none;
-        padding: 0.75rem;
-        border-radius: var(--radius-md);
-        font-size: 1.25rem;
-        cursor: pointer;
-        margin: 0 auto;
-      `;
-      
-      const navContainer = nav.querySelector('.nav-container');
-      navContainer.style.display = 'none';
-      
-      toggleButton.addEventListener('click', () => {
-        const isHidden = navContainer.style.display === 'none';
-        navContainer.style.display = isHidden ? 'flex' : 'none';
-        toggleButton.innerHTML = isHidden ? '✕' : '☰';
-      });
-      
-      nav.insertBefore(toggleButton, navContainer);
-    }
-  }
-  
-  trackNavigation(targetId) {
-    // Placeholder pour le tracking d'analytics
-    console.log(`[Navigation] User navigated to: ${targetId}`);
-  }
 }
 
 // ===========================
@@ -383,11 +294,9 @@ class EmailManager {
   init() {
     this.setupEmailTracking();
     this.setupEmailAnimations();
-    this.setupPriorityFiltering();
   }
   
   setupEmailTracking() {
-    // Observer pour tracker quels emails ont été lus
     const emails = document.querySelectorAll('.email-full');
     
     const observer = new IntersectionObserver((entries) => {
@@ -410,7 +319,6 @@ class EmailManager {
     
     this.readEmails.add(emailId);
     
-    // Mise à jour visuelle
     const emailElement = document.getElementById(emailId);
     const overviewCard = document.querySelector(`a[href="#${emailId}"]`);
     
@@ -422,10 +330,7 @@ class EmailManager {
       overviewCard.classList.add('card-read');
     }
     
-    // Animation de feedback
     this.showReadFeedback(emailElement);
-    
-    // Tracking pour analytics
     console.log(`[Email] User read email: ${emailId}`);
   }
   
@@ -454,7 +359,6 @@ class EmailManager {
     emailElement.style.position = 'relative';
     emailElement.appendChild(feedback);
     
-    // Suppression après animation
     setTimeout(() => {
       if (feedback.parentNode) {
         feedback.style.animation = 'fadeOut 0.3s ease-out';
@@ -467,4 +371,329 @@ class EmailManager {
     }, 2000);
   }
   
-  setupEmailAnimations()
+  setupEmailAnimations() {
+    const overviewCards = document.querySelectorAll('.overview-card');
+    
+    overviewCards.forEach(card => {
+      card.addEventListener('mouseenter', (e) => {
+        this.animateCardHover(e.target, true);
+      });
+      
+      card.addEventListener('mouseleave', (e) => {
+        this.animateCardHover(e.target, false);
+      });
+    });
+    
+    this.setupScrollAnimations();
+  }
+  
+  animateCardHover(card, isEntering) {
+    const priority = card.getAttribute('data-priority');
+    const priorityElement = card.querySelector('.card-priority');
+    
+    if (isEntering && priorityElement) {
+      priorityElement.style.transform = 'scale(1.1)';
+      priorityElement.style.transition = 'transform 0.2s ease-out';
+      
+      if (priority === 'critical') {
+        card.style.boxShadow = '0 8px 32px rgba(255, 107, 107, 0.3)';
+      } else if (priority === 'high') {
+        card.style.boxShadow = '0 8px 32px rgba(254, 202, 87, 0.3)';
+      }
+    } else if (priorityElement) {
+      priorityElement.style.transform = 'scale(1)';
+      card.style.boxShadow = '';
+    }
+  }
+  
+  setupScrollAnimations() {
+    const emails = document.querySelectorAll('.email-full');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('email-visible');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '50px'
+    });
+    
+    emails.forEach(email => {
+      email.classList.add('email-animated');
+      observer.observe(email);
+    });
+  }
+  
+  getReadEmailsCount() {
+    return this.readEmails.size;
+  }
+  
+  getUnreadEmailsCount() {
+    const totalEmails = document.querySelectorAll('.email-full').length;
+    return totalEmails - this.readEmails.size;
+  }
+}
+
+// ===========================
+// PROGRESS TRACKING
+// ===========================
+
+class ProgressTracker {
+  constructor() {
+    this.startTime = new Date();
+    this.init();
+  }
+  
+  init() {
+    this.createProgressIndicator();
+  }
+  
+  createProgressIndicator() {
+    const progressBar = document.createElement('div');
+    progressBar.id = 'progress-indicator';
+    progressBar.innerHTML = `
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-text">
+          <span id="progress-emails">0/8</span> emails read
+        </div>
+      </div>
+    `;
+    
+    const style = document.createElement('style');
+    style.textContent = `
+      #progress-indicator {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        min-width: 200px;
+        border: 1px solid #e2e8f0;
+      }
+      .progress-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #edf2f7;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(135deg, #48cae4 0%, #023e8a 100%);
+        width: 0%;
+        transition: width 0.3s ease-out;
+        border-radius: 4px;
+      }
+      .progress-text {
+        font-size: 0.875rem;
+        color: #4a5568;
+        text-align: center;
+        font-weight: 500;
+      }
+      @media (max-width: 768px) {
+        #progress-indicator {
+          bottom: 1rem;
+          right: 1rem;
+          left: 1rem;
+          min-width: auto;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(progressBar);
+  }
+  
+  updateProgress(readCount, totalCount) {
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-emails');
+    
+    if (progressFill && progressText) {
+      const percentage = (readCount / totalCount) * 100;
+      progressFill.style.width = `${percentage}%`;
+      progressText.textContent = `${readCount}/${totalCount}`;
+      
+      if (readCount === totalCount) {
+        this.showCompletionMessage();
+      }
+    }
+  }
+  
+  showCompletionMessage() {
+    const completionMessage = document.createElement('div');
+    completionMessage.innerHTML = `
+      <div style="
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #48cae4 0%, #023e8a 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+        z-index: 10001;
+        text-align: center;
+        animation: slideInUp 0.5s ease-out;
+        max-width: 400px;
+      ">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem;">🎉 All Emails Read!</h3>
+        <p style="margin: 0; font-size: 1rem;">You've reviewed all crisis emails. Time to analyze and prioritize!</p>
+      </div>
+    `;
+    
+    document.body.appendChild(completionMessage);
+    
+    setTimeout(() => {
+      if (completionMessage.parentNode) {
+        completionMessage.style.animation = 'fadeOut 0.5s ease-out';
+        setTimeout(() => {
+          if (completionMessage.parentNode) {
+            completionMessage.parentNode.removeChild(completionMessage);
+          }
+        }, 500);
+      }
+    }, 4000);
+  }
+}
+
+// ===========================
+// MAIN APPLICATION
+// ===========================
+
+class BloomTechCrisisApp {
+  constructor() {
+    this.components = {};
+    this.isInitialized = false;
+    this.init();
+  }
+  
+  async init() {
+    try {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
+      } else {
+        this.initializeComponents();
+      }
+    } catch (error) {
+      handleError(error, 'BloomTechCrisisApp.init');
+    }
+  }
+  
+  initializeComponents() {
+    try {
+      console.log('[BloomTech] Initializing crisis simulation...');
+      
+      this.components.timer = new CountdownTimer();
+      this.components.navigation = new NavigationManager();
+      this.components.emailManager = new EmailManager();
+      this.components.progressTracker = new ProgressTracker();
+      
+      this.setupComponentInteractions();
+      this.updateFooterYear();
+      this.addDynamicStyles();
+      
+      this.isInitialized = true;
+      console.log('[BloomTech] Crisis simulation initialized successfully');
+      
+      window.dispatchEvent(new CustomEvent('bloomtechReady', {
+        detail: { app: this, components: this.components }
+      }));
+      
+    } catch (error) {
+      handleError(error, 'BloomTechCrisisApp.initializeComponents');
+    }
+  }
+  
+  setupComponentInteractions() {
+    const originalMarkAsRead = this.components.emailManager.markEmailAsRead.bind(this.components.emailManager);
+    this.components.emailManager.markEmailAsRead = (emailId) => {
+      originalMarkAsRead(emailId);
+      
+      const readCount = this.components.emailManager.getReadEmailsCount();
+      const totalCount = document.querySelectorAll('.email-full').length;
+      this.components.progressTracker.updateProgress(readCount, totalCount);
+    };
+  }
+  
+  updateFooterYear() {
+    const yearElement = document.getElementById('current-year');
+    if (yearElement) {
+      yearElement.textContent = new Date().getFullYear();
+    }
+  }
+  
+  addDynamicStyles() {
+    const dynamicStyles = document.createElement('style');
+    dynamicStyles.textContent = `
+      .email-animated {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
+      }
+      
+      .email-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      .email-read {
+        opacity: 0.8;
+      }
+      
+      .card-read::after {
+        content: '✓';
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #48cae4;
+        color: white;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+      
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+    `;
+    document.head.appendChild(dynamicStyles);
+  }
+}
+
+// ===========================
+// INITIALIZATION
+// ===========================
+
+window.BloomTechApp = new BloomTechCrisisApp();
+
+window.addEventListener('bloomtechReady', (e) => {
+  window.emailManager = e.detail.components.emailManager;
+  window.progressTracker = e.detail.components.progressTracker;
+});
+
+window.addEventListener('error', (e) => {
+  handleError(e.error, 'Global Error Handler');
+});
+
+console.log('[BloomTech] Crisis Simulation JavaScript loaded successfully');

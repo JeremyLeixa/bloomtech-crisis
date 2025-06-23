@@ -712,7 +712,7 @@ li {
 
 .urgency-badge {
   background: var(--text-primary);
-  color: white;
+  color: #3d434f;
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-lg);
   font-size: var(--font-size-xs);

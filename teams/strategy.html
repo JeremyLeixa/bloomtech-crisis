@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Team - Executive Dashboard | BloomTech Crisis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .title-text h1 {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 0.2rem;
+        }
+
+        .title-text p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .crisis-timer {
+            background: linear-gradient(135deg, #fc8181, #f56565);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(245, 101, 101, 0.3);
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .teams-overview {
+            grid-column: 1 / -1;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-card.crisis { border-left-color: #10b981; }
+        .team-card.legal { border-left-color: #dc2626; }
+        .team-card.media { border-left-color: #3b82f6; }
+        .team-card.influencer { border-left-color: #ec4899; }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .team-name {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        .team-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-working {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-waiting {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .team-progress {
+            background: #e5e7eb;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.8rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-crisis { background: #10b981; }
+        .progress-legal { background: #dc2626; }
+        .progress-media { background: #3b82f6; }
+        .progress-influencer { background: #ec4899; }
+
+        .team-timeline {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .budget-approval {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+            color: white;
+            text-align: center;
+        }
+
+        .budget-approval h2 {
+            color: white;
+        }
+
+        .budget-status {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .budget-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .approve-button {
+            background: #ffffff;
+            color: #be185d;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .approve-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .approve-button:disabled {
+            background: #d1d5db;
+            color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .action-plan {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .action-plan h2 {
+            color: white;
+        }
+
+        .plan-section {
+            margin-bottom: 2rem;
+        }
+
+        .plan-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .plan-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .plan-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .plan-textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .emergency-controls {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .emergency-controls h2 {
+            color: white;
+        }
+
+        .override-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .override-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .override-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .save-plan {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .save-plan:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+            
+            .teams-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(236, 72, 153, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="team-title">
+                <div class="team-icon">👑</div>
+                <div class="title-text">
+                    <h1>Strategy Team</h1>
+                    <p>Executive Crisis Management Dashboard</p>
+                </div>
+            </div>
+            <div class="crisis-timer" id="timer">
+                ⏱️ <span id="countdown">90:00</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Teams Overview -->
+        <div class="card teams-overview">
+            <h2>📊 Teams Status Overview</h2>
+            <div class="teams-grid">
+                <div class="team-card crisis" id="crisisTeam">
+                    <div class="team-header">
+                        <span class="team-name">🔍 Crisis Analysis</span>
+                        <span class="team-status status-working" id="crisisStatus">WORKING</span>
+                    </div>
+                    <div class="team-progress">
+                        <div class="progress-bar progress-crisis" id="crisisProgress" style="width: 30%"></div>
+                    </div>
+                    <div class="team-timeline" id="crisisTimeline">
+                        Started: 09:00 | Estimated completion: 09:45
+                    </div>
+                </div>
+
+                <div class="team-card legal" id="legalTeam">
+                    <div class="team-header">
+                        <span class="team-name">⚖️ Legal Response</span>
+                        <span class="team-status status-waiting" id="legalStatus">WAITING</span>
+                    </div>
+                    <div class="team-progress">
+                        <div class="progress-bar progress-legal" id="legalProgress" style="width: 10%"></div>
+                    </div>
+                    <div class="team-timeline" id="legalTimeline">
+                        Waiting for Crisis Analysis data
+                    </div>
+                </div>
+
+                <div class="team-card media" id="mediaTeam">
+                    <div class="team-header">
+                        <span class="team-name">📰 Media Response</span>
+                        <span class="team-status status-waiting" id="mediaStatus">WAITING</span>
+                    </div>
+                    <div class="team-progress">
+                        <div class="progress-bar progress-media" id="mediaProgress" style="width: 15%"></div>
+                    </div>
+                    <div class="team-timeline" id="mediaTimeline">
+                        Preparing statements, waiting for legal clearance
+                    </div>
+                </div>
+
+                <div class="team-card influencer" id="influencerTeam">
+                    <div class="team-header">
+                        <span class="team-name">📱 Influencer Relations</span>
+                        <span class="team-status status-waiting" id="influencerStatus">BUDGET PENDING</span>
+                    </div>
+                    <div class="team-progress">
+                        <div class="progress-bar progress-influencer" id="influencerProgress" style="width: 20%"></div>
+                    </div>
+                    <div class="team-timeline" id="influencerTimeline">
+                        Awaiting budget approval for major influencers
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget Approval -->
+        <div class="card budget-approval">
+            <h2>💰 Budget Approval Center</h2>
+            <div class="budget-status">
+                <div class="budget-amount">$50,000</div>
+                <div>Emergency Influencer Relations Budget</div>
+            </div>
+            <button class="approve-button pulse" id="approveBudget" onclick="approveBudget()">
+                🚀 APPROVE INFLUENCER BUDGET
+            </button>
+            <div style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                This will unlock major influencer negotiations (SarahGlowUp, BeautyGuruMike)
+            </div>
+        </div>
+
+        <!-- Emergency Controls -->
+        <div class="card emergency-controls">
+            <h2>🚨 Emergency Override Controls</h2>
+            <div class="override-section">
+                <h3>Force Team Completion</h3>
+                <button class="override-button" onclick="overrideTeam('crisis')">Override Crisis Analysis</button>
+                <button class="override-button" onclick="overrideTeam('legal')">Override Legal Response</button>
+                <button class="override-button" onclick="overrideTeam('media')">Override Media Response</button>
+                <button class="override-button" onclick="overrideTeam('influencer')">Override Influencer Relations</button>
+            </div>
+            <div style="font-size: 0.9rem; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 1rem;">
+                ⚠️ Use only if a team is completely blocked. This simulates CEO executive decision.
+            </div>
+        </div>
+
+        <!-- Action Plan -->
+        <div class="card action-plan">
+            <h2>📋 Executive Action Plan</h2>
+            
+            <div class="plan-section">
+                <h3>🎯 Immediate Actions (Next 30 minutes)</h3>
+                <textarea class="plan-textarea" id="immediateActions" placeholder="List the most critical actions that must be taken immediately to contain the crisis...
+
+Example:
+- Approve influencer budget to prevent SarahGlowUp public statement
+- Coordinate with Legal on FTC response timeline
+- Ensure Media team has talking points ready"></textarea>
+            </div>
+
+            <div class="plan-section">
+                <h3>📢 Communication Strategy</h3>
+                <textarea class="plan-textarea" id="communicationStrategy" placeholder="Define how we communicate with stakeholders, media, and the public...
+
+Example:
+- Unified messaging across all channels
+- Proactive statement to get ahead of criticism
+- Influencer damage control priority"></textarea>
+            </div>
+
+            <div class="plan-section">
+                <h3>💼 Resource Allocation</h3>
+                <textarea class="plan-textarea" id="resourceAllocation" placeholder="How are we deploying our budget and human resources?
+
+Example:
+- $50K emergency budget for influencer relations
+- Legal team prioritizes FTC response
+- Media team focuses on damage control narrative"></textarea>
+            </div>
+
+            <div class="plan-section">
+                <h3>⏰ Recovery Timeline</h3>
+                <textarea class="plan-textarea" id="recoveryTimeline" placeholder="What's our roadmap to full recovery?
+
+Example:
+- Hour 1: Stop the bleeding (influencers, immediate response)
+- Day 1: Official statements, legal compliance
+- Week 1: Rebuild trust, new campaign launch"></textarea>
+            </div>
+
+            <button class="save-plan" onclick="savePlan()">💾 Save Executive Action Plan</button>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Timer countdown
+        let timeLeft = 90 * 60; // 90 minutes in seconds
+        
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('countdown').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+            }
+        }
+        
+        setInterval(updateTimer, 1000);
+
+        // Team status tracking
+        const teamStates = {
+            crisis: { progress: 30, status: 'working', timeline: 'Started: 09:00 | Estimated completion: 09:45' },
+            legal: { progress: 10, status: 'waiting', timeline: 'Waiting for Crisis Analysis data' },
+            media: { progress: 15, status: 'waiting', timeline: 'Preparing statements, waiting for legal clearance' },
+            influencer: { progress: 20, status: 'budget pending', timeline: 'Awaiting budget approval for major influencers' }
+        };
+
+        // Check team statuses from localStorage
+        function checkTeamStatuses() {
+            // Crisis Analysis Team
+            if (localStorage.getItem('crisis_analysis_timeline_complete') === 'true') {
+                updateTeamStatus('crisis', 100, 'completed', 'Analysis complete! Data delivered to all teams');
+                updateTeamStatus('legal', 40, 'working', 'Processing Crisis Analysis data');
+            }
+
+            // Legal Team
+            if (localStorage.getItem('legal_ftc-response_complete') === 'true') {
+                updateTeamStatus('legal', 100, 'completed', 'Legal position finalized, Media cleared to proceed');
+                updateTeamStatus('media', 60, 'working', 'Legal clearance received, drafting statements');
+            }
+
+            // Media Team
+            if (localStorage.getItem('media_press-release_complete') === 'true') {
+                updateTeamStatus('media', 100, 'completed', 'Press release ready for publication');
+            }
+
+            // Influencer Team (depends on Strategy budget approval)
+            if (localStorage.getItem('team_strategy_budget_complete') === 'true') {
+                updateTeamStatus('influencer', 80, 'working', 'Budget approved! Negotiating with major influencers');
+                document.getElementById('approveBudget').style.display = 'none';
+            }
+
+            if (localStorage.getItem('influencer_negotiations_complete') === 'true') {
+                updateTeamStatus('influencer', 100, 'completed', 'All influencer relations stabilized');
+            }
+        }
+
+        function updateTeamStatus(team, progress, status, timeline) {
+            teamStates[team] = { progress, status, timeline };
+            
+            const progressBar = document.getElementById(`${team}Progress`);
+            const statusElement = document.getElementById(`${team}Status`);
+            const timelineElement = document.getElementById(`${team}Timeline`);
+            
+            if (progressBar) progressBar.style.width = `${progress}%`;
+            
+            if (statusElement) {
+                statusElement.textContent = status.toUpperCase();
+                statusElement.className = `team-status status-${status.replace(' ', '-')}`;
+            }
+            
+            if (timelineElement) timelineElement.textContent = timeline;
+        }
+
+        // Budget approval
+        function approveBudget() {
+            localStorage.setItem('team_strategy_budget_complete', 'true');
+            document.getElementById('approveBudget').disabled = true;
+            document.getElementById('approveBudget').textContent = '✅ BUDGET APPROVED';
+            document.getElementById('approveBudget').classList.remove('pulse');
+            
+            updateTeamStatus('influencer', 80, 'working', 'Budget approved! Negotiating with major influencers');
+            showNotification('💰 Influencer budget approved! Major negotiations unlocked.');
+        }
+
+        // Override functions
+        function overrideTeam(team) {
+            const confirmMessage = `Are you sure you want to override ${team} team completion? This simulates a CEO executive decision.`;
+            
+            if (confirm(confirmMessage)) {
+                // Set completion flags based on team
+                switch(team) {
+                    case 'crisis':
+                        localStorage.setItem('crisis_analysis_timeline_complete', 'true');
+                        break;
+                    case 'legal':
+                        localStorage.setItem('legal_ftc-response_complete', 'true');
+                        break;
+                    case 'media':
+                        localStorage.setItem('media_press-release_complete', 'true');
+                        break;
+                    case 'influencer':
+                        localStorage.setItem('influencer_negotiations_complete', 'true');
+                        break;
+                }
+                
+                checkTeamStatuses();
+                showNotification(`🚨 ${team.toUpperCase()} team completion overridden by Strategy Team`);
+            }
+        }
+
+        // Save action plan
+        function savePlan() {
+            const plan = {
+                immediateActions: document.getElementById('immediateActions').value,
+                communicationStrategy: document.getElementById('communicationStrategy').value,
+                resourceAllocation: document.getElementById('resourceAllocation').value,
+                recoveryTimeline: document.getElementById('recoveryTimeline').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('strategy_action_plan', JSON.stringify(plan));
+            localStorage.setItem('team_strategy_plan_complete', 'true');
+            showNotification('📋 Executive Action Plan saved successfully!');
+        }
+
+        // Load saved plan
+        function loadSavedPlan() {
+            const savedPlan = localStorage.getItem('strategy_action_plan');
+            if (savedPlan) {
+                const plan = JSON.parse(savedPlan);
+                document.getElementById('immediateActions').value = plan.immediateActions || '';
+                document.getElementById('communicationStrategy').value = plan.communicationStrategy || '';
+                document.getElementById('resourceAllocation').value = plan.resourceAllocation || '';
+                document.getElementById('recoveryTimeline').value = plan.recoveryTimeline || '';
+            }
+        }
+
+        // Notification system
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkTeamStatuses();
+            loadSavedPlan();
+            
+            // Check for updates every 10 seconds
+            setInterval(checkTeamStatuses, 10000);
+        });
+
+        // Auto-save plan every 30 seconds
+        setInterval(() => {
+            const immediateActions = document.getElementById('immediateActions').value;
+            const communicationStrategy = document.getElementById('communicationStrategy').value;
+            const resourceAllocation = document.getElementById('resourceAllocation').value;
+            const recoveryTimeline = document.getElementById('recoveryTimeline').value;
+            
+            if (immediateActions || communicationStrategy || resourceAllocation || recoveryTimeline) {
+                const plan = {
+                    immediateActions,
+                    communicationStrategy,
+                    resourceAllocation,
+                    recoveryTimeline,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem('strategy_action_plan_autosave', JSON.stringify(plan));
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

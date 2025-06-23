@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloomTech Crisis | Session Reset</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --danger-red: #ef4444;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --info-blue: #3b82f6;
+            --dark-bg: #111827;
+            --card-bg: #1f2937;
+            --text-white: #f9fafb;
+            --text-gray: #d1d5db;
+            --border-gray: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1f2937 100%);
+            color: var(--text-white);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .reset-container {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-gray);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .reset-header {
+            margin-bottom: 2rem;
+        }
+
+        .reset-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .reset-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--danger-red), var(--warning-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .reset-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .password-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--dark-bg);
+            border-radius: 1rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .password-label {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .password-input {
+            width: 100%;
+            background: var(--card-bg);
+            border: 2px solid var(--border-gray);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            color: var(--text-white);
+            font-size: 1.125rem;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: border-color 0.3s ease;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: var(--info-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .password-input.correct {
+            border-color: var(--success-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .password-input.incorrect {
+            border-color: var(--danger-red);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .reset-info {
+            background: var(--dark-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--warning-orange);
+        }
+
+        .info-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--warning-orange);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reset-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .reset-list li {
+            padding: 0.5rem 0;
+            color: var(--text-gray);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .reset-list li::before {
+            content: "🗑️";
+            font-size: 1rem;
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, var(--danger-red), #dc2626);
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: 1rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            margin: 1rem 0.5rem;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .reset-button.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .reset-button.enabled:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .cancel-button {
+            background: var(--border-gray);
+            color: var(--text-white);
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: 1rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 1rem 0.5rem;
+        }
+
+        .cancel-button:hover {
+            background: var(--text-gray);
+            transform: translateY(-1px);
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, var(--success-green), #059669);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-top: 2rem;
+            display: none;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .success-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-description {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .navigation-links {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .nav-link {
+            background: var(--info-blue);
+            color: white;
+            text-decoration: none;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .nav-link:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .reset-container {
+                padding: 2rem;
+            }
+            
+            .reset-title {
+                font-size: 1.5rem;
+            }
+            
+            .navigation-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reset-container">
+        <div class="reset-header">
+            <div class="reset-icon">🔄</div>
+            <h1 class="reset-title">Session Reset</h1>
+            <p class="reset-subtitle">Réinitialiser la simulation pour une nouvelle session d'étudiants</p>
+        </div>
+
+        <div class="password-section">
+            <div class="password-label">Mot de passe formateur</div>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Entrez le mot de passe" autocomplete="off">
+        </div>
+
+        <div class="reset-info">
+            <div class="info-title">
+                ⚠️ Éléments qui seront supprimés
+            </div>
+            <ul class="reset-list">
+                <li>Toutes les données d'équipes (Crisis Analysis, Legal, Media)</li>
+                <li>Statuts des livrables et interdépendances</li>
+                <li>Messages de chat et historique</li>
+                <li>Progression des formulaires</li>
+                <li>État des timers et deadlines</li>
+                <li>Données du dashboard CEO</li>
+            </ul>
+        </div>
+
+        <div id="resetButtons">
+            <button class="reset-button" id="resetButton" onclick="performReset()">
+                🗑️ Nouvelle Session
+            </button>
+            <button class="cancel-button" onclick="goBack()">
+                ← Annuler
+            </button>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <div class="success-icon">✅</div>
+            <div class="success-title">Session réinitialisée avec succès !</div>
+            <div class="success-description">
+                Toutes les données ont été effacées. Vous pouvez maintenant commencer une nouvelle simulation.
+            </div>
+            
+            <div class="navigation-links">
+                <a href="index.html" class="nav-link">📋 Phase 1 - Analyse Emails</a>
+                <a href="teams/tech.html" class="nav-link">🔍 Crisis Analysis Team</a>
+                <a href="teams/legal.html" class="nav-link">⚖️ Legal Response Team</a>
+                <a href="teams/media-response.html" class="nav-link">📰 Media Response Team</a>
+                <a href="ceo-dashboard.html" class="nav-link">👔 CEO Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PROFESSOR_PASSWORD = 'bloomtech2025';
+        let passwordVerified = false;
+
+        // Gestion du mot de passe
+        document.getElementById('passwordInput').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const input = e.target;
+            const resetButton = document.getElementById('resetButton');
+
+            if (password === PROFESSOR_PASSWORD) {
+                input.classList.remove('incorrect');
+                input.classList.add('correct');
+                resetButton.classList.add('enabled');
+                passwordVerified = true;
+            } else if (password.length > 0) {
+                input.classList.remove('correct');
+                if (password.length >= PROFESSOR_PASSWORD.length) {
+                    input.classList.add('incorrect');
+                    setTimeout(() => {
+                        input.classList.remove('incorrect');
+                    }, 500);
+                }
+                resetButton.classList.remove('enabled');
+                passwordVerified = false;
+            } else {
+                input.classList.remove('correct', 'incorrect');
+                resetButton.classList.remove('enabled');
+                passwordVerified = false;
+            }
+        });
+
+        // Gestion du Enter dans le champ password
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && passwordVerified) {
+                performReset();
+            }
+        });
+
+        function performReset() {
+            if (!passwordVerified) {
+                alert('Mot de passe incorrect !');
+                return;
+            }
+
+            // Confirmation finale
+            const confirmation = confirm(
+                '⚠️ ATTENTION ⚠️\n\n' +
+                'Cette action va supprimer TOUTES les données de la simulation :\n' +
+                '• Progression des équipes\n' +
+                '• États des livrables\n' +
+                '• Historique des chats\n' +
+                '• Données sauvegardées\n\n' +
+                'Cette action est IRRÉVERSIBLE.\n\n' +
+                'Confirmer la réinitialisation ?'
+            );
+
+            if (!confirmation) {
+                return;
+            }
+
+            // Effacer toutes les clés localStorage liées à la simulation
+            const keysToRemove = [
+                // Clés des équipes uniformisées
+                'team_crisis_analysis_complete',
+                'team_legal_position_complete',
+                'team_legal_risk_complete',
+                'team_legal_media_complete',
+                'team_media_press_complete',
+                'team_media_social_complete',
+                
+                // Anciennes clés (au cas où)
+                'crisis_analysis_timeline_complete',
+                'crisis_analysis_analysis_complete',
+                'crisis_analysis_prevention_complete',
+                'legal_ftc-response_complete',
+                'legal_tech-analysis_complete',
+                'legal_risk-plan_complete',
+                'media_press_release_complete',
+                'media_social_strategy_complete',
+                
+                // CEO Dashboard
+                'ceo_broadcast_message',
+                'crisis_event_triggered',
+                
+                // Auto-save des formulaires
+                'crisis_analysis_rootCauseForm_content',
+                'crisis_analysis_solutionForm_content',
+                'legal_riskAssessmentForm_content',
+                'legal_ftcResponseForm_content',
+                'legal_mediaApprovalForm_content',
+                'media_contextAnalysisForm_content',
+                'media_pressReleaseForm_content',
+                'media_socialMediaForm_content'
+            ];
+
+            // Supprimer les clés spécifiques
+            keysToRemove.forEach(key => {
+                localStorage.removeItem(key);
+            });
+
+            // Supprimer toutes les clés qui commencent par 'legal_', 'media_', 'crisis_', 'tech_'
+            const allKeys = Object.keys(localStorage);
+            allKeys.forEach(key => {
+                if (key.startsWith('legal_') || 
+                    key.startsWith('media_') || 
+                    key.startsWith('crisis_') || 
+                    key.startsWith('tech_') ||
+                    key.startsWith('team_') ||
+                    key.startsWith('ceo_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+
+            console.log('[Reset] Simulation data cleared successfully');
+
+            // Afficher le message de succès
+            document.getElementById('resetButtons').style.display = 'none';
+            document.querySelector('.reset-info').style.display = 'none';
+            document.querySelector('.password-section').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // Optionnel : recharger automatiquement après 3 secondes
+            setTimeout(() => {
+                const autoReload = confirm('Voulez-vous recharger automatiquement la page d\'accueil ?');
+                if (autoReload) {
+                    window.location.href = 'index.html';
+                }
+            }, 3000);
+        }
+
+        function goBack() {
+            const referrer = document.referrer;
+            if (referrer && referrer.includes(window.location.hostname)) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Log d'initialisation
+        console.log('[Reset Page] Session reset interface loaded');
+        console.log('[Reset Page] Ready to clear simulation data');
+    </script>
+</body>
+</html>

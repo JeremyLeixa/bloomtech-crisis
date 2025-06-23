@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Analysis Team | BloomTech Emergency Response</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .title-text h1 {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 0.2rem;
+        }
+
+        .title-text p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .crisis-timer {
+            background: linear-gradient(135deg, #fc8181, #f56565);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(245, 101, 101, 0.3);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            gap: 2rem;
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-card h2 {
+            font-size: 1.4rem;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Crisis Impact Overview */
+        .impact-overview {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-left: 4px solid #dc2626;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .impact-metric {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: #4b5563;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Teams Waiting */
+        .teams-waiting {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 4px solid #f59e0b;
+        }
+
+        .waiting-teams {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .waiting-team {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .waiting-team.blocked {
+            border-color: #f59e0b;
+            animation: pulse 2s infinite;
+        }
+
+        .team-name {
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-status {
+            font-size: 0.8rem;
+            color: #78350f;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Deliverables */
+        .deliverables {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border-left: 4px solid #10b981;
+        }
+
+        .deliverable-item {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .deliverable-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .deliverable-item.completed {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .deliverable-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .deliverable-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #064e3b;
+        }
+
+        .deliverable-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .deliverable-description {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .deliverable-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .deliverable-textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .deliverable-textarea.completed {
+            background: #f0fdf4;
+            border-color: #10b981;
+        }
+
+        /* Validation Section */
+        .validation-section {
+            background: linear-gradient(135deg, #1f2937, #374151);
+            color: white;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .validation-section h2 {
+            color: white;
+        }
+
+        .validation-status {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .completion-tracker {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tracker-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tracker-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .tracker-icon.pending {
+            background: rgba(156, 163, 175, 0.3);
+            color: #9ca3af;
+        }
+
+        .tracker-icon.completed {
+            background: #10b981;
+            color: white;
+            animation: checkmark 0.5s ease;
+        }
+
+        @keyframes checkmark {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .tracker-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .send-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #991b1b, #7f1d1d);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(220, 38, 38, 0.4);
+        }
+
+        .send-button:disabled {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .validation-note {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-weight: 600;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: #dc2626;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .impact-grid,
+            .waiting-teams {
+                grid-template-columns: 1fr;
+            }
+            
+            .completion-tracker {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .tracker-item {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="team-title">
+                <div class="team-icon">🔍</div>
+                <div class="title-text">
+                    <h1>Crisis Analysis Team</h1>
+                    <p>Technical Investigation & Root Cause Analysis</p>
+                </div>
+            </div>
+            <div class="crisis-timer" id="timer">
+                ⏱️ <span id="countdown">90:00</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Crisis Impact Overview -->
+        <div class="section-card impact-overview">
+            <h2>🚨 Crisis Impact Overview</h2>
+            <div class="impact-grid">
+                <div class="impact-metric">
+                    <div class="metric-value">500K+</div>
+                    <div class="metric-label">Users Affected</div>
+                </div>
+                <div class="impact-metric">
+                    <div class="metric-value">03:47</div>
+                    <div class="metric-label">Bug Deployment Time</div>
+                </div>
+                <div class="impact-metric">
+                    <div class="metric-value">Critical</div>
+                    <div class="metric-label">Severity Level</div>
+                </div>
+                <div class="impact-metric">
+                    <div class="metric-value">Multi-Platform</div>
+                    <div class="metric-label">Scope</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teams Waiting for You -->
+        <div class="section-card teams-waiting">
+            <h2>⏳ Teams Waiting for You</h2>
+            <p style="margin-bottom: 1rem; color: #92400e;">These teams cannot proceed until you complete and validate your analysis.</p>
+            <div class="waiting-teams">
+                <div class="waiting-team blocked" id="legalTeam">
+                    <div class="team-name">⚖️ Legal Response</div>
+                    <div class="team-status">Waiting for Analysis</div>
+                </div>
+                <div class="waiting-team blocked" id="mediaTeam">
+                    <div class="team-name">📰 Media Response</div>
+                    <div class="team-status">Waiting for Analysis</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Your Deliverables -->
+        <div class="section-card deliverables">
+            <h2>📋 Your Deliverables</h2>
+            <p style="margin-bottom: 1.5rem; color: #065f46;">Complete all three deliverables to unlock the next phase for Legal and Media teams.</p>
+            
+            <div class="deliverable-item" id="deliverable1">
+                <div class="deliverable-header">
+                    <div class="deliverable-title">1. Crisis Analysis Summary</div>
+                    <div class="deliverable-status status-pending" id="status1">Pending</div>
+                </div>
+                <div class="deliverable-description">
+                    Provide a comprehensive overview of the crisis situation, including root causes, current impact, and immediate risks.
+                </div>
+                <textarea 
+                    class="deliverable-textarea" 
+                    id="summary"
+                    placeholder="Example: The BloomTech #NaturalGlow campaign failure resulted from a system deployment bug at 03:47 AM that caused competitor slogans to display across all marketing platforms. Root cause analysis indicates..."
+                    oninput="updateDeliverable(1)"
+                ></textarea>
+            </div>
+
+            <div class="deliverable-item" id="deliverable2">
+                <div class="deliverable-header">
+                    <div class="deliverable-title">2. Technical Timeline</div>
+                    <div class="deliverable-status status-pending" id="status2">Pending</div>
+                </div>
+                <div class="deliverable-description">
+                    Create a detailed chronological timeline of technical events, from initial deployment to crisis detection.
+                </div>
+                <textarea 
+                    class="deliverable-textarea" 
+                    id="timeline"
+                    placeholder="Example: 
+03:47 AM - Routine system update deployed to production
+08:15 AM - Campaign launch initiated by Marketing
+09:42 AM - Bug detected by IT monitoring systems
+10:15 AM - First influencer complaints received..."
+                    oninput="updateDeliverable(2)"
+                ></textarea>
+            </div>
+
+            <div class="deliverable-item" id="deliverable3">
+                <div class="deliverable-header">
+                    <div class="deliverable-title">3. Prevention Plan</div>
+                    <div class="deliverable-status status-pending" id="status3">Pending</div>
+                </div>
+                <div class="deliverable-description">
+                    Outline technical recommendations and process improvements to prevent similar incidents in the future.
+                </div>
+                <textarea 
+                    class="deliverable-textarea" 
+                    id="prevention"
+                    placeholder="Example: 
+1. Implement staging environment testing for all campaign management updates
+2. Add automated content verification checks before deployment
+3. Establish campaign preview protocols for marketing launches..."
+                    oninput="updateDeliverable(3)"
+                ></textarea>
+            </div>
+        </div>
+
+        <!-- Validation Section -->
+        <div class="section-card validation-section">
+            <h2>🚀 Validation & Team Coordination</h2>
+            <div class="validation-status">
+                <div class="completion-tracker">
+                    <div class="tracker-item">
+                        <div class="tracker-icon pending" id="icon1">1</div>
+                        <div class="tracker-label">Summary</div>
+                    </div>
+                    <div class="tracker-item">
+                        <div class="tracker-icon pending" id="icon2">2</div>
+                        <div class="tracker-label">Timeline</div>
+                    </div>
+                    <div class="tracker-item">
+                        <div class="tracker-icon pending" id="icon3">3</div>
+                        <div class="tracker-label">Prevention</div>
+                    </div>
+                </div>
+                <p id="validationMessage">Complete all deliverables to proceed</p>
+            </div>
+            
+            <button class="send-button" id="sendToLegal" onclick="sendToLegal()" disabled>
+                🚀 Send to Legal & Media Teams
+            </button>
+            
+            <div class="validation-note">
+                <strong>⚠️ Important:</strong> Once validated, your analysis will be sent to Legal and Media teams. This action cannot be undone.
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+    <div class="auto-save-indicator" id="autoSaveIndicator">Auto-saved</div>
+
+    <script>
+        // Timer countdown
+        let timeLeft = 90 * 60;
+        
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('countdown').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+            }
+        }
+        
+        setInterval(updateTimer, 1000);
+
+        // Deliverable tracking
+        const deliverableStates = {
+            1: false,
+            2: false,
+            3: false
+        };
+
+        function updateDeliverable(deliverableNum) {
+            const textarea = document.getElementById(['', 'summary', 'timeline', 'prevention'][deliverableNum]);
+            const content = textarea.value.trim();
+            const isComplete = content.length >= 50; // Minimum content requirement
+            
+            deliverableStates[deliverableNum] = isComplete;
+            
+            // Update visual state
+            const deliverableItem = document.getElementById(`deliverable${deliverableNum}`);
+            const status = document.getElementById(`status${deliverableNum}`);
+            const icon = document.getElementById(`icon${deliverableNum}`);
+            
+            if (isComplete) {
+                deliverableItem.classList.add('completed');
+                textarea.classList.add('completed');
+                status.textContent = 'Completed';
+                status.className = 'deliverable-status status-completed';
+                icon.classList.remove('pending');
+                icon.classList.add('completed');
+                icon.textContent = '✓';
+            } else {
+                deliverableItem.classList.remove('completed');
+                textarea.classList.remove('completed');
+                status.textContent = 'Pending';
+                status.className = 'deliverable-status status-pending';
+                icon.classList.remove('completed');
+                icon.classList.add('pending');
+                icon.textContent = deliverableNum;
+            }
+            
+            updateValidationButton();
+            showAutoSave();
+        }
+
+        function updateValidationButton() {
+            const allComplete = Object.values(deliverableStates).every(state => state);
+            const sendButton = document.getElementById('sendToLegal');
+            const validationMessage = document.getElementById('validationMessage');
+            
+            if (allComplete) {
+                sendButton.disabled = false;
+                validationMessage.textContent = 'All deliverables complete - Ready to send!';
+            } else {
+                sendButton.disabled = true;
+                const remaining = Object.values(deliverableStates).filter(state => !state).length;
+                validationMessage.textContent = `${remaining} deliverable(s) remaining`;
+            }
+        }
+
+        function sendToLegal() {
+            // Save all deliverables to localStorage
+            const analysisData = {
+                summary: document.getElementById('summary').value,
+                timeline: document.getElementById('timeline').value,
+                prevention: document.getElementById('prevention').value,
+                completedAt: new Date().toISOString(),
+                teamName: 'Crisis Analysis'
+            };
+            
+            // Set the critical localStorage key that unlocks Legal and Media
+            localStorage.setItem('crisis_analysis_complete', 'true');
+            localStorage.setItem('crisis_analysis_data', JSON.stringify(analysisData));
+            
+            // Update UI to show completion
+            document.getElementById('sendToLegal').disabled = true;
+            document.getElementById('sendToLegal').textContent = '✅ Analysis Sent Successfully';
+            document.getElementById('sendToLegal').style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            
+            // Update waiting teams
+            document.getElementById('legalTeam').classList.remove('blocked');
+            document.getElementById('legalTeam').innerHTML = `
+                <div class="team-name">⚖️ Legal Response</div>
+                <div class="team-status" style="color: #10b981;">Analysis Received</div>
+            `;
+            
+            document.getElementById('mediaTeam').classList.remove('blocked');
+            document.getElementById('mediaTeam').innerHTML = `
+                <div class="team-name">📰 Media Response</div>
+                <div class="team-status" style="color: #10b981;">Analysis Received</div>
+            `;
+            
+            showNotification('Analysis successfully sent to Legal and Media teams!');
+            
+            // Auto-redirect after 3 seconds (optional)
+            setTimeout(() => {
+                if (confirm('Analysis complete! Would you like to view the team selection dashboard?')) {
+                    window.location.href = '../index.html#phase2';
+                }
+            }, 3000);
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        function showAutoSave() {
+            const indicator = document.getElementById('autoSaveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        // Auto-save functionality
+        setInterval(() => {
+            const draftData = {
+                summary: document.getElementById('summary').value,
+                timeline: document.getElementById('timeline').value,
+                prevention: document.getElementById('prevention').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            if (Object.values(draftData).some(value => value.trim().length > 0)) {
+                localStorage.setItem('crisis_analysis_draft', JSON.stringify(draftData));
+            }
+        }, 30000);
+
+        // Load saved draft on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDraft = localStorage.getItem('crisis_analysis_draft');
+            if (savedDraft) {
+                try {
+                    const draft = JSON.parse(savedDraft);
+                    if (draft.summary) document.getElementById('summary').value = draft.summary;
+                    if (draft.timeline) document.getElementById('timeline').value = draft.timeline;
+                    if (draft.prevention) document.getElementById('prevention').value = draft.prevention;
+                    
+                    // Trigger validation updates
+                    updateDeliverable(1);
+                    updateDeliverable(2);
+                    updateDeliverable(3);
+                } catch (e) {
+                    console.warn('Error loading draft:', e);
+                }
+            }
+            
+            // Check if already completed
+            if (localStorage.getItem('crisis_analysis_complete') === 'true') {
+                document.getElementById('sendToLegal').disabled = true;
+                document.getElementById('sendToLegal').textContent = '✅ Analysis Already Sent';
+                document.getElementById('sendToLegal').style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                showNotification('Analysis was previously completed', 'success');
+            }
+        });
+    </script>
+</body>
+</html>

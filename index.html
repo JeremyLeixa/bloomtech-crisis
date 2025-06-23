@@ -149,14 +149,18 @@
             border-radius: 12px;
             padding: 1.5rem;
             border-left: 4px solid #3b82f6;
-            cursor: pointer;
+            cursor: default;
             transition: all 0.3s ease;
             position: relative;
         }
 
-        .email-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        .email-item::before {
+            content: "📖";
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            opacity: 0.6;
+            font-size: 0.9rem;
         }
 
         .email-item.priority-high {
@@ -241,6 +245,91 @@
             padding: 2rem;
             color: white;
             margin-top: 2rem;
+            position: relative;
+        }
+
+        .progress-indicators {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-item {
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar-container {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #10b981;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-bar-fill.complete {
+            background: #10b981;
+        }
+
+        .progress-bar-fill.partial {
+            background: #f59e0b;
+        }
+
+        .easter-egg-counter {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .easter-egg-counter.visible {
+            opacity: 1;
+        }
+
+        .micro-challenge {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border-left: 3px solid #fbbf24;
+        }
+
+        .button-tooltip {
+            position: relative;
+        }
+
+        .button-tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 0.5rem;
         }
 
         .analysis-grid {
@@ -597,8 +686,36 @@
             </div>
 
             <div class="analysis-section">
+                <div class="progress-indicators">
+                    <div class="progress-item">
+                        <span>Problems:</span>
+                        <div>
+                            <span id="problemsCount">0/4</span>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="problemsProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <span>Analysis:</span>
+                        <div>
+                            <span id="analysisCount">0/100</span>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="analysisProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="easter-egg-counter" id="easterEggCounter">
+                        🎯 Detective: <span id="easterEggCount">0/8</span> clues found
+                    </div>
+                </div>
+
                 <h3>🎯 Crisis Analysis</h3>
                 <p>From the emails above, identify the 4 REAL problems that require immediate action, then justify your analysis.</p>
+                
+                <div class="micro-challenge">
+                    <strong>💡 Pro Tip:</strong> Look carefully for hidden clues in the emails. Each team will need specific information to succeed in Phase 2. The more details you gather now, the better prepared your chosen team will be.
+                </div>
                 
                 <div class="analysis-grid">
                     <div class="problem-selection">

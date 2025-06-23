@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloomTech Crisis | Influencer Relations Team</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --influencer-primary: #ec4899;
+            --influencer-secondary: #be185d;
+            --influencer-accent: #fdf2f8;
+            --gradient-primary: linear-gradient(135deg, #ec4899, #8b5cf6);
+            --gradient-secondary: linear-gradient(135deg, #f472b6, #a855f7);
+            --warning-orange: #f59e0b;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --neutral-gray: #6b7280;
+            --dark-bg: #111827;
+            --card-bg: #1f2937;
+            --text-white: #f9fafb;
+            --text-gray: #d1d5db;
+            --border-gray: #374151;
+            --blocked-overlay: rgba(107, 114, 128, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header Influencer Team */
+        .team-header {
+            background: var(--gradient-primary);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .team-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-icon {
+            font-size: 2rem;
+        }
+
+        .crisis-metrics {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .metric-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .metric-value.declining {
+            color: #fbbf24;
+            animation: pulse 1s infinite;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .crisis-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Layout principal */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+
+        .work-section {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .work-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border-gray);
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-status {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-available {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .status-waiting {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .status-critical {
+            background: var(--danger-red);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        /* Section bloquée pour budget */
+        .blocked-section {
+            position: relative;
+        }
+
+        .blocked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--blocked-overlay);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            backdrop-filter: blur(2px);
+        }
+
+        .blocked-message {
+            background: var(--warning-orange);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .blocked-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .blocked-description {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Simulateur DM Instagram-like */
+        .dm-simulator {
+            background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin: 1rem 0;
+            border: 1px solid #f3e8ff;
+        }
+
+        .dm-header {
+            background: var(--gradient-primary);
+            padding: 1rem 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .influencer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--influencer-primary);
+        }
+
+        .influencer-info h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .influencer-handle {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .dm-conversation {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: white;
+            color: #1f2937;
+        }
+
+        .dm-message {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dm-message.received {
+            align-items: flex-start;
+        }
+
+        .dm-message.sent {
+            align-items: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .message-bubble.received {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .message-bubble.sent {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .dm-input-area {
+            padding: 1rem;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .dm-input {
+            flex: 1;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            color: #1f2937;
+        }
+
+        .dm-send {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Calculateur de compensation */
+        .compensation-calculator {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            color: #1f2937;
+        }
+
+        .calc-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .calc-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #0369a1;
+        }
+
+        .compensation-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .option-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            border: 2px solid #e0f2fe;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #0284c7;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            border-color: #0284c7;
+            background: #f0f9ff;
+        }
+
+        .option-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #0369a1;
+        }
+
+        .option-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .option-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        /* Budget tracker */
+        .budget-tracker {
+            background: var(--dark-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .budget-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-gray);
+        }
+
+        .budget-amount {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .budget-amount.available {
+            color: var(--success-green);
+        }
+
+        .budget-amount.limited {
+            color: var(--warning-orange);
+        }
+
+        .budget-amount.exceeded {
+            color: var(--danger-red);
+        }
+
+        .budget-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .budget-fill {
+            height: 100%;
+            background: var(--success-green);
+            transition: all 0.3s ease;
+        }
+
+        .budget-fill.warning {
+            background: var(--warning-orange);
+        }
+
+        .budget-fill.danger {
+            background: var(--danger-red);
+        }
+
+        /* Formulaires */
+        .influencer-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 0.5rem;
+            padding: 0.875rem;
+            color: var(--text-white);
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--influencer-primary);
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        /* Boutons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--neutral-gray);
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: grid;
+            gap: 1.5rem;
+            height: fit-content;
+        }
+
+        .sidebar-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Influencer List */
+        .influencer-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .influencer-item {
+            background: var(--dark-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            border-left: 4px solid var(--neutral-gray);
+        }
+
+        .influencer-item.critical {
+            border-left-color: var(--danger-red);
+        }
+
+        .influencer-item.warning {
+            border-left-color: var(--warning-orange);
+        }
+
+        .influencer-item.resolved {
+            border-left-color: var(--success-green);
+            opacity: 0.7;
+        }
+
+        .influencer-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .influencer-stats {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .influencer-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .status-threatening {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        .status-negotiating {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .status-resolved {
+            background: var(--success-green);
+            color: white;
+        }
+
+        /* Dependencies */
+        .dependency-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--neutral-gray);
+        }
+
+        .dependency-item.waiting {
+            border-left-color: var(--warning-orange);
+        }
+
+        .dependency-item.received {
+            border-left-color: var(--success-green);
+        }
+
+        .dependency-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .dependency-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .dependency-status.waiting {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .dependency-status.received {
+            background: var(--success-green);
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .team-title {
+                font-size: 1.5rem;
+            }
+
+            .crisis-metrics {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .compensation-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Influencer Team -->
+    <header class="team-header">
+        <div class="header-content">
+            <h1 class="team-title">
+                <span class="team-icon">📱</span>
+                Influencer Relations Team
+            </h1>
+            <div class="crisis-metrics">
+                <div class="metric-card">
+                    <div class="metric-value declining" id="followerCount">847K</div>
+                    <div class="metric-label">BloomTech Followers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="threatLevel">HIGH</div>
+                    <div class="metric-label">Threat Level</div>
+                </div>
+                <div class="crisis-timer" id="crisisTimer">01:30:00</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Section de travail principale -->
+        <section class="work-section">
+            <!-- Crisis Assessment (Available) -->
+            <div class="work-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📊</span>
+                        Influencer Crisis Assessment
+                    </h2>
+                    <div class="card-status status-critical">CRITICAL</div>
+                </div>
+
+                <form class="influencer-form" id="assessmentForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🎯</span>
+                            Priority Influencers to Contact
+                        </label>
+                        <textarea class="form-textarea" placeholder="List the influencers you need to contact first, in order of priority..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>💰</span>
+                            Estimated Total Compensation Needed
+                        </label>
+                        <select class="form-select">
+                            <option value="">Select estimated budget...</option>
+                            <option value="low">$5K - $15K (products + small cash)</option>
+                            <option value="medium">$15K - $30K (significant compensation)</option>
+                            <option value="high">$30K+ (major partnership deals)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Assessment</button>
+                        <button type="button" class="btn btn-primary">📋 Start Negotiations</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Influencer Negotiations (Minor influencers available, major ones need budget) -->
+            <div class="work-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>💬</span>
+                        Active Negotiations
+                    </h2>
+                    <div class="card-status status-available">ACTIVE</div>
+                </div>
+
+                <!-- DM Simulator pour un influencer moyen -->
+                <div class="dm-simulator">
+                    <div class="dm-header">
+                        <div class="influencer-avatar">BG</div>
+                        <div class="influencer-info">
+                            <h4>@BeautyGuruMike</h4>
+                            <div class="influencer-handle">890K followers • Beauty</div>
+                        </div>
+                    </div>
+                    <div class="dm-conversation" id="mikeConversation">
+                        <div class="dm-message received">
+                            <div class="message-bubble received">
+                                Several of my followers got skin irritation from your foundation. This is serious - I need to know what you're doing about it.
+                            </div>
+                            <div class="message-time">11:30 AM</div>
+                        </div>
+                        <div class="dm-message received">
+                            <div class="message-bubble received">
+                                I'm planning a video about this unless we can resolve it properly. My audience trusts me for honest reviews.
+                            </div>
+                            <div class="message-time">11:32 AM</div>
+                        </div>
+                    </div>
+                    <div class="dm-input-area">
+                        <input type="text" class="dm-input" id="mikeInput" placeholder="Type your response to @BeautyGuruMike..." maxlength="280">
+                        <button class="dm-send" onclick="sendDM('mike')">Send</button>
+                    </div>
+                </div>
+
+                <!-- Calculateur de compensation -->
+                <div class="compensation-calculator">
+                    <div class="calc-header">
+                        <span>💰</span>
+                        <div class="calc-title">Compensation Calculator</div>
+                    </div>
+                    
+                    <div class="compensation-options">
+                        <div class="option-card" onclick="selectOption('products')">
+                            <div class="option-title">Product Package</div>
+                            <div class="option-value">$500</div>
+                            <div class="option-description">Full product line + exclusive items</div>
+                        </div>
+                        <div class="option-card" onclick="selectOption('cash')">
+                            <div class="option-title">Cash Compensation</div>
+                            <div class="option-value">$2,000</div>
+                            <div class="option-description">Direct payment for inconvenience</div>
+                        </div>
+                        <div class="option-card" onclick="selectOption('partnership')">
+                            <div class="option-title">Partnership Deal</div>
+                            <div class="option-value">$5,000</div>
+                            <div class="option-description">6-month collaboration agreement</div>
+                        </div>
+                    </div>
+
+                    <div class="budget-tracker">
+                        <div class="budget-header">
+                            <div class="budget-title">Available Budget</div>
+                            <div class="budget-amount available" id="budgetAmount">$50,000</div>
+                        </div>
+                        <div class="budget-bar">
+                            <div class="budget-fill" id="budgetFill" style="width: 5%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Major Influencer Negotiations (Blocked until Strategy approval) -->
+            <div class="work-card blocked-section" id="majorInfluencersCard">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>⭐</span>
+                        Major Influencer Negotiations
+                    </h2>
+                    <div class="card-status status-waiting">WAITING FOR BUDGET</div>
+                </div>
+
+                <div class="blocked-overlay" id="majorInfluencersOverlay">
+                    <div class="blocked-message">
+                        <div class="blocked-title">
+                            <span>💰</span>
+                            Waiting for Strategy Team Budget
+                        </div>
+                        <div class="blocked-description">
+                            Major influencers (2M+ followers) require significant compensation. Strategy team must approve budget allocation before negotiations can begin.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cette section sera débloquée par Strategy -->
+                <div class="dm-simulator">
+                    <div class="dm-header">
+                        <div class="influencer-avatar">SG</div>
+                        <div class="influencer-info">
+                            <h4>@SarahGlowUp</h4>
+                            <div class="influencer-handle">2.1M followers • Lifestyle</div>
+                        </div>
+                    </div>
+                    <div class="dm-conversation" id="sarahConversation">
+                        <div class="dm-message received">
+                            <div class="message-bubble received">
+                                This is UNACCEPTABLE. The products you sent are completely different from what you advertised. My followers are asking questions.
+                            </div>
+                            <div class="message-time">10:45 AM</div>
+                        </div>
+                        <div class="dm-message received">
+                            <div class="message-bubble received">
+                                I'm posting about this at noon unless we have a REAL solution. This affects my credibility with 2.1 million people.
+                            </div>
+                            <div class="message-time">10:47 AM</div>
+                        </div>
+                    </div>
+                    <div class="dm-input-area">
+                        <input type="text" class="dm-input" id="sarahInput" placeholder="Type your response to @SarahGlowUp..." maxlength="280">
+                        <button class="dm-send" onclick="sendDM('sarah')">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campaign Recovery Strategy -->
+            <div class="work-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>🚀</span>
+                        Recovery Campaign Strategy
+                    </h2>
+                    <div class="card-status status-available">AVAILABLE</div>
+                </div>
+
+                <form class="influencer-form" id="recoveryForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>📈</span>
+                            Influencer Recovery Plan
+                        </label>
+                        <textarea class="form-textarea" placeholder="How will you rebuild trust with the influencer community after this crisis?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🎯</span>
+                            Future Partnership Strategy
+                        </label>
+                        <textarea class="form-textarea" placeholder="What changes will you make to prevent future influencer relations issues?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>💡</span>
+                            Content Strategy for Affected Influencers
+                        </label>
+                        <select class="form-select">
+                            <option value="">Select content approach...</option>
+                            <option value="honest-review">Encourage honest review of corrected products</option>
+                            <option value="behind-scenes">Behind-the-scenes fix documentation</option>
+                            <option value="partnership-reboot">Fresh partnership with improved products</option>
+                            <option value="community-focus">Community rebuilding campaign</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Strategy</button>
+                        <button type="button" class="btn btn-success" onclick="submitRecoveryPlan()">🚀 Launch Recovery Campaign</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Influencer Status -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>👥</span>
+                    Influencer Status
+                </h3>
+                <div class="influencer-list">
+                    <div class="influencer-item critical">
+                        <div class="influencer-name">@SarahGlowUp</div>
+                        <div class="influencer-stats">2.1M followers • Lifestyle</div>
+                        <div class="influencer-status status-threatening">THREATENING</div>
+                    </div>
+                    
+                    <div class="influencer-item warning">
+                        <div class="influencer-name">@BeautyGuruMike</div>
+                        <div class="influencer-stats">890K followers • Beauty</div>
+                        <div class="influencer-status status-negotiating">NEGOTIATING</div>
+                    </div>
+                    
+                    <div class="influencer-item warning">
+                        <div class="influencer-name">@GlowWithJen</div>
+                        <div class="influencer-stats">450K followers • Skincare</div>
+                        <div class="influencer-status status-negotiating">CONTACTED</div>
+                    </div>
+                    
+                    <div class="influencer-item warning">
+                        <div class="influencer-name">@NaturalBeautyBae</div>
+                        <div class="influencer-stats">320K followers • Organic</div>
+                        <div class="influencer-status status-negotiating">CONTACTED</div>
+                    </div>
+                    
+                    <div class="influencer-item resolved">
+                        <div class="influencer-name">@SkincareSimple</div>
+                        <div class="influencer-stats">180K followers • Reviews</div>
+                        <div class="influencer-status status-resolved">RESOLVED</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dependencies -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>🔗</span>
+                    Team Dependencies
+                </h3>
+                <div class="dependency-item waiting" id="strategyDependency">
+                    <div class="dependency-name">Budget Allocation</div>
+                    <div class="dependency-status waiting">WAITING</div>
+                </div>
+                <p style="font-size: 0.875rem; color: var(--text-gray); margin-top: 1rem;">
+                    💡 <strong>Tip:</strong> You can negotiate with smaller influencers while waiting for major budget approval.
+                </p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>⚡</span>
+                    Quick Actions
+                </h3>
+                <div style="display: grid; gap: 0.75rem;">
+                    <button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.75rem;" onclick="sendBulkMessage()">
+                        📢 Send Bulk Apology
+                    </button>
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.75rem;" onclick="generateReport()">
+                        📊 Generate Damage Report
+                    </button>
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.75rem;" onclick="exportContactList()">
+                        📋 Export Contact List
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success Metrics -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>📈</span>
+                    Success Metrics
+                </h3>
+                <div style="display: grid; gap: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--dark-bg); border-radius: 0.5rem;">
+                        <span style="font-size: 0.875rem;">Resolved Cases</span>
+                        <span style="font-weight: 600;" id="resolvedCount">1/15</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--dark-bg); border-radius: 0.5rem;">
+                        <span style="font-size: 0.875rem;">Budget Used</span>
+                        <span style="font-weight: 600;" id="budgetUsed">$2,500</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--dark-bg); border-radius: 0.5rem;">
+                        <span style="font-size: 0.875rem;">Follower Impact</span>
+                        <span style="font-weight: 600; color: var(--warning-orange);" id="followerImpact">-47K</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        // État global Influencer Team avec clés uniformisées
+        let influencerState = {
+            dependenciesReceived: {
+                strategyBudget: false
+            },
+            deliverablesCompleted: {
+                assessment: false,
+                majorNegotiations: false,
+                recoveryPlan: false
+            },
+            startTime: new Date(),
+            budgetApproved: 50000,
+            budgetUsed: 2500,
+            selectedCompensation: null,
+            influencerStatuses: {
+                sarah: 'threatening',
+                mike: 'negotiating',
+                jen: 'contacted',
+                natural: 'contacted',
+                simple: 'resolved'
+            },
+            followerCount: 847000,
+            threatLevel: 'HIGH'
+        };
+
+        // Timer management
+        function updateTimers() {
+            const now = new Date();
+            const elapsed = now - influencerState.startTime;
+            const totalTime = 90 * 60 * 1000; // 90 minutes
+            const remaining = Math.max(0, totalTime - elapsed);
+            
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            
+            const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('crisisTimer').textContent = display;
+
+            // Simuler la perte de followers avec le temps
+            simulateFollowerDecline();
+        }
+
+        function simulateFollowerDecline() {
+            const baseDecline = Math.floor(Math.random() * 500); // Perte aléatoire
+            influencerState.followerCount = Math.max(800000, influencerState.followerCount - baseDecline);
+            
+            document.getElementById('followerCount').textContent = 
+                (influencerState.followerCount / 1000).toFixed(0) + 'K';
+        }
+
+        // Check dependencies - clés uniformisées
+        function checkDependencies() {
+            // Vérifier si Strategy Team a approuvé le budget
+            const strategyStatus = localStorage.getItem('team_strategy_budget_complete') === 'true';
+
+            if (strategyStatus && !influencerState.dependenciesReceived.strategyBudget) {
+                receiveStrategyBudget();
+            }
+        }
+
+        function receiveStrategyBudget() {
+            influencerState.dependenciesReceived.strategyBudget = true;
+            
+            // Débloquer la section des gros influenceurs
+            const blockedOverlay = document.getElementById('majorInfluencersOverlay');
+            const cardStatus = document.querySelector('#majorInfluencersCard .card-status');
+            const strategyDependency = document.getElementById('strategyDependency');
+
+            blockedOverlay.style.display = 'none';
+            cardStatus.textContent = 'CRITICAL';
+            cardStatus.className = 'card-status status-critical';
+
+            strategyDependency.className = 'dependency-item received';
+            strategyDependency.querySelector('.dependency-status').textContent = 'RECEIVED';
+            strategyDependency.querySelector('.dependency-status').className = 'dependency-status received';
+
+            // Augmenter le budget disponible
+            influencerState.budgetApproved = 100000;
+            updateBudgetDisplay();
+
+            console.log('[Influencer] Strategy budget received - Major influencer negotiations unlocked');
+        }
+
+        // DM System
+        function sendDM(influencerId) {
+            const inputId = influencerId + 'Input';
+            const conversationId = influencerId + 'Conversation';
+            const input = document.getElementById(inputId);
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Ajouter le message envoyé
+            addDMMessage(conversationId, message, 'sent', 'BloomTech Team');
+            input.value = '';
+
+            // Simuler une réponse selon l'influenceur et le message
+            setTimeout(() => {
+                simulateInfluencerResponse(influencerId, conversationId, message);
+            }, 1500 + Math.random() * 2000);
+        }
+
+        function addDMMessage(conversationId, message, type, sender) {
+            const conversation = document.getElementById(conversationId);
+            const messageElement = document.createElement('div');
+            messageElement.className = `dm-message ${type}`;
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            
+            messageElement.innerHTML = `
+                <div class="message-bubble ${type}">${message}</div>
+                <div class="message-time">${timeStr}</div>
+            `;
+            
+            conversation.appendChild(messageElement);
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+
+        function simulateInfluencerResponse(influencerId, conversationId, originalMessage) {
+            const responses = {
+                mike: {
+                    apology: "I appreciate you reaching out quickly. What specific steps are you taking to fix this?",
+                    compensation: "That sounds reasonable. Can you also ensure this won't happen again?",
+                    explanation: "Okay, technical issues happen. But my followers were affected - what's the compensation?",
+                    default: "I need to see concrete action, not just words. What are you actually doing?"
+                },
+                sarah: {
+                    apology: "An apology isn't enough. My reputation is on the line with 2M followers.",
+                    compensation: "That's a start, but I need guarantees this won't affect my brand partnerships.",
+                    explanation: "Technical issues are YOUR problem. My audience expects better from brands I promote.",
+                    default: "I have other brands wanting to work with me. Why should I risk my reputation for BloomTech?"
+                }
+            };
+
+            const influencerResponses = responses[influencerId] || responses.mike;
+            let response = influencerResponses.default;
+
+            // Analyse du message pour réponse contextuelle
+            const message = originalMessage.toLowerCase();
+            if (message.includes('sorry') || message.includes('apologize')) {
+                response = influencerResponses.apology;
+            } else if (message.includes('compensation') || message.includes('pay') || message.includes('money')) {
+                response = influencerResponses.compensation;
+            } else if (message.includes('technical') || message.includes('bug') || message.includes('error')) {
+                response = influencerResponses.explanation;
+            }
+
+            addDMMessage(conversationId, response, 'received', `@${influencerId}`);
+
+            // Mettre à jour le statut de l'influenceur
+            updateInfluencerStatus(influencerId, message);
+        }
+
+        function updateInfluencerStatus(influencerId, message) {
+            // Logique simple : si compensation mentionnée, améliorer le statut
+            if (message.toLowerCase().includes('compensation') || 
+                message.toLowerCase().includes('partnership') ||
+                message.toLowerCase().includes('pay')) {
+                
+                if (influencerState.influencerStatuses[influencerId] === 'threatening') {
+                    influencerState.influencerStatuses[influencerId] = 'negotiating';
+                    updateInfluencerDisplay(influencerId, 'negotiating');
+                }
+            }
+        }
+
+        function updateInfluencerDisplay(influencerId, status) {
+            // Mise à jour visuelle de la sidebar (implémentation simplifiée)
+            console.log(`[Influencer] ${influencerId} status updated to: ${status}`);
+        }
+
+        // Compensation Calculator
+        function selectOption(optionType) {
+            // Enlever la sélection précédente
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Sélectionner la nouvelle option
+            event.target.classList.add('selected');
+            influencerState.selectedCompensation = optionType;
+
+            // Mettre à jour le budget
+            const costs = {
+                products: 500,
+                cash: 2000,
+                partnership: 5000
+            };
+
+            influencerState.budgetUsed += costs[optionType];
+            updateBudgetDisplay();
+        }
+
+        function updateBudgetDisplay() {
+            const budgetElement = document.getElementById('budgetAmount');
+            const budgetFill = document.getElementById('budgetFill');
+            const budgetUsedElement = document.getElementById('budgetUsed');
+            
+            const remaining = influencerState.budgetApproved - influencerState.budgetUsed;
+            const percentage = (influencerState.budgetUsed / influencerState.budgetApproved) * 100;
+            
+            budgetElement.textContent = `${remaining.toLocaleString()}`;
+            budgetFill.style.width = `${percentage}%`;
+            budgetUsedElement.textContent = `${influencerState.budgetUsed.toLocaleString()}`;
+
+            // Couleurs selon le budget restant
+            if (percentage > 80) {
+                budgetElement.className = 'budget-amount exceeded';
+                budgetFill.className = 'budget-fill danger';
+            } else if (percentage > 60) {
+                budgetElement.className = 'budget-amount limited';
+                budgetFill.className = 'budget-fill warning';
+            } else {
+                budgetElement.className = 'budget-amount available';
+                budgetFill.className = 'budget-fill';
+            }
+        }
+
+        // Fonctions des livrables
+        function submitRecoveryPlan() {
+            influencerState.deliverablesCompleted.recoveryPlan = true;
+            localStorage.setItem('team_influencer_recovery_complete', 'true');
+            
+            const btn = event.target;
+            btn.textContent = '✅ Recovery Campaign Launched';
+            btn.disabled = true;
+            btn.style.background = 'var(--success-green)';
+
+            console.log('[Influencer] Recovery plan submitted');
+        }
+
+        // Quick Actions
+        function sendBulkMessage() {
+            const confirmation = confirm('Send bulk apology message to all affected influencers?');
+            if (confirmation) {
+                // Simulation d'envoi en masse
+                setTimeout(() => {
+                    alert('✅ Bulk apology sent to 15 influencers');
+                    // Améliorer certains statuts
+                    influencerState.influencerStatuses.jen = 'negotiating';
+                    influencerState.influencerStatuses.natural = 'negotiating';
+                    updateSuccessMetrics();
+                }, 1000);
+            }
+        }
+
+        function generateReport() {
+            alert('📊 Damage report generated and saved to your dashboard');
+        }
+
+        function exportContactList() {
+            alert('📋 Contact list exported to CSV');
+        }
+
+        function updateSuccessMetrics() {
+            const resolved = Object.values(influencerState.influencerStatuses).filter(status => status === 'resolved').length;
+            const total = Object.keys(influencerState.influencerStatuses).length;
+            
+            document.getElementById('resolvedCount').textContent = `${resolved}/${total}`;
+            document.getElementById('budgetUsed').textContent = `${influencerState.budgetUsed.toLocaleString()}`;
+            document.getElementById('followerImpact').textContent = `-${Math.floor((900000 - influencerState.followerCount) / 1000)}K`;
+        }
+
+        // Auto-save functionality
+        function setupAutoSave() {
+            const forms = ['assessmentForm', 'recoveryForm'];
+            
+            forms.forEach(formId => {
+                const form = document.getElementById(formId);
+                if (form) {
+                    const inputs = form.querySelectorAll('textarea, input, select');
+                    inputs.forEach(input => {
+                        input.addEventListener('input', () => {
+                            localStorage.setItem(`influencer_${formId}_${input.name || 'content'}`, input.value);
+                        });
+                        
+                        // Charger le contenu sauvegardé
+                        const savedContent = localStorage.getItem(`influencer_${formId}_${input.name || 'content'}`);
+                        if (savedContent) {
+                            input.value = savedContent;
+                        }
+                    });
+                }
+            });
+        }
+
+        // Gestion des événements clavier pour les DM
+        document.addEventListener('keypress', function(e) {
+            if (e.target.className === 'dm-input' && e.key === 'Enter') {
+                const inputId = e.target.id;
+                if (inputId === 'mikeInput') {
+                    sendDM('mike');
+                } else if (inputId === 'sarahInput') {
+                    sendDM('sarah');
+                }
+            }
+        });
+
+        // Simulation d'événements de pression
+        function simulatePressureEvents() {
+            const events = [
+                {
+                    time: 180000, // 3 minutes
+                    action: () => {
+                        addDMMessage('sarahConversation', 
+                            "Still waiting for a real response. My followers are asking questions about this brand.", 
+                            'received', '@SarahGlowUp');
+                    }
+                },
+                {
+                    time: 600000, // 10 minutes
+                    action: () => {
+                        addDMMessage('mikeConversation', 
+                            "I need a decision soon. Other brands are offering better partnerships.", 
+                            'received', '@BeautyGuruMike');
+                    }
+                }
+            ];
+
+            events.forEach(event => {
+                setTimeout(event.action, event.time);
+            });
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[Influencer Team] Interface initialized');
+            
+            // Démarrer les timers et vérifications
+            setInterval(updateTimers, 1000);
+            setInterval(checkDependencies, 5000);
+            
+            // Configuration des features
+            setupAutoSave();
+            updateBudgetDisplay();
+            updateSuccessMetrics();
+            
+            // Démarrer la simulation de pression
+            simulatePressureEvents();
+            
+            console.log('[Influencer Team] All systems active - Crisis influencer management engaged');
+        });
+    </script>
+</body>
+</html>

@@ -1350,7 +1350,19 @@ jwalsh@bloomtech-board.com`
                 }
             }
         }
-
+function setupAutoSave() {
+    setInterval(() => {
+        if (phase1Completed) return;
+        const justification = document.getElementById('justificationText')?.value || '';
+        if (justification.length > 50 || selectedProblems.length > 0) {
+            localStorage.setItem('crisis_analysis_draft', JSON.stringify({
+                selectedProblems: [...selectedProblems],
+                justification,
+                timestamp: new Date().toISOString()
+            }));
+        }
+    }, 30000);
+}
         // Enhanced event listeners with robust error handling
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Initializing BloomTech Crisis Simulation...');

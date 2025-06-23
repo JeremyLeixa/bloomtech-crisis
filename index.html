@@ -3,712 +3,1186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BloomTech Crisis Sim | Emergency Response Dashboard</title>
-    <meta name="description" content="Interactive crisis management simulation for business students - BloomTech marketing disaster scenario">
-    
-    <!-- Preconnect pour optimiser le chargement des fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Google Fonts - Startup vibes -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Favicon moderne -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚨</text></svg>">
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/main.css">
-    
-    <!-- Meta tags pour le partage social (au cas où) -->
-    <meta property="og:title" content="BloomTech Crisis Management Simulation">
-    <meta property="og:description" content="Interactive crisis response training for business students">
-    <meta property="og:type" content="website">
+    <title>BloomTech Crisis Simulation | IDRAC Business School</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9)), 
+                        linear-gradient(45deg, #ff6b6b, #ffd93d);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+            padding: 2rem;
+        }
+
+        .company-logo {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .crisis-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        .crisis-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.5s forwards;
+        }
+
+        .start-simulation {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeInUp 1s ease 2s forwards;
+        }
+
+        .start-simulation:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .phase-section {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            display: none;
+        }
+
+        .phase-section.active {
+            display: block;
+        }
+
+        .phase-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .phase-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .phase-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Phase 1 - Email Analysis */
+        .email-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-inbox {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .email-item {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #3b82f6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .email-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-item.priority-high {
+            border-left-color: #dc2626;
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        }
+
+        .email-item.priority-medium {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+        }
+
+        .email-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .email-from {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .email-subject {
+            font-weight: 600;
+            color: #374151;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .email-time {
+            font-size: 0.9rem;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+
+        .email-priority {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-urgent {
+            background: #dc2626;
+            color: white;
+        }
+
+        .priority-high {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .priority-normal {
+            background: #10b981;
+            color: white;
+        }
+
+        .email-content {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-top: 1rem;
+        }
+
+        .email-easter-egg {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 6px;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #1e40af;
+        }
+
+        .analysis-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            padding: 2rem;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .problem-selection {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .problem-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .problem-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .problem-checkbox {
+            margin-top: 0.2rem;
+        }
+
+        .problem-description {
+            flex: 1;
+        }
+
+        .justification-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .justification-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: inherit;
+            resize: vertical;
+            margin-top: 1rem;
+        }
+
+        .justification-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .validate-analysis {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .validate-analysis:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .validate-analysis:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Phase 2 - Team Selection */
+        .teams-briefing {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .briefing-intro {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .team-card.crisis {
+            border-image: linear-gradient(135deg, #10b981, #059669) 1;
+            border-style: solid;
+        }
+
+        .team-card.legal {
+            border-image: linear-gradient(135deg, #dc2626, #991b1b) 1;
+            border-style: solid;
+        }
+
+        .team-card.media {
+            border-image: linear-gradient(135deg, #3b82f6, #1d4ed8) 1;
+            border-style: solid;
+        }
+
+        .team-card.influencer {
+            border-image: linear-gradient(135deg, #ec4899, #be185d) 1;
+            border-style: solid;
+        }
+
+        .team-card.strategy {
+            border-image: linear-gradient(135deg, #667eea, #764ba2) 1;
+            border-style: solid;
+        }
+
+        .team-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            color: white;
+        }
+
+        .team-icon.crisis { background: linear-gradient(135deg, #10b981, #059669); }
+        .team-icon.legal { background: linear-gradient(135deg, #dc2626, #991b1b); }
+        .team-icon.media { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .team-icon.influencer { background: linear-gradient(135deg, #ec4899, #be185d); }
+        .team-icon.strategy { background: linear-gradient(135deg, #667eea, #764ba2); }
+
+        .team-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .team-description {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .team-responsibilities {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .team-responsibilities h4 {
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .team-responsibilities ul {
+            list-style: none;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .team-responsibilities li {
+            padding: 0.2rem 0;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .team-responsibilities li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        .join-team-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .join-team-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .interdependency-diagram {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 3rem auto;
+            max-width: 800px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .validation-feedback {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            color: white;
+            display: none;
+        }
+
+        .validation-feedback.show {
+            display: block;
+        }
+
+        .validation-feedback.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .validation-feedback.partial {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .teams-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .email-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header sticky avec gradient startup -->
-    <header class="crisis-header" role="banner">
-        <div class="crisis-banner">
-            <div class="crisis-content">
-                <span class="crisis-icon">🚨</span>
-                <h1 class="crisis-title">CRISIS MODE ACTIVATED</h1>
-                <span class="crisis-subtitle">BloomTech Emergency Response</span>
-            </div>
+    <!-- Hero Section -->
+    <section class="hero-section" id="heroSection">
+        <div class="floating-particles">
+            <div class="particle" style="width: 10px; height: 10px; left: 10%; animation-delay: 0s;"></div>
+            <div class="particle" style="width: 15px; height: 15px; left: 20%; animation-delay: 1s;"></div>
+            <div class="particle" style="width: 8px; height: 8px; left: 35%; animation-delay: 2s;"></div>
+            <div class="particle" style="width: 12px; height: 12px; left: 50%; animation-delay: 1.5s;"></div>
+            <div class="particle" style="width: 18px; height: 18px; left: 65%; animation-delay: 0.5s;"></div>
+            <div class="particle" style="width: 14px; height: 14px; left: 80%; animation-delay: 2.5s;"></div>
+            <div class="particle" style="width: 11px; height: 11px; left: 90%; animation-delay: 1.8s;"></div>
         </div>
         
-        <div class="timer-bar">
-            <div class="timer-content">
-                <span class="timer-label">Board Meeting Countdown</span>
-                <div class="timer-display" id="countdown" aria-live="polite">
-                    <span class="time-hours">03</span>:
-                    <span class="time-minutes">45</span>:
-                    <span class="time-seconds">00</span>
-                </div>
-                <span class="timer-status">CRITICAL</span>
+        <div class="hero-content">
+            <div class="company-logo">🌸 BloomTech</div>
+            <h1 class="crisis-title">CRISIS SIMULATION</h1>
+            <p class="crisis-subtitle">
+                Your marketing campaign just went viral... for all the wrong reasons.<br>
+                Can your team save the company before it's too late?
+            </p>
+            <button class="start-simulation" onclick="startSimulation()">
+                🚀 Start Crisis Management Simulation
+            </button>
+        </div>
+    </section>
+
+    <!-- Phase 1: Email Analysis -->
+    <section class="phase-section" id="phase1">
+        <div class="phase-header">
+            <h2>📧 Phase 1: Crisis Intelligence</h2>
+            <p>Analyze the incoming communications to identify the real problems behind the chaos</p>
+        </div>
+
+        <div class="email-container">
+            <div class="email-inbox" id="emailInbox">
+                <!-- Emails will be dynamically loaded here -->
             </div>
-        </div>
-    </header>
 
-    <!-- Navigation rapide (optionnelle) -->
-    <nav class="quick-nav" aria-label="Quick navigation">
-        <div class="nav-container">
-            <a href="#briefing" class="nav-link">📋 Briefing</a>
-            <a href="#overview" class="nav-link">📊 Overview</a>
-            <a href="#emails" class="nav-link">📧 Crisis Emails</a>
-            <a href="#mission" class="nav-link">🎯 Mission</a>
-        </div>
-    </nav>
-
-    <!-- Main content -->
-    <main class="main-container">
-        
-        <!-- Section briefing -->
-        <section id="briefing" class="briefing-section" aria-labelledby="briefing-title">
-            <div class="briefing-card">
-                <div class="card-header">
-                    <h2 id="briefing-title" class="section-title">
-                        <span class="title-icon">📋</span>
-                        Crisis Management Simulation
-                    </h2>
-                    <div class="difficulty-badge">Level: B3 Business</div>
-                </div>
+            <div class="analysis-section">
+                <h3>🎯 Crisis Analysis</h3>
+                <p>From the emails above, identify the 4 REAL problems that require immediate action, then justify your analysis.</p>
                 
-                <div class="briefing-content">
-                    <div class="scenario-block">
-                        <h3 class="block-title">🎭 The Scenario</h3>
-                        <p>BloomTech's #NaturalGlow campaign launched yesterday with high expectations. Today? Complete disaster. Multiple crisis points are erupting simultaneously, and the board wants answers in 4 hours.</p>
-                    </div>
-                    
-                    <div class="mission-block">
-                        <h3 class="block-title">🎯 Your Mission</h3>
-                        <div class="mission-points">
-                            <div class="mission-point">
-                                <span class="point-number">1</span>
-                                <span class="point-text">Analyze ALL 8 crisis emails below</span>
-                            </div>
-                            <div class="mission-point">
-                                <span class="point-number">2</span>
-                                <span class="point-text">Identify the 4 REAL emergencies (avoid distractions)</span>
-                            </div>
-                            <div class="mission-point">
-                                <span class="point-number">3</span>
-                                <span class="point-text">Rank each crisis by urgency (1-10 scale)</span>
-                            </div>
-                            <div class="mission-point">
-                                <span class="point-number">4</span>
-                                <span class="point-text">Think like real startup crisis managers</span>
-                            </div>
+                <div class="analysis-grid">
+                    <div class="problem-selection">
+                        <h4>Select the 4 Real Problems:</h4>
+                        <div id="problemsList">
+                            <!-- Problems will be dynamically loaded -->
                         </div>
                     </div>
                     
-                    <div class="team-setup">
-                        <h3 class="block-title">👥 Team Setup</h3>
-                        <p>Work in teams of 3-4. Each member should focus on specific emails, then collaborate on final analysis. Use the Google Doc template for your findings.</p>
+                    <div class="justification-section">
+                        <h4>Justify Your Analysis:</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">
+                            Explain why you selected these problems and why others are distractors.
+                        </p>
+                        <textarea 
+                            class="justification-textarea" 
+                            id="justificationText"
+                            placeholder="Explain your reasoning:
+
+• Why are your selected problems the most critical?
+• What makes the other issues secondary or false alarms?
+• How do these problems connect to each other?
+• What would happen if these issues aren't addressed immediately?
+
+Be specific and use evidence from the emails to support your analysis."
+                        ></textarea>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Email container principal -->
-        <section id="emails" class="email-container" aria-labelledby="inbox-title">
+                <button class="validate-analysis" id="validateBtn" onclick="validateAnalysis()">
+                    🎯 Submit Analysis & Proceed to Team Assignment
+                </button>
+
+                <div class="validation-feedback" id="validationFeedback">
+                    <!-- Feedback will appear here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phase 2: Team Selection -->
+    <section class="phase-section" id="phase2">
+        <div class="phase-header">
+            <h2>🚀 Phase 2: Crisis Response Teams</h2>
+            <p>The situation is critical. Choose your specialized team and take immediate action.</p>
+        </div>
+
+        <div class="teams-briefing">
+            <div class="briefing-intro">
+                <h3>🎯 Mission Briefing</h3>
+                <p>You've identified the crisis. Now it's time to act. Each team has specialized tools and responsibilities. Choose your role wisely - your decisions will impact the entire company.</p>
+                <p><strong>⚠️ Important:</strong> Teams are interdependent. Success requires coordination and communication between all units.</p>
+            </div>
+
+            <div class="teams-grid">
+                <div class="team-card crisis" onclick="joinTeam('crisis')">
+                    <div class="team-icon crisis">🔍</div>
+                    <div class="team-name">Crisis Analysis Team</div>
+                    <div class="team-description">
+                        Technical investigation unit responsible for identifying root causes and providing detailed analysis to all other teams.
+                    </div>
+                    <div class="team-responsibilities">
+                        <h4>Key Responsibilities:</h4>
+                        <ul>
+                            <li>Analyze technical failures and system logs</li>
+                            <li>Create detailed timeline of events</li>
+                            <li>Provide technical data to Legal and Media teams</li>
+                            <li>Assess ongoing technical risks</li>
+                        </ul>
+                    </div>
+                    <button class="join-team-btn">Join Crisis Analysis</button>
+                </div>
+
+                <div class="team-card legal" onclick="joinTeam('legal')">
+                    <div class="team-icon legal">⚖️</div>
+                    <div class="team-name">Legal Response Team</div>
+                    <div class="team-description">
+                        Legal compliance specialists handling regulatory requirements and authorizing public communications.
+                    </div>
+                    <div class="team-responsibilities">
+                        <h4>Key Responsibilities:</h4>
+                        <ul>
+                            <li>Respond to FTC compliance inquiry</li>
+                            <li>Assess legal risks and liabilities</li>
+                            <li>Approve Media team communications</li>
+                            <li>Ensure regulatory compliance</li>
+                        </ul>
+                    </div>
+                    <button class="join-team-btn">Join Legal Response</button>
+                </div>
+
+                <div class="team-card media" onclick="joinTeam('media')">
+                    <div class="team-icon media">📰</div>
+                    <div class="team-name">Media Response Team</div>
+                    <div class="team-description">
+                        Communications specialists managing public narrative and press relations during the crisis.
+                    </div>
+                    <div class="team-responsibilities">
+                        <h4>Key Responsibilities:</h4>
+                        <ul>
+                            <li>Draft official press statements</li>
+                            <li>Manage journalist inquiries</li>
+                            <li>Coordinate with Legal for message approval</li>
+                            <li>Control public narrative</li>
+                        </ul>
+                    </div>
+                    <button class="join-team-btn">Join Media Response</button>
+                </div>
+
+                <div class="team-card influencer" onclick="joinTeam('influencer')">
+                    <div class="team-icon influencer">📱</div>
+                    <div class="team-name">Influencer Relations Team</div>
+                    <div class="team-description">
+                        Relationship managers focused on containing influencer backlash and negotiating damage control.
+                    </div>
+                    <div class="team-responsibilities">
+                        <h4>Key Responsibilities:</h4>
+                        <ul>
+                            <li>Negotiate with angry influencers</li>
+                            <li>Manage compensation and partnerships</li>
+                            <li>Prevent viral negative campaigns</li>
+                            <li>Restore influencer relationships</li>
+                        </ul>
+                    </div>
+                    <button class="join-team-btn">Join Influencer Relations</button>
+                </div>
+
+                <div class="team-card strategy" onclick="joinTeam('strategy')">
+                    <div class="team-icon strategy">👑</div>
+                    <div class="team-name">Strategy Team</div>
+                    <div class="team-description">
+                        Executive coordinators with oversight of all teams, budget authority, and responsibility for overall crisis strategy.
+                    </div>
+                    <div class="team-responsibilities">
+                        <h4>Key Responsibilities:</h4>
+                        <ul>
+                            <li>Coordinate all team activities</li>
+                            <li>Approve budgets and major decisions</li>
+                            <li>Monitor overall crisis progress</li>
+                            <li>Present final action plan to board</li>
+                        </ul>
+                    </div>
+                    <button class="join-team-btn">Join Strategy Team</button>
+                </div>
+            </div>
+
+            <div class="interdependency-diagram">
+                <h3>🔄 Team Interdependencies</h3>
+                <p><strong>Crisis Analysis</strong> provides data → <strong>Legal</strong> assesses risks → <strong>Media</strong> communicates</p>
+                <p><strong>Strategy</strong> approves budgets → <strong>Influencer Relations</strong> negotiates</p>
+                <p><strong>All teams</strong> coordinate through <strong>Strategy</strong> for maximum impact</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Email data with optimized content and easter eggs
+        const emails = [
+            {
+                id: 1,
+                from: "James Morgan, CEO",
+                subject: "Good Morning Team - Big Day Ahead!",
+                time: "08:15 AM",
+                priority: "normal",
+                className: "priority-normal",
+                content: `Team,
+
+Today marks the official launch of our #NaturalGlow campaign! Marketing tells me we're expecting 2M+ impressions in the first 24 hours.
+
+Our Q3 numbers look strong - 47% growth in subscriber base, CAC down to $23. Board meeting next week should be very positive.
+
+Quick reminder: compliance review deadline is Friday. Sarah, make sure we're ready for any FTC questions about our organic claims.
+
+Let's make today count!
+James
+
+<div class="email-easter-egg">📊 Easter Egg - Strategy Team: Q3 KPIs - 47% growth, $23 CAC, 2M impression target</div>`
+            },
+            {
+                id: 2,
+                from: "Alex Chen, IT Director",
+                subject: "URGENT: Campaign Display Issue Detected",
+                time: "09:42 AM",
+                priority: "urgent",
+                className: "priority-high",
+                content: `ALL HANDS,
+
+Critical bug detected in our campaign management system. Our #NaturalGlow ads are displaying competitor slogans instead of ours. 
+
+TECHNICAL DETAILS:
+- Bug introduced at 03:47 AM during routine update
+- Affecting: Instagram, Facebook, TikTok campaigns
+- Current status: "Glow Naturally with PureBeauty" showing instead of our slogan
+- Estimated reach before detection: 500K+ users
+
+Emergency shutdown initiated. Need immediate crisis protocol activation.
+
+Alex
+
+<div class="email-easter-egg">🔧 Easter Egg - Crisis Analysis: Bug timestamp 03:47 AM, system logs available, 500K+ affected users</div>`
+            },
+            {
+                id: 3,
+                from: "Sarah Kim (@SarahGlowUp)",
+                subject: "WTF BloomTech?? This is UNACCEPTABLE",
+                time: "10:15 AM",
+                priority: "urgent",
+                className: "priority-high",
+                content: `Are you KIDDING me right now???
+
+I just woke up to 50+ DMs asking why I'm promoting PureBeauty (your biggest competitor) when I have an EXCLUSIVE deal with BloomTech???
+
+My engagement rate is through the ROOF but for THE WRONG BRAND. This is humiliating.
+
+I'm posting at NOON if I don't get answers and compensation. My 2.1M followers deserve better than this amateur hour BS.
+
+Fix this NOW or I'm exposing everything.
+
+Sarah Kim
+@SarahGlowUp (2.1M followers)
+Partnership rate: $15K per post
+
+<div class="email-easter-egg">📱 Easter Egg - Influencer Relations: @SarahGlowUp - 2.1M followers, $15K rate, posting deadline NOON</div>`
+            },
+            {
+                id: 4,
+                from: "Michael Torres, Legal Counsel",
+                subject: "FTC Inquiry - Immediate Response Required",
+                time: "10:33 AM",
+                priority: "urgent",
+                className: "priority-high",
+                content: `Team,
+
+Just received formal inquiry from FTC regarding our "100% Natural" claims in the #NaturalGlow campaign.
+
+COMPLIANCE ISSUES IDENTIFIED:
+- Synthetic ingredients detected in lab analysis (Batch #BT-2024-Q3)
+- Misleading organic certification claims
+- Missing disclosure requirements on influencer partnerships
+
+Response deadline: 5 PM TODAY. Criminal penalties possible if we're found to have knowingly misled consumers.
+
+Need immediate strategy meeting. This could shut us down.
+
+Michael Torres, JD
+Senior Legal Counsel
+
+<div class="email-easter-egg">⚖️ Easter Egg - Legal Team: FTC deadline 5 PM, Batch #BT-2024-Q3, criminal penalties risk</div>`
+            },
+            {
+                id: 5,
+                from: "Emma Rodriguez, Marketing Director",
+                subject: "Media Shitstorm Incoming - URGENT",
+                time: "11:07 AM",
+                priority: "urgent",
+                className: "priority-high",
+                content: `Crisis team assemble NOW.
+
+TechCrunch contacted me about the campaign bug. They're running a story at 1 PM titled "BloomTech's Epic Marketing Fail Helps Competitor Go Viral."
+
+OTHER MEDIA INQUIRIES:
+- Forbes: investigating greenwashing allegations
+- Vogue Business: influencer contract story
+- BuzzFeed: "Beauty Brand Accidentally Promotes Rival"
+
+I need talking points in 30 minutes. Legal clearance required before ANY statements.
+
+This is damage control mode. We're trending on Twitter for the wrong reasons.
+
+Emma Rodriguez
+Marketing Director
+
+<div class="email-easter-egg">📰 Easter Egg - Media Team: TechCrunch 1 PM deadline, Forbes greenwashing angle, trending on Twitter</div>`
+            },
+            {
+                id: 6,
+                from: "Lisa Park, Customer Success",
+                subject: "Customer Support Overwhelmed",
+                time: "11:28 AM",
+                priority: "high",
+                className: "priority-medium",
+                content: `Hi Team,
+
+Our support queue just exploded. 847 tickets in the last hour, mostly confusion about the campaign.
+
+Common themes:
+- "Why are you promoting PureBeauty?"
+- Subscription cancellation requests (+23% above normal)
+- Demands for refunds on recent orders
+
+I've put together FAQ responses but need official messaging from Marketing before we can respond to the media questions.
+
+Our customer satisfaction score dropped from 4.7 to 3.2 overnight.
+
+Lisa`
+            },
+            {
+                id: 7,
+                from: "David Kim, BeautyGuruMike",
+                subject: "Partnership Violation - Demanding Explanation",
+                time: "11:45 AM",
+                priority: "high",
+                className: "priority-medium",
+                content: `BloomTech Team,
+
+As someone with 890K followers who signed an exclusive 6-month partnership with you, I'm extremely concerned about this morning's campaign disaster.
+
+My audience is asking why I appear to be promoting your competitor. This violates our exclusivity agreement and damages my credibility.
+
+I need:
+1. Immediate explanation
+2. Public statement clearing my involvement
+3. Compensation for reputation damage
+
+If not resolved by end of business today, I'm terminating our partnership and going public with the details.
+
+David Kim
+@BeautyGuruMike
+890K followers, $8K per post rate
+
+<div class="email-easter-egg">📱 Easter Egg - Influencer Relations: @BeautyGuruMike - 890K followers, $8K rate, exclusivity violation</div>`
+            },
+            {
+                id: 8,
+                from: "Jennifer Walsh, Board Member",
+                subject: "Emergency Board Call - 2 PM",
+                time: "12:15 PM",
+                priority: "urgent",
+                className: "priority-high",
+                content: `James and Senior Team,
+
+The board has been monitoring the situation. Emergency call scheduled for 2 PM.
+
+We need immediate answers:
+- How did this happen?
+- What's our exposure?
+- What's the recovery plan?
+
+Our stock price is already down 12% in pre-market. Investors are panicking.
+
+This better have a solution by the board call or we're looking at major changes.
+
+Jennifer Walsh
+Board Chair
+
+<div class="email-easter-egg">👑 Easter Egg - Strategy Team: Board call 2 PM, stock down 12%, investor panic, major changes risk</div>`
+            }
+        ];
+
+        // Problem options for analysis
+        const problemOptions = [
+            {
+                id: "tech-bug",
+                text: "Technical system bug displaying competitor slogans",
+                isCorrect: true
+            },
+            {
+                id: "influencer-crisis",
+                text: "Major influencer backlash threatening viral negative campaign",
+                isCorrect: true
+            },
+            {
+                id: "ftc-investigation",
+                text: "FTC compliance investigation with criminal penalty risk",
+                isCorrect: true
+            },
+            {
+                id: "media-pressure",
+                text: "Imminent negative media coverage across major publications",
+                isCorrect: true
+            },
+            {
+                id: "customer-support",
+                text: "Customer support queue overload (operational issue)",
+                isCorrect: false
+            },
+            {
+                id: "stock-price",
+                text: "Stock price decline (symptom, not root cause)",
+                isCorrect: false
+            },
+            {
+                id: "board-pressure",
+                text: "Board emergency meeting (consequence, not core problem)",
+                isCorrect: false
+            },
+            {
+                id: "exclusivity-violation",
+                text: "Individual influencer contract disputes (manageable)",
+                isCorrect: false
+            }
+        ];
+
+        let selectedProblems = [];
+        let phase1Completed = false;
+
+        // Initialize simulation
+        function startSimulation() {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('phase1').classList.add('active');
+            loadEmails();
+            loadProblems();
+        }
+
+        // Load emails into the inbox
+        function loadEmails() {
+            const inbox = document.getElementById('emailInbox');
+            inbox.innerHTML = emails.map(email => `
+                <div class="email-item ${email.className}">
+                    <div class="email-header">
+                        <div class="email-from">${email.from}</div>
+                        <div class="email-subject">${email.subject}</div>
+                        <div class="email-time">${email.time}</div>
+                        <div class="email-priority priority-${email.priority}">${email.priority}</div>
+                    </div>
+                    <div class="email-content">${email.content}</div>
+                </div>
+            `).join('');
+        }
+
+        // Load problem options
+        function loadProblems() {
+            const problemsList = document.getElementById('problemsList');
+            problemsList.innerHTML = problemOptions.map(problem => `
+                <div class="problem-item" onclick="toggleProblem('${problem.id}')">
+                    <input type="checkbox" class="problem-checkbox" id="checkbox-${problem.id}">
+                    <div class="problem-description">${problem.text}</div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle problem selection
+        function toggleProblem(problemId) {
+            const checkbox = document.getElementById(`checkbox-${problemId}`);
+            const isChecked = !checkbox.checked;
             
-            <!-- Header inbox -->
-            <header class="inbox-header">
-                <div class="company-branding">
-                    <div class="company-logo">
-                        <span class="logo-icon">🌱</span>
-                        <span class="logo-text">BloomTech</span>
-                        <span class="logo-status">Crisis Mode</span>
-                    </div>
-                    <div class="company-tagline">Natural Beauty, Unnatural Problems</div>
-                </div>
-                
-                <div class="inbox-info">
-                    <h2 id="inbox-title" class="inbox-title">Emergency Response Inbox</h2>
-                    <div class="inbox-stats">
-                        <span class="stat-item">
-                            <span class="stat-number">8</span>
-                            <span class="stat-label">Messages</span>
-                        </span>
-                        <span class="stat-divider">•</span>
-                        <span class="stat-item">
-                            <span class="stat-number">5</span>
-                            <span class="stat-label">High Priority</span>
-                        </span>
-                        <span class="stat-divider">•</span>
-                        <span class="stat-item urgent">
-                            <span class="stat-number">4</span>
-                            <span class="stat-label">Critical Issues</span>
-                        </span>
-                    </div>
-                </div>
-            </header>
+            if (isChecked) {
+                if (selectedProblems.length >= 4) {
+                    showNotification("Maximum 4 problems can be selected");
+                    return;
+                }
+                selectedProblems.push(problemId);
+                checkbox.checked = true;
+            } else {
+                selectedProblems = selectedProblems.filter(id => id !== problemId);
+                checkbox.checked = false;
+            }
+            
+            updateValidateButton();
+        }
 
-            <!-- Quick overview avec navigation -->
-            <section id="overview" class="email-overview" aria-labelledby="overview-title">
-                <h2 id="overview-title" class="overview-title">
-                    <span class="title-icon">📊</span>
-                    Crisis Dashboard - Click to Navigate
-                </h2>
-                
-                <div class="overview-grid">
-                    <a href="#email1" class="overview-card priority-critical" data-priority="critical">
-                        <div class="card-priority">CRITICAL</div>
-                        <h3 class="card-title">🏢 CEO Emergency</h3>
-                        <p class="card-description">Board meeting crisis, investor panic</p>
-                        <div class="card-metadata">
-                            <span class="card-time">08:45 AM</span>
-                            <span class="card-sender">James Morgan</span>
-                        </div>
-                    </a>
-                    
-                    <a href="#email2" class="overview-card priority-critical" data-priority="critical">
-                        <div class="card-priority">CRITICAL</div>
-                        <h3 class="card-title">⚖️ Legal Alert</h3>
-                        <p class="card-description">FTC complaints, regulatory threats</p>
-                        <div class="card-metadata">
-                            <span class="card-time">09:15 AM</span>
-                            <span class="card-sender">Legal Dept</span>
-                        </div>
-                    </a>
-                    
-                    <a href="#email3" class="overview-card priority-high" data-priority="high">
-                        <div class="card-priority">HIGH</div>
-                        <h3 class="card-title">📱 Influencer Crisis</h3>
-                        <p class="card-description">3M+ followers threatening negative reviews</p>
-                        <div class="card-metadata">
-                            <span class="card-time">09:32 AM</span>
-                            <span class="card-sender">Sarah Kim</span>
-                        </div>
-                    </a>
-                    
-                    <a href="#email4" class="overview-card priority-critical" data-priority="critical">
-                        <div class="card-priority">CRITICAL</div>
-                        <h3 class="card-title">💻 System Error</h3>
-                        <p class="card-description">Competitor slogans in our campaigns</p>
-                        <div class="card-metadata">
-                            <span class="card-time">08:52 AM</span>
-                            <span class="card-sender">Mike Chen</span>
-                        </div>
-                    </a>
-                    
-                    <a href="#email5" class="overview-card priority-medium" data-priority="medium">
-                        <div class="card-priority">MEDIUM</div>
-                        <h3 class="card-title">📞 Customer Overload</h3>
-                        <p class="card-description">Rating crashed to 1.8/5 overnight</p>
-                        <div class="card-metadata">
-                            <span class="card-time">10:01 AM</span>
-                            <span class="card-sender">Jessica Torres</span>
-                        </div>
-                    </a>
-                    
-                    <a href="#email6" class="overview-card priority-critical" data-priority="critical">
-                        <div class="card-priority">CRITICAL</div>
-                        <h3 class="card-title">📰 Media Pressure</h3>
-                        <p class="card-description">1PM publication deadline</p>
-                        <div class="card-metadata">
-                            <span class="card-time">09:47 AM</span>
-                            <span class="card-sender">Alex Rivera</span>
-                        </div>
-                    </a>
-                    
-                    <a href="#email7" class="overview-card priority-medium" data-priority="medium">
-                        <div class="card-priority">MEDIUM</div>
-                        <h3 class="card-title">💰 Financial Impact</h3>
-                        <p class="card-description">$200K+ potential losses</p>
-                        <div class="card-metadata">
-                            <span class="card-time">10:23 AM</span>
-                            <span class="card-sender">Robert Park</span>
-                        </div>
-                    </a>
-                    
-                    <a href="#email8" class="overview-card priority-low" data-priority="low">
-                        <div class="card-priority">LOW</div>
-                        <h3 class="card-title">🎉 HR Notice</h3>
-                        <p class="card-description">Team building event reminder</p>
-                        <div class="card-metadata">
-                            <span class="card-time">10:30 AM</span>
-                            <span class="card-sender">HR Team</span>
-                        </div>
-                    </a>
-                </div>
-            </section>
+        // Update validate button state
+        function updateValidateButton() {
+            const justificationText = document.getElementById('justificationText').value.trim();
+            const validateBtn = document.getElementById('validateBtn');
+            
+            if (selectedProblems.length === 4 && justificationText.length > 100) {
+                validateBtn.disabled = false;
+            } else {
+                validateBtn.disabled = true;
+            }
+        }
 
-            <!-- Emails complets -->
-            <section class="emails-section" aria-label="Crisis emails">
-                
-                <!-- EMAIL 1 - CEO -->
-                <article id="email1" class="email-full" data-priority="critical">
-                    <header class="email-header">
-                        <div class="email-title-row">
-                            <h3 class="email-title">
-                                🚨 URGENT - Emergency Board Meeting - Campaign Disaster
-                            </h3>
-                            <div class="email-badges">
-                                <span class="priority-badge critical">CRITICAL</span>
-                                <span class="urgency-badge">IMMEDIATE</span>
-                            </div>
-                        </div>
-                        
-                        <div class="email-metadata">
-                            <div class="metadata-row">
-                                <span class="metadata-label">From:</span>
-                                <span class="metadata-value">james.morgan@bloomtech.com (CEO)</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">To:</span>
-                                <span class="metadata-value">crisis-team@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Time:</span>
-                                <span class="metadata-value">08:45 AM</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Subject:</span>
-                                <span class="metadata-value">Board Meeting Emergency</span>
-                            </div>
-                        </div>
-                    </header>
-                    
-                    <div class="email-body">
-                        <p>Team,</p>
-                        <p>I just got off the phone with our biggest investor. The #NaturalGlow campaign is a complete disaster.</p>
-                        <p>The board meeting has been moved to <strong class="highlight-critical">2:00 PM today</strong>. I need a full damage control strategy on my desk by <strong class="highlight-critical">1:30 PM</strong> or we're looking at serious consequences.</p>
-                        <p>Social media is exploding, legal is freaking out, and our PR agency just dropped us.</p>
-                        <p class="emphasis-text"><strong>Fix this. NOW.</strong></p>
-                        <div class="email-signature">
-                            <p>James Morgan<br>CEO, BloomTech</p>
-                        </div>
-                    </div>
-                </article>
+        // Listen to justification text changes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('justificationText').addEventListener('input', updateValidateButton);
+        });
 
-                <!-- EMAIL 2 - Legal -->
-                <article id="email2" class="email-full" data-priority="critical">
-                    <header class="email-header">
-                        <div class="email-title-row">
-                            <h3 class="email-title">
-                                ⚖️ LEGAL ALERT - Multiple Complaints Received
-                            </h3>
-                            <div class="email-badges">
-                                <span class="priority-badge critical">CRITICAL</span>
-                                <span class="urgency-badge">FTC INVOLVED</span>
-                            </div>
-                        </div>
-                        
-                        <div class="email-metadata">
-                            <div class="metadata-row">
-                                <span class="metadata-label">From:</span>
-                                <span class="metadata-value">legal@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">To:</span>
-                                <span class="metadata-value">crisis-team@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Time:</span>
-                                <span class="metadata-value">09:15 AM</span>
-                            </div>
-                        </div>
-                    </header>
-                    
-                    <div class="email-body">
-                        <p>Crisis Management Team,</p>
-                        <p>We have received <strong class="highlight-critical">47 formal complaints</strong> in the last 12 hours regarding:</p>
-                        <ul class="complaint-list">
-                            <li>False advertising claims</li>
-                            <li>Product safety concerns</li>
-                            <li>Unauthorized use of competitor slogans</li>
-                        </ul>
-                        <p>The <strong class="highlight-critical">Federal Trade Commission (FTC)</strong> has been notified by several consumer groups. We need immediate action to prevent legal proceedings.</p>
-                        <p>Please provide a response strategy within 2 hours.</p>
-                        <div class="email-signature">
-                            <p>Best regards,<br>Legal Department</p>
-                        </div>
-                    </div>
-                </article>
+        // Validate analysis
+        function validateAnalysis() {
+            const correctProblems = problemOptions.filter(p => p.isCorrect).map(p => p.id);
+            const correctlySelected = selectedProblems.filter(id => correctProblems.includes(id));
+            const incorrectlySelected = selectedProblems.filter(id => !correctProblems.includes(id));
+            
+            const score = correctlySelected.length;
+            const justification = document.getElementById('justificationText').value;
+            
+            // Save analysis results
+            localStorage.setItem('crisis_analysis_complete', 'true');
+            localStorage.setItem('crisis_analysis_score', score);
+            localStorage.setItem('crisis_analysis_justification', justification);
+            
+            // Show feedback
+            const feedback = document.getElementById('validationFeedback');
+            
+            if (score === 4) {
+                feedback.className = 'validation-feedback success show';
+                feedback.innerHTML = `
+                    <h4>🎯 Excellent Analysis! (${score}/4)</h4>
+                    <p>You've correctly identified all critical issues requiring immediate action. Your team is ready to proceed to specialized crisis response.</p>
+                    <p><strong>Next Step:</strong> Choose your specialized team below.</p>
+                `;
+                setTimeout(() => {
+                    document.getElementById('phase1').classList.remove('active');
+                    document.getElementById('phase2').classList.add('active');
+                }, 3000);
+            } else {
+                feedback.className = 'validation-feedback partial show';
+                feedback.innerHTML = `
+                    <h4>⚠️ Partial Analysis (${score}/4)</h4>
+                    <p>You identified ${score} out of 4 critical issues. In a real crisis, this could lead to missed priorities.</p>
+                    <p><strong>Missed critical issues:</strong> ${correctProblems.filter(id => !selectedProblems.includes(id)).map(id => 
+                        problemOptions.find(p => p.id === id).text
+                    ).join(', ')}</p>
+                    <p>Proceeding to team assignment, but consider how incomplete analysis affects decision-making...</p>
+                `;
+                setTimeout(() => {
+                    document.getElementById('phase1').classList.remove('active');
+                    document.getElementById('phase2').classList.add('active');
+                }, 5000);
+            }
+            
+            phase1Completed = true;
+        }
 
-                <!-- EMAIL 3 - Influencer Relations -->
-                <article id="email3" class="email-full" data-priority="high">
-                    <header class="email-header">
-                        <div class="email-title-row">
-                            <h3 class="email-title">
-                                📱 INFLUENCER CRISIS - Major accounts threatening negative reviews
-                            </h3>
-                            <div class="email-badges">
-                                <span class="priority-badge high">HIGH</span>
-                                <span class="urgency-badge">VIRAL RISK</span>
-                            </div>
-                        </div>
-                        
-                        <div class="email-metadata">
-                            <div class="metadata-row">
-                                <span class="metadata-label">From:</span>
-                                <span class="metadata-value">sarah.kim@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Time:</span>
-                                <span class="metadata-value">09:32 AM</span>
-                            </div>
-                        </div>
-                    </header>
-                    
-                    <div class="email-body">
-                        <p>Hi team,</p>
-                        <p>This is bad. Really bad.</p>
-                        <p><strong class="highlight-high">@SarahGlowUp (2.1M followers)</strong> just called me screaming. The products we sent her are completely different from what we advertised. She's threatening to post a negative review story by <strong class="highlight-high">noon</strong>.</p>
-                        <p><strong class="highlight-high">@BeautyGuruMike (890K followers)</strong> says our foundation caused skin irritation for several of his followers.</p>
-                        <p>I've got 12 other influencers asking for explanations. Some are demanding refunds and threatening to expose our "false promises."</p>
-                        <p class="emphasis-text">Need talking points ASAP. These people can destroy us with one post.</p>
-                        <div class="email-signature">
-                            <p>Sarah Kim<br>Influencer Relations Manager</p>
-                        </div>
-                    </div>
-                </article>
+        // Join team function
+        function joinTeam(teamType) {
+            const teamUrls = {
+                crisis: 'teams/tech.html',
+                legal: 'teams/legal.html',
+                media: 'teams/media-response.html',
+                influencer: 'teams/influencer-relations.html',
+                strategy: 'teams/strategy.html'
+            };
+            
+            // Save team selection
+            localStorage.setItem('selected_team', teamType);
+            localStorage.setItem('phase1_completed', 'true');
+            
+            // Redirect to team interface
+            window.location.href = teamUrls[teamType];
+        }
 
-                <!-- EMAIL 4 - IT Support -->
-                <article id="email4" class="email-full" data-priority="critical">
-                    <header class="email-header">
-                        <div class="email-title-row">
-                            <h3 class="email-title">
-                                💻 SYSTEM ERROR - Ad Campaign Bug Identified
-                            </h3>
-                            <div class="email-badges">
-                                <span class="priority-badge critical">CRITICAL</span>
-                                <span class="urgency-badge">ROOT CAUSE</span>
-                            </div>
-                        </div>
-                        
-                        <div class="email-metadata">
-                            <div class="metadata-row">
-                                <span class="metadata-label">From:</span>
-                                <span class="metadata-value">tech-support@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Time:</span>
-                                <span class="metadata-value">08:52 AM</span>
-                            </div>
-                        </div>
-                    </header>
-                    
-                    <div class="email-body">
-                        <p>Crisis Team,</p>
-                        <p>I found the source of the advertising problem.</p>
-                        <p>Our automated campaign system had a <strong class="highlight-critical">database error</strong> that pulled content from our <strong class="highlight-critical">competitor analysis folder</strong> instead of our own campaign materials. Result: all our ads are showing <strong class="highlight-critical">"RevealYourTruth"</strong> (EcoGlow's slogan) instead of "NaturalGlow."</p>
-                        <div class="impact-breakdown">
-                            <h4>Impact Assessment:</h4>
-                            <ul>
-                                <li>Facebook ads (50,000+ impressions)</li>
-                                <li>Instagram stories (25,000+ views)</li>
-                                <li>Google display network (unknown reach)</li>
-                            </ul>
-                        </div>
-                        <p>I can fix it in 30 minutes, but the damage is already done. People think we're copying our biggest competitor.</p>
-                        <div class="email-signature">
-                            <p>Mike Chen<br>IT Support</p>
-                        </div>
-                    </div>
-                </article>
+        // Notification system
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
 
-                <!-- EMAIL 5 - Customer Service -->
-                <article id="email5" class="email-full" data-priority="medium">
-                    <header class="email-header">
-                        <div class="email-title-row">
-                            <h3 class="email-title">
-                                📞 Customer Complaints - Summary Report
-                            </h3>
-                            <div class="email-badges">
-                                <span class="priority-badge medium">MEDIUM</span>
-                                <span class="urgency-badge">OVERWHELMED</span>
-                            </div>
-                        </div>
-                        
-                        <div class="email-metadata">
-                            <div class="metadata-row">
-                                <span class="metadata-label">From:</span>
-                                <span class="metadata-value">support@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Time:</span>
-                                <span class="metadata-value">10:01 AM</span>
-                            </div>
-                        </div>
-                    </header>
-                    
-                    <div class="email-body">
-                        <p>Team,</p>
-                        <p>Customer service phone lines are overwhelmed. Here's the breakdown:</p>
-                        <div class="complaints-breakdown">
-                            <div class="complaint-stat">
-                                <span class="stat-number">156</span>
-                                <span class="stat-label">skin reaction calls</span>
-                            </div>
-                            <div class="complaint-stat">
-                                <span class="stat-number">89</span>
-                                <span class="stat-label">false advertising complaints</span>
-                            </div>
-                            <div class="complaint-stat">
-                                <span class="stat-number">234</span>
-                                <span class="stat-label">refund requests</span>
-                            </div>
-                            <div class="complaint-stat">
-                                <span class="stat-number">67</span>
-                                <span class="stat-label">slogan confusion calls</span>
-                            </div>
-                        </div>
-                        <p>Our customer satisfaction rating dropped from <strong class="highlight-medium">4.2/5 to 1.8/5</strong> overnight.</p>
-                        <p>Please advise on response protocol.</p>
-                        <div class="email-signature">
-                            <p>Jessica Torres<br>Customer Service Manager</p>
-                        </div>
-                    </div>
-                </article>
+        // Auto-save functionality
+        setInterval(() => {
+            if (phase1Completed) return;
+            
+            const justification = document.getElementById('justificationText')?.value;
+            if (justification && justification.length > 50) {
+                localStorage.setItem('crisis_analysis_draft', JSON.stringify({
+                    selectedProblems,
+                    justification,
+                    timestamp: new Date().toISOString()
+                }));
+            }
+        }, 30000);
 
-                <!-- EMAIL 6 - Marketing Director -->
-                <article id="email6" class="email-full" data-priority="critical">
-                    <header class="email-header">
-                        <div class="email-title-row">
-                            <h3 class="email-title">
-                                📰 MEDIA ATTENTION - Reporters asking questions
-                            </h3>
-                            <div class="email-badges">
-                                <span class="priority-badge critical">CRITICAL</span>
-                                <span class="urgency-badge">1PM DEADLINE</span>
-                            </div>
-                        </div>
-                        
-                        <div class="email-metadata">
-                            <div class="metadata-row">
-                                <span class="metadata-label">From:</span>
-                                <span class="metadata-value">alex.rivera@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Time:</span>
-                                <span class="metadata-value">09:47 AM</span>
-                            </div>
-                        </div>
-                    </header>
-                    
-                    <div class="email-body">
-                        <p>Team,</p>
-                        <p>Three major beauty bloggers and two business journalists have contacted me for comments about:</p>
-                        <ol class="media-topics">
-                            <li>The slogan "copying" incident</li>
-                            <li>Product quality issues</li>
-                            <li>Possible greenwashing accusations</li>
-                        </ol>
-                        <p>I've been stalling, but they want answers by <strong class="highlight-critical">1:00 PM</strong> or they're publishing without our response.</p>
-                        <p class="emphasis-text">We need a unified message strategy immediately.</p>
-                        <div class="email-signature">
-                            <p>Alex Rivera<br>Marketing Director</p>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- EMAIL 7 - Finance -->
-                <article id="email7" class="email-full" data-priority="medium">
-                    <header class="email-header">
-                        <div class="email-title-row">
-                            <h3 class="email-title">
-                                💰 Financial Impact Assessment
-                            </h3>
-                            <div class="email-badges">
-                                <span class="priority-badge medium">MEDIUM</span>
-                                <span class="urgency-badge">QUARTERLY RISK</span>
-                            </div>
-                        </div>
-                        
-                        <div class="email-metadata">
-                            <div class="metadata-row">
-                                <span class="metadata-label">From:</span>
-                                <span class="metadata-value">finance@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Time:</span>
-                                <span class="metadata-value">10:23 AM</span>
-                            </div>
-                        </div>
-                    </header>
-                    
-                    <div class="email-body">
-                        <p>Crisis Team,</p>
-                        <p>Early financial impact assessment:</p>
-                        <div class="financial-breakdown">
-                            <div class="financial-item">
-                                <span class="item-label">Refund requests:</span>
-                                <span class="item-value">340 requests ($28,900)</span>
-                            </div>
-                            <div class="financial-item">
-                                <span class="item-label">Influencer claims:</span>
-                                <span class="item-value">Potential compensation</span>
-                            </div>
-                            <div class="financial-item">
-                                <span class="item-label">Legal fees:</span>
-                                <span class="item-value">Accumulating</span>
-                            </div>
-                            <div class="financial-item">
-                                <span class="item-label">Stock impact:</span>
-                                <span class="item-value">Down 12%</span>
-                            </div>
-                        </div>
-                        <p>If this continues, we're looking at <strong class="highlight-medium">$200K+ in losses</strong> this quarter.</p>
-                        <div class="email-signature">
-                            <p>Robert Park<br>Financial Controller</p>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- EMAIL 8 - HR (The Trap) -->
-                <article id="email8" class="email-full" data-priority="low">
-                    <header class="email-header">
-                        <div class="email-title-row">
-                            <h3 class="email-title">
-                                🎉 Reminder - Team Building Event Next Week
-                            </h3>
-                            <div class="email-badges">
-                                <span class="priority-badge low">LOW</span>
-                                <span class="urgency-badge distraction">DISTRACTION</span>
-                            </div>
-                        </div>
-                        
-                        <div class="email-metadata">
-                            <div class="metadata-row">
-                                <span class="metadata-label">From:</span>
-                                <span class="metadata-value">hr@bloomtech.com</span>
-                            </div>
-                            <div class="metadata-row">
-                                <span class="metadata-label">Time:</span>
-                                <span class="metadata-value">10:30 AM</span>
-                            </div>
-                        </div>
-                    </header>
-                    
-                    <div class="email-body">
-                        <p>Hi everyone,</p>
-                        <p>Just a friendly reminder that our team building escape room event is scheduled for next Thursday at 3:00 PM.</p>
-                        <p>Please confirm your attendance by tomorrow.</p>
-                        <div class="email-signature">
-                            <p>Thanks!<br>HR Team</p>
-                        </div>
-                        
-                        <!-- Educational note -->
-                        <div class="analysis-hint">
-                            <div class="hint-header">
-                                <span class="hint-icon">💡</span>
-                                <span class="hint-title">Analysis Note</span>
-                            </div>
-                            <p>This email is intentionally placed during a crisis to test your prioritization skills. In real crisis management, learning to filter noise from signal is crucial.</p>
-                        </div>
-                    </div>
-                </article>
-
-            </section>
-        </section>
-
-        <!-- Mission finale -->
-        <section id="mission" class="mission-section" aria-labelledby="mission-title">
-            <div class="mission-card">
-                <header class="mission-header">
-                    <h2 id="mission-title" class="mission-title">
-                        <span class="title-icon">🎯</span>
-                        Your Crisis Analysis Mission
-                    </h2>
-                    <div class="mission-timer">Time Remaining: <span id="mission-countdown">3h 45m</span></div>
-                </header>
-                
-                <div class="mission-content">
-                    <div class="mission-instructions">
-                        <h3 class="instructions-title">📝 Analysis Instructions</h3>
-                        <div class="instruction-grid">
-                            <div class="instruction-item">
-                                <span class="instruction-number">1</span>
-                                <div class="instruction-content">
-                                    <h4>Read & Analyze</h4>
-                                    <p>Carefully review all 8 crisis emails above. Each team member should focus on 2 emails initially.</p>
-                                </div>
-                            </div>
-                            <div class="instruction-item">
-                                <span class="instruction-number">2</span>
-                                <div class="instruction-content">
-                                    <h4>Identify Real Crises</h4>
-                                    <p>Separate genuine emergencies from symptoms and distractions. Focus on root causes, not just noise.</p>
-                                </div>
-                            </div>
-                            <div class="instruction-item">
-                                <span class="instruction-number">3</span>
-                                <div class="instruction-content">
-                                    <h4>Prioritize & Rank</h4>
-                                    <p>Select the 4 most critical issues. Rank each from 1-10 based on urgency and potential impact.</p>
-                                </div>
-                            </div>
-                            <div class="instruction-item">
-                                <span class="instruction-number">4</span>
-                                <div class="instruction-content">
-                                    <h4>Strategic Thinking</h4>
-                                    <p>Consider deadlines, stakeholder impact, and business consequences. Think like startup crisis managers.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mission-tips">
-                        <h3 class="tips-title">💡 Strategic Hints</h3>
-                        <div class="tip-list">
-                            <div class="tip-item">
-                                <span class="tip-icon">🎯</span>
-                                <span class="tip-text">Some emails describe the same crisis from different angles - don't double-count!</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">⏰</span>
-                                <span class="tip-text">Pay attention to deadlines and time pressure - what can destroy the company fastest?</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🔍</span>
-                                <span class="tip-text">Look for root causes vs. symptoms. Fix the source, not just the effects.</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🎭</span>
-                                <span class="tip-text">One email is a deliberate distraction - can you spot it?</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mission-deliverable">
-                        <h3 class="deliverable-title">📋 Team Deliverable</h3>
-                        <p>Use the provided Google Doc template to document your analysis. Include:</p>
-                        <ul class="deliverable-list">
-                            <li>Individual email assessments (each team member)</li>
-                            <li>Team consensus on the 4 main crisis points</li>
-                            <li>Urgency ranking (1-10 scale) with justification</li>
-                            <li>Strategic recommendations for each crisis</li>
-                        </ul>
-                        
-                        <div class="template-link">
-                            <a href="https://docs.google.com/document/d/10gfj9s2g85ABlPM0J2O_crJAXohjYUQeAiF9QvWCoOg/edit?usp=drive_link" class="template-button" target="_blank">
-                                📄 Open Analysis Template
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer" role="contentinfo">
-        <div class="footer-content">
-            <p class="footer-text">BloomTech Crisis Simulation • Educational Exercise • B3 Business Students</p>
-            <p class="footer-credit">Built for crisis management training • <span id="current-year"></span></p>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="assets/js/app.js"></script>
+        // Load saved draft on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedDraft = localStorage.getItem('crisis_analysis_draft');
+            if (savedDraft) {
+                try {
+                    const draft = JSON.parse(savedDraft);
+                    if (draft.justification) {
+                        document.getElementById('justificationText').value = draft.justification;
+                    }
+                    if (draft.selectedProblems) {
+                        draft.selectedProblems.forEach(problemId => {
+                            const checkbox = document.getElementById(`checkbox-${problemId}`);
+                            if (checkbox) {
+                                checkbox.checked = true;
+                                selectedProblems.push(problemId);
+                            }
+                        });
+                    }
+                    updateValidateButton();
+                } catch (e) {
+                    console.log('Error loading draft:', e);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
-<!-- À la fin de ton index.html -->
-<div class="phase-transition" style="text-align: center; margin: 3rem 0;">
-    <h2>Ready for Phase 2?</h2>
-    <a href="phase2/tech.html" class="phase-button">
-        🚀 Start Crisis Management Simulation
-    </a>
-</div>

@@ -22,8 +22,8 @@
   --secondary-purple: #764ba2;
   
   /* Neutrals */
-  --text-primary: #2d3748;
-  --text-secondary: #4a5568;
+  --text-primary: black;
+  --text-secondary: black;
   --text-muted: #718096;
   --text-light: #a0aec0;
   
@@ -107,7 +107,7 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
   margin-bottom: var(--space-md);
-  color: black;
+  color: var(--text-primary);
 }
 
 a {

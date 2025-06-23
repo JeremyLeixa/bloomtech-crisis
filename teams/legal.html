@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloomTech Crisis | Legal Response Team</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --legal-primary: #dc2626;
+            --legal-secondary: #b91c1c;
+            --legal-accent: #fef2f2;
+            --legal-dark: #7f1d1d;
+            --warning-orange: #f59e0b;
+            --success-green: #10b981;
+            --info-blue: #3b82f6;
+            --neutral-gray: #6b7280;
+            --dark-bg: #111827;
+            --card-bg: #1f2937;
+            --text-white: #f9fafb;
+            --text-gray: #d1d5db;
+            --border-gray: #374151;
+            --blocked-overlay: rgba(107, 114, 128, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header Legal Team */
+        .team-header {
+            background: linear-gradient(135deg, var(--legal-primary), var(--legal-secondary));
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .team-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-icon {
+            font-size: 2rem;
+        }
+
+        .team-status {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--warning-orange);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.waiting {
+            background: var(--warning-orange);
+        }
+
+        .status-dot.working {
+            background: var(--info-blue);
+        }
+
+        .status-dot.complete {
+            background: var(--success-green);
+            animation: none;
+        }
+
+        .crisis-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Layout principal */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        /* Section de travail principale */
+        .work-section {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .work-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border-gray);
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-status {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-available {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .status-blocked {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .status-complete {
+            background: var(--info-blue);
+            color: white;
+        }
+
+        /* Section bloquée */
+        .blocked-section {
+            position: relative;
+        }
+
+        .blocked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--blocked-overlay);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            backdrop-filter: blur(2px);
+        }
+
+        .blocked-message {
+            background: var(--warning-orange);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .blocked-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .blocked-description {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .waiting-indicator {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .waiting-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+            opacity: 0.5;
+            animation: waiting 1.5s infinite;
+        }
+
+        .waiting-dot:nth-child(2) { animation-delay: 0.3s; }
+        .waiting-dot:nth-child(3) { animation-delay: 0.6s; }
+
+        /* Formulaires de travail */
+        .work-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            background: var(--dark-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: var(--text-white);
+            font-size: 0.875rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--legal-primary);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--legal-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--legal-secondary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: grid;
+            gap: 1.5rem;
+            height: fit-content;
+        }
+
+        .sidebar-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .sidebar-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Team Dependencies */
+        .dependency-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .dependency-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--neutral-gray);
+        }
+
+        .dependency-item.waiting {
+            border-left-color: var(--warning-orange);
+        }
+
+        .dependency-item.received {
+            border-left-color: var(--success-green);
+        }
+
+        .dependency-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .dependency-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .dependency-status.waiting {
+            background: var(--warning-orange);
+            color: white;
+        }
+
+        .dependency-status.received {
+            background: var(--success-green);
+            color: white;
+        }
+
+        /* Mini Chat */
+        .chat-container {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .chat-message {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .chat-message.sent {
+            background: var(--legal-primary);
+            color: white;
+            align-self: flex-end;
+            max-width: 80%;
+        }
+
+        .chat-message.received {
+            background: var(--border-gray);
+            color: var(--text-white);
+            align-self: flex-start;
+            max-width: 80%;
+        }
+
+        .message-sender {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: var(--text-white);
+            font-size: 0.875rem;
+        }
+
+        .chat-send {
+            background: var(--legal-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Deliverables Tracking */
+        .deliverables-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .deliverable-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+        }
+
+        .deliverable-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .deliverable-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .deliverable-btn {
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-mark-done {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-view {
+            background: var(--info-blue);
+            color: white;
+        }
+
+        /* Emergency Override (hidden by default) */
+        .emergency-override {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--legal-dark);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
+        }
+
+        .emergency-override:hover {
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        @keyframes waiting {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .team-title {
+                font-size: 1.5rem;
+            }
+            
+            .main-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Legal Team -->
+    <header class="team-header">
+        <div class="header-content">
+            <h1 class="team-title">
+                <span class="team-icon">⚖️</span>
+                Legal Response Team
+            </h1>
+            
+            <div class="team-status">
+                <div class="status-indicator">
+                    <div class="status-dot waiting" id="teamStatusDot"></div>
+                    <span id="teamStatusText">Waiting for Dependencies</span>
+                </div>
+                
+                <div class="crisis-timer" id="crisisTimer">01:30:00</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        
+        <!-- Section de travail principale -->
+        <section class="work-section">
+            
+            <!-- FTC Response (Disponible immédiatement) -->
+            <div class="work-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📋</span>
+                        FTC Response Strategy
+                    </h2>
+                    <div class="card-status status-available">Available</div>
+                </div>
+                
+                <form class="work-form" id="ftcResponseForm">
+                    <div class="form-group">
+                        <label class="form-label">Initial Response Position</label>
+                        <textarea class="form-textarea" placeholder="Draft initial position on false advertising claims..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Key Legal Arguments</label>
+                        <textarea class="form-textarea" placeholder="List primary legal defenses and precedents..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Draft</button>
+                        <button type="button" class="btn btn-primary">📤 Submit for Review</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Technical Analysis (Bloqué jusqu'à réception des specs Tech) -->
+            <div class="work-card blocked-section" id="technicalAnalysisCard">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>🔍</span>
+                        Technical Legal Analysis
+                    </h2>
+                    <div class="card-status status-blocked">Blocked</div>
+                </div>
+                
+                <div class="blocked-overlay" id="technicalBlockedOverlay">
+                    <div class="blocked-message">
+                        <div class="blocked-title">
+                            <span>⏳</span>
+                            Waiting for Technical Team
+                        </div>
+                        <div class="blocked-description">
+                            Cannot complete legal analysis without technical specifications of the system bug. 
+                            Tech team must provide root cause analysis first.
+                        </div>
+                        <div class="waiting-indicator">
+                            <div class="waiting-dot"></div>
+                            <div class="waiting-dot"></div>
+                            <div class="waiting-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <form class="work-form" id="technicalAnalysisForm">
+                    <div class="form-group">
+                        <label class="form-label">Technical Liability Assessment</label>
+                        <textarea class="form-textarea" placeholder="Based on technical specifications, assess legal liability..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Regulatory Compliance Review</label>
+                        <textarea class="form-textarea" placeholder="Review technical fix against regulatory requirements..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Analysis</button>
+                        <button type="button" class="btn btn-success">✅ Complete & Share with Media</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Risk Mitigation Plan -->
+            <div class="work-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>🛡️</span>
+                        Risk Mitigation Plan
+                    </h2>
+                    <div class="card-status status-available">Available</div>
+                </div>
+                
+                <form class="work-form" id="riskMitigationForm">
+                    <div class="form-group">
+                        <label class="form-label">Immediate Legal Actions</label>
+                        <textarea class="form-textarea" placeholder="List immediate steps to minimize legal exposure..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Long-term Compliance Strategy</label>
+                        <textarea class="form-textarea" placeholder="Outline long-term compliance improvements..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Plan</button>
+                        <button type="button" class="btn btn-primary">📋 Finalize Plan</button>
+                    </div>
+                </form>
+            </div>
+
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            
+            <!-- Dependencies Tracking -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>🔗</span>
+                    Team Dependencies
+                </h3>
+                
+                <div class="dependency-list">
+                    <div class="dependency-item waiting" id="techDependency">
+                        <div class="dependency-name">Tech Specifications</div>
+                        <div class="dependency-status waiting">Waiting</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Communications -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>💬</span>
+                    Team Chat
+                </h3>
+                
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message received">
+                            <div class="message-sender">Tech Team</div>
+                            Working on root cause analysis. Will have specs in 20 minutes.
+                        </div>
+                        <div class="chat-message received">
+                            <div class="message-sender">Media Team</div>
+                            Legal: We need your position ASAP for our press release!
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" placeholder="Message teams..." id="chatInput" maxlength="200">
+                        <button class="chat-send" onclick="sendMessage()">📤</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deliverables Status -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>📋</span>
+                    Your Deliverables
+                </h3>
+                
+                <div class="deliverables-list">
+                    <div class="deliverable-item">
+                        <div class="deliverable-name">FTC Response Draft</div>
+                        <div class="deliverable-actions">
+                            <button class="deliverable-btn btn-view">👁️</button>
+                            <button class="deliverable-btn btn-mark-done" onclick="markDeliverableComplete('ftc-response')">✅</button>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable-item">
+                        <div class="deliverable-name">Technical Analysis</div>
+                        <div class="deliverable-actions">
+                            <button class="deliverable-btn btn-view">👁️</button>
+                            <button class="deliverable-btn btn-mark-done" onclick="markDeliverableComplete('tech-analysis')" disabled>✅</button>
+                        </div>
+                    </div>
+                    
+                    <div class="deliverable-item">
+                        <div class="deliverable-name">Risk Mitigation</div>
+                        <div class="deliverable-actions">
+                            <button class="deliverable-btn btn-view">👁️</button>
+                            <button class="deliverable-btn btn-mark-done" onclick="markDeliverableComplete('risk-plan')">✅</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+    </main>
+
+    <!-- Emergency Override Button (for instructor) -->
+    <button class="emergency-override" onclick="emergencyOverride()" title="Instructor: Emergency unblock">🔓 Override</button>
+
+    <script>
+        // État global de l'équipe Legal
+        let teamState = {
+            dependenciesReceived: {
+                techSpecs: false
+            },
+            deliverablesCompleted: {
+                ftcResponse: false,
+                techAnalysis: false,
+                riskPlan: false
+            },
+            chatMessages: [],
+            startTime: new Date()
+        };
+
+        // Timer global
+        function updateTimer() {
+            const now = new Date();
+            const elapsed = now - teamState.startTime;
+            const totalTime = 90 * 60 * 1000; // 90 minutes
+            const remaining = Math.max(0, totalTime - elapsed);
+            
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            
+            const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('crisisTimer').textContent = display;
+        }
+
+        // Gestion des dépendances
+        function checkDependencies() {
+            // Simulation : vérifier si Tech Team a livré (en vrai, ça viendrait d'une API ou localStorage partagé)
+            const techStatus = localStorage.getItem('tech_team_completed') === 'true';
+            
+            if (techStatus && !teamState.dependenciesReceived.techSpecs) {
+                receiveTechSpecs();
+            }
+        }
+
+        function receiveTechSpecs() {
+            teamState.dependenciesReceived.techSpecs = true;
+            
+            // Débloquer la section d'analyse technique
+            const blockedOverlay = document.getElementById('technicalBlockedOverlay');
+            const cardStatus = document.querySelector('#technicalAnalysisCard .card-status');
+            const dependency = document.getElementById('techDependency');
+            
+            blockedOverlay.style.display = 'none';
+            cardStatus.textContent = 'Available';
+            cardStatus.className = 'card-status status-available';
+            
+            dependency.className = 'dependency-item received';
+            dependency.querySelector('.dependency-status').textContent = 'Received';
+            dependency.querySelector('.dependency-status').className = 'dependency-status received';
+            
+            // Mettre à jour le statut de l'équipe
+            updateTeamStatus();
+            
+            // Ajouter un message de chat automatique
+            addChatMessage('Tech Team', 'Root cause analysis complete! Technical specs sent to Legal team.', 'received');
+            
+            // Activer le bouton d'analyse technique
+            const techAnalysisBtn = document.querySelector('#technicalAnalysisForm .btn-mark-done');
+            if (techAnalysisBtn) {
+                techAnalysisBtn.disabled = false;
+            }
+            
+            console.log('[Legal] Tech specs received - Technical analysis unlocked');
+        }
+
+        function updateTeamStatus() {
+            const statusDot = document.getElementById('teamStatusDot');
+            const statusText = document.getElementById('teamStatusText');
+            
+            const allDependenciesReceived = Object.values(teamState.dependenciesReceived).every(dep => dep);
+            const allDeliverablesCompleted = Object.values(teamState.deliverablesCompleted).every(del => del);
+            
+            if (allDeliverablesCompleted) {
+                statusDot.className = 'status-dot complete';
+                statusText.textContent = 'All Tasks Complete';
+            } else if (allDependenciesReceived) {
+                statusDot.className = 'status-dot working';
+                statusText.textContent = 'Working';
+            } else {
+                statusDot.className = 'status-dot waiting';
+                statusText.textContent = 'Waiting for Dependencies';
+            }
+        }
+
+        // Gestion du chat
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addChatMessage('Legal Team', message, 'sent');
+            input.value = '';
+            
+            // Simuler une réponse occasionnelle
+            if (Math.random() > 0.7) {
+                setTimeout(() => {
+                    const responses = [
+                        'Media Team: Understood, updating our timeline.',
+                        'Strategy Team: Thanks for the update.',
+                        'Tech Team: Working on it!',
+                        'Influencer Team: Need that legal position urgently!'
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    const [sender, msg] = randomResponse.split(': ');
+                    addChatMessage(sender, msg, 'received');
+                }, 2000 + Math.random() * 3000);
+            }
+        }
+
+        function addChatMessage(sender, message, type) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = `chat-message ${type}`;
+            
+            messageElement.innerHTML = `
+                <div class="message-sender">${sender}</div>
+                ${message}
+            `;
+            
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Stocker le message pour persistance
+            teamState.chatMessages.push({ sender, message, type, timestamp: new Date() });
+        }
+
+        // Gestion des livrables
+        function markDeliverableComplete(deliverableId) {
+            if (deliverableId === 'tech-analysis' && !teamState.dependenciesReceived.techSpecs) {
+                alert('Cannot complete technical analysis without tech specifications!');
+                return;
+            }
+            
+            teamState.deliverablesCompleted[deliverableId] = true;
+            
+            // Mise à jour visuelle
+            const deliverableItem = event.target.closest('.deliverable-item');
+            deliverableItem.style.opacity = '0.7';
+            event.target.textContent = '✅';
+            event.target.disabled = true;
+            
+            // Notifier les autres équipes
+            notifyOtherTeams(deliverableId);
+            
+            // Mettre à jour le statut global
+            updateTeamStatus();
+            
+            console.log(`[Legal] Deliverable completed: ${deliverableId}`);
+        }
+
+        function notifyOtherTeams(deliverableId) {
+            // Simulation de notification aux autres équipes
+            const notifications = {
+                'ftc-response': {
+                    target: 'media_team',
+                    message: 'Legal position established for press communications'
+                },
+                'tech-analysis': {
+                    target: 'media_team',
+                    message: 'Technical legal analysis complete - safe to communicate fix timeline'
+                },
+                'risk-plan': {
+                    target: 'strategy_team',
+                    message: 'Risk mitigation strategy ready for board presentation'
+                }
+            };
+            
+            const notification = notifications[deliverableId];
+            if (notification) {
+                // Stocker dans localStorage pour que les autres équipes puissent récupérer
+                localStorage.setItem(`legal_${deliverableId}_complete`, 'true');
+                localStorage.setItem(`legal_${deliverableId}_message`, notification.message);
+                
+                // Ajouter message de confirmation dans le chat
+                addChatMessage('System', `✅ ${notification.message} - Sent to ${notification.target.replace('_', ' ')}`, 'sent');
+            }
+        }
+
+        // Fonction d'urgence pour l'instructeur
+        function emergencyOverride() {
+            const password = prompt('Emergency override password:');
+            if (password === 'bloomtech2025') {
+                // Débloquer toutes les sections
+                teamState.dependenciesReceived.techSpecs = true;
+                receiveTechSpecs();
+                
+                // Marquer certains livrables comme complétés
+                Object.keys(teamState.deliverablesCompleted).forEach(key => {
+                    teamState.deliverablesCompleted[key] = true;
+                });
+                
+                updateTeamStatus();
+                alert('Emergency override activated - All sections unlocked');
+                console.log('[Legal] Emergency override activated by instructor');
+            }
+        }
+
+        // Gestion des formulaires
+        function setupFormHandlers() {
+            // Auto-save des formulaires
+            const forms = ['ftcResponseForm', 'technicalAnalysisForm', 'riskMitigationForm'];
+            
+            forms.forEach(formId => {
+                const form = document.getElementById(formId);
+                if (form) {
+                    const inputs = form.querySelectorAll('textarea, input');
+                    inputs.forEach(input => {
+                        input.addEventListener('input', () => {
+                            // Auto-save vers localStorage
+                            localStorage.setItem(`legal_${formId}_${input.name || 'content'}`, input.value);
+                        });
+                        
+                        // Charger contenu sauvegardé
+                        const savedContent = localStorage.getItem(`legal_${formId}_${input.name || 'content'}`);
+                        if (savedContent) {
+                            input.value = savedContent;
+                        }
+                    });
+                }
+            });
+        }
+
+        // Simulation d'événements externes
+        function simulateExternalEvents() {
+            // Simuler réception de specs techniques après un délai
+            setTimeout(() => {
+                if (!teamState.dependenciesReceived.techSpecs) {
+                    // Simuler que Tech Team a terminé
+                    localStorage.setItem('tech_team_completed', 'true');
+                    console.log('[Simulation] Tech team marked as completed');
+                }
+            }, 30000); // 30 secondes pour les tests
+            
+            // Simuler messages de chat aléatoires
+            const chatEvents = [
+                { sender: 'CEO', message: 'Legal team - how are we doing on FTC response?', delay: 45000 },
+                { sender: 'Media Team', message: 'Urgent: Journalists asking about our legal position!', delay: 60000 },
+                { sender: 'Strategy Team', message: 'Board wants legal summary in 30 minutes', delay: 75000 }
+            ];
+            
+            chatEvents.forEach(event => {
+                setTimeout(() => {
+                    addChatMessage(event.sender, event.message, 'received');
+                }, event.delay);
+            });
+        }
+
+        // Gestion des événements du CEO Dashboard
+        function handleCEOEvents() {
+            // Écouter les événements du dashboard CEO
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'ceo_broadcast_message') {
+                    const message = e.newValue;
+                    if (message) {
+                        addChatMessage('CEO BROADCAST', message, 'received');
+                        
+                        // Afficher notification visuelle
+                        showCEOBroadcast(message);
+                    }
+                }
+                
+                // Gérer les événements de crise spécifiques
+                if (e.key === 'crisis_event_triggered') {
+                    const eventData = JSON.parse(e.newValue || '{}');
+                    handleCrisisEvent(eventData);
+                }
+            });
+        }
+
+        function showCEOBroadcast(message) {
+            const broadcast = document.createElement('div');
+            broadcast.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, var(--legal-primary), var(--legal-secondary));
+                color: white;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 20px 40px rgba(220, 38, 38, 0.4);
+                z-index: 10000;
+                text-align: center;
+                animation: slideInUp 0.5s ease-out;
+                max-width: 500px;
+                border: 2px solid rgba(255, 255, 255, 0.2);
+            `;
+            
+            broadcast.innerHTML = `
+                <h2 style="margin: 0 0 1rem 0; font-size: 1.25rem; font-weight: 800;">📢 CEO MESSAGE</h2>
+                <p style="margin: 0 0 1rem 0; font-size: 1rem; line-height: 1.5;">${message}</p>
+                <button onclick="this.parentElement.remove()" style="
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid white;
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.5rem;
+                    cursor: pointer;
+                    font-weight: 600;
+                ">Understood</button>
+            `;
+            
+            document.body.appendChild(broadcast);
+            
+            setTimeout(() => {
+                if (broadcast.parentNode) {
+                    broadcast.remove();
+                }
+            }, 8000);
+        }
+
+        function handleCrisisEvent(eventData) {
+            switch(eventData.type) {
+                case 'journalist-call':
+                    addChatMessage('URGENT', 'Journalist demands legal statement in 15 minutes!', 'received');
+                    // Réduire le temps pour certaines tâches
+                    break;
+                case 'investor-panic':
+                    addChatMessage('Strategy Team', 'Legal: Investor wants liability assessment NOW!', 'received');
+                    break;
+                default:
+                    console.log(`[Legal] Unhandled crisis event: ${eventData.type}`);
+            }
+        }
+
+        // Gestion du chat avec Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[Legal Team] Interface initialized');
+            
+            // Démarrer les timers et gestionnaires
+            setInterval(updateTimer, 1000);
+            setInterval(checkDependencies, 5000);
+            
+            // Configurer les formulaires
+            setupFormHandlers();
+            
+            // Écouter les événements CEO
+            handleCEOEvents();
+            
+            // Simuler des événements pour les tests
+            if (window.location.search.includes('demo=true')) {
+                simulateExternalEvents();
+            }
+            
+            // Message de bienvenue
+            addChatMessage('System', 'Legal Response Team activated. Waiting for technical specifications...', 'received');
+            
+            // Mise à jour initiale du statut
+            updateTeamStatus();
+        });
+
+        // Ajout des styles d'animation
+        const animationStyles = document.createElement('style');
+        animationStyles.textContent = `
+            @keyframes slideInUp {
+                from { opacity: 0; transform: translate(-50%, -50%) translateY(30px); }
+                to { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+            }
+        `;
+        document.head.appendChild(animationStyles);
+    </script>
+</body>
+</html>

@@ -327,6 +327,10 @@ li {
   gap: var(--space-2xl);
 }
 
+.briefing-content p {
+  color: var(--text-primary) !important;
+}
+
 .scenario-block,
 .mission-block,
 .team-setup {

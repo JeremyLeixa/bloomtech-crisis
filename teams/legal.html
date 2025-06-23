@@ -37,6 +37,41 @@
             overflow-x: hidden;
         }
 
+        /* Tooltips pour vulgarisation */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted var(--legal-primary);
+        }
+
+        .tooltip::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark-bg);
+            color: var(--text-white);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 1000;
+            border: 1px solid var(--border-gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            margin-bottom: 8px;
+            max-width: 320px;
+            white-space: normal;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
         /* Header Legal Team */
         .team-header {
             background: linear-gradient(135deg, var(--legal-primary), var(--legal-secondary));
@@ -67,41 +102,40 @@
             font-size: 2rem;
         }
 
-        .team-status {
+        .deadline-status {
             display: flex;
             align-items: center;
             gap: 2rem;
         }
 
-        .status-indicator {
+        .deadline-alert {
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 0.5rem;
             background: rgba(255, 255, 255, 0.1);
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--warning-orange);
-            animation: pulse 2s infinite;
+        .deadline-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .status-dot.waiting {
-            background: var(--warning-orange);
+        .deadline-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
         }
 
-        .status-dot.working {
-            background: var(--info-blue);
-        }
-
-        .status-dot.complete {
-            background: var(--success-green);
-            animation: none;
+        .deadline-timer.critical {
+            color: #fbbf24;
+            animation: pulse 1s infinite;
         }
 
         .crisis-timer {
@@ -120,11 +154,10 @@
             margin: 0 auto;
             padding: 2rem;
             display: grid;
-            grid-template-columns: 1fr 300px;
+            grid-template-columns: 1fr 320px;
             gap: 2rem;
         }
 
-        /* Section de travail principale */
         .work-section {
             display: grid;
             gap: 2rem;
@@ -167,38 +200,47 @@
             color: white;
         }
 
-        .status-blocked {
+        .status-waiting {
             background: var(--warning-orange);
             color: white;
         }
 
-        .status-complete {
-            background: var(--info-blue);
+        .status-urgent {
+            background: var(--legal-primary);
             color: white;
+            animation: pulse 2s infinite;
         }
 
-        /* Section bloquée */
-        .blocked-section {
+        /* Section encouragée mais pas bloquée */
+        .encouraged-section {
             position: relative;
         }
 
-        .blocked-overlay {
+        .encouraged-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--blocked-overlay);
+            background: rgba(245, 158, 11, 0.1);
             border-radius: 1rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10;
-            backdrop-filter: blur(2px);
+            z-index: 5;
+            backdrop-filter: blur(1px);
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.3s ease;
         }
 
-        .blocked-message {
+        .encouraged-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .encouraged-message {
             background: var(--warning-orange);
             color: white;
             padding: 1.5rem;
@@ -206,9 +248,10 @@
             text-align: center;
             max-width: 400px;
             box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+            pointer-events: auto;
         }
 
-        .blocked-title {
+        .encouraged-title {
             font-size: 1.125rem;
             font-weight: 700;
             margin-bottom: 0.75rem;
@@ -218,61 +261,64 @@
             gap: 0.5rem;
         }
 
-        .blocked-description {
+        .encouraged-description {
             font-size: 0.875rem;
             opacity: 0.9;
             line-height: 1.5;
+            margin-bottom: 1rem;
         }
 
-        .waiting-indicator {
-            margin-top: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
+        .continue-anyway {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
         }
 
-        .waiting-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        .continue-anyway:hover {
             background: white;
-            opacity: 0.5;
-            animation: waiting 1.5s infinite;
+            color: var(--warning-orange);
         }
 
-        .waiting-dot:nth-child(2) { animation-delay: 0.3s; }
-        .waiting-dot:nth-child(3) { animation-delay: 0.6s; }
-
-        /* Formulaires de travail */
-        .work-form {
+        /* Formulaires légaux */
+        .legal-form {
             display: grid;
             gap: 1.5rem;
         }
 
         .form-group {
             display: grid;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .form-label {
             font-weight: 600;
             color: var(--text-gray);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .form-input,
-        .form-textarea {
+        .form-textarea,
+        .form-select {
             background: var(--dark-bg);
             border: 1px solid var(--border-gray);
             border-radius: 0.5rem;
-            padding: 0.75rem;
+            padding: 0.875rem;
             color: var(--text-white);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             transition: border-color 0.3s ease;
         }
 
         .form-input:focus,
-        .form-textarea:focus {
+        .form-textarea:focus,
+        .form-select:focus {
             outline: none;
             border-color: var(--legal-primary);
             box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
@@ -281,15 +327,102 @@
         .form-textarea {
             resize: vertical;
             min-height: 120px;
-            font-family: inherit;
+            line-height: 1.6;
         }
 
-        .form-actions {
+        .form-textarea.large {
+            min-height: 180px;
+        }
+
+        /* FTC Response Editor */
+        .ftc-editor {
+            background: white;
+            color: #1f2937;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gray);
+            margin: 1rem 0;
+        }
+
+        .ftc-header {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .ftc-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .ftc-ref {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .ftc-content {
+            line-height: 1.7;
+            color: #374151;
+        }
+
+        /* Legal Analysis Panel */
+        .analysis-panel {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px solid var(--legal-primary);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .analysis-header {
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
         }
 
+        .analysis-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--legal-primary);
+        }
+
+        .risk-assessment {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .risk-item {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .risk-level {
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-level.high { color: var(--legal-primary); }
+        .risk-level.medium { color: var(--warning-orange); }
+        .risk-level.low { color: var(--success-green); }
+
+        .risk-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Boutons */
         .btn {
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
@@ -311,16 +444,6 @@
         .btn-primary:hover {
             background: var(--legal-secondary);
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
-        }
-
-        .btn-secondary {
-            background: var(--neutral-gray);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #4b5563;
         }
 
         .btn-success {
@@ -328,9 +451,15 @@
             color: white;
         }
 
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-1px);
+        .btn-secondary {
+            background: var(--neutral-gray);
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         /* Sidebar */
@@ -356,12 +485,93 @@
             gap: 0.5rem;
         }
 
-        /* Team Dependencies */
-        .dependency-list {
-            display: grid;
-            gap: 1rem;
+        /* Team Communication Chat */
+        .chat-container {
+            height: 280px;
+            display: flex;
+            flex-direction: column;
         }
 
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--dark-bg);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .chat-message {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .chat-message.sent {
+            background: var(--legal-primary);
+            color: white;
+            align-self: flex-end;
+            max-width: 80%;
+        }
+
+        .chat-message.received {
+            background: var(--border-gray);
+            color: var(--text-white);
+            align-self: flex-start;
+            max-width: 80%;
+        }
+
+        .chat-message.system {
+            background: var(--info-blue);
+            color: white;
+            align-self: center;
+            max-width: 90%;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .message-sender {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            color: var(--text-white);
+            font-size: 0.875rem;
+        }
+
+        .chat-send {
+            background: var(--legal-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .chat-send:hover {
+            background: var(--legal-secondary);
+        }
+
+        /* Dependencies */
         .dependency-item {
             display: flex;
             justify-content: space-between;
@@ -369,6 +579,7 @@
             padding: 0.75rem;
             background: var(--dark-bg);
             border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
             border-left: 4px solid var(--neutral-gray);
         }
 
@@ -404,79 +615,7 @@
             color: white;
         }
 
-        /* Mini Chat */
-        .chat-container {
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.5rem;
-            background: var(--dark-bg);
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .chat-message {
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            line-height: 1.4;
-        }
-
-        .chat-message.sent {
-            background: var(--legal-primary);
-            color: white;
-            align-self: flex-end;
-            max-width: 80%;
-        }
-
-        .chat-message.received {
-            background: var(--border-gray);
-            color: var(--text-white);
-            align-self: flex-start;
-            max-width: 80%;
-        }
-
-        .message-sender {
-            font-size: 0.75rem;
-            opacity: 0.8;
-            margin-bottom: 0.25rem;
-            font-weight: 600;
-        }
-
-        .chat-input-container {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: var(--dark-bg);
-            border: 1px solid var(--border-gray);
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            color: var(--text-white);
-            font-size: 0.875rem;
-        }
-
-        .chat-send {
-            background: var(--legal-primary);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        /* Deliverables Tracking */
+        /* Deliverables */
         .deliverables-list {
             display: grid;
             gap: 0.75rem;
@@ -486,9 +625,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
+            padding: 1rem;
             background: var(--dark-bg);
             border-radius: 0.5rem;
+            border: 1px solid var(--border-gray);
         }
 
         .deliverable-name {
@@ -496,59 +636,30 @@
             font-weight: 500;
         }
 
-        .deliverable-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
         .deliverable-btn {
-            padding: 0.25rem 0.75rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 0.25rem;
             font-size: 0.75rem;
             border: none;
             cursor: pointer;
             font-weight: 600;
+            background: var(--legal-primary);
+            color: white;
         }
 
-        .btn-mark-done {
+        .deliverable-btn:hover {
+            background: var(--legal-secondary);
+        }
+
+        .deliverable-btn:disabled {
             background: var(--success-green);
-            color: white;
-        }
-
-        .btn-view {
-            background: var(--info-blue);
-            color: white;
-        }
-
-        /* Emergency Override (hidden by default) */
-        .emergency-override {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--legal-dark);
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            cursor: pointer;
-            opacity: 0.1;
-            transition: opacity 0.3s ease;
-        }
-
-        .emergency-override:hover {
-            opacity: 1;
+            cursor: not-allowed;
         }
 
         /* Animations */
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.7; transform: scale(1.05); }
-        }
-
-        @keyframes waiting {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
         }
 
         /* Responsive */
@@ -564,17 +675,22 @@
                 flex-direction: column;
                 gap: 1rem;
             }
-            
+
             .team-title {
                 font-size: 1.5rem;
             }
-            
+
             .main-container {
                 padding: 1rem;
+            }
+
+            .risk-assessment {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Header Legal Team -->
     <header class="team-header">
@@ -583,13 +699,11 @@
                 <span class="team-icon">⚖️</span>
                 Legal Response Team
             </h1>
-            
-            <div class="team-status">
-                <div class="status-indicator">
-                    <div class="status-dot waiting" id="teamStatusDot"></div>
-                    <span id="teamStatusText">Waiting for Dependencies</span>
+            <div class="deadline-status">
+                <div class="deadline-alert">
+                    <div class="deadline-label">Legal Deadline</div>
+                    <div class="deadline-timer" id="legalDeadline">00:30:00</div>
                 </div>
-                
                 <div class="crisis-timer" id="crisisTimer">01:30:00</div>
             </div>
         </div>
@@ -597,151 +711,229 @@
 
     <!-- Main Content -->
     <main class="main-container">
-        
         <!-- Section de travail principale -->
         <section class="work-section">
-            
-            <!-- FTC Response (Disponible immédiatement) -->
+            <!-- Legal Risk Assessment (Available) -->
             <div class="work-card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>📋</span>
-                        FTC Response Strategy
+                        <span>📊</span>
+                        <span class="tooltip" data-tooltip="Évaluer les risques juridiques pour l'entreprise - quels sont les dangers légaux de cette crise ?">Legal Risk Assessment</span>
                     </h2>
-                    <div class="card-status status-available">Available</div>
+                    <div class="card-status status-available">AVAILABLE</div>
                 </div>
-                
-                <form class="work-form" id="ftcResponseForm">
-                    <div class="form-group">
-                        <label class="form-label">Initial Response Position</label>
-                        <textarea class="form-textarea" placeholder="Draft initial position on false advertising claims..."></textarea>
+
+                <div class="risk-assessment">
+                    <div class="risk-item">
+                        <div class="risk-level high">HIGH</div>
+                        <div class="risk-label">FTC Violation Risk</div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Key Legal Arguments</label>
-                        <textarea class="form-textarea" placeholder="List primary legal defenses and precedents..."></textarea>
+                    <div class="risk-item">
+                        <div class="risk-level medium">MEDIUM</div>
+                        <div class="risk-label">Customer Lawsuit Risk</div>
                     </div>
-                    
+                    <div class="risk-item">
+                        <div class="risk-level high">HIGH</div>
+                        <div class="risk-label">Regulatory Investigation</div>
+                    </div>
+                    <div class="risk-item">
+                        <div class="risk-level medium">MEDIUM</div>
+                        <div class="risk-label">Brand Damage Claims</div>
+                    </div>
+                </div>
+
+                <form class="legal-form" id="riskAssessmentForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>⚠️</span>
+                            <span class="tooltip" data-tooltip="FTC = Federal Trade Commission, l'agence américaine qui protège les consommateurs contre les publicités trompeuses">Primary FTC Concerns</span>
+                        </label>
+                        <textarea class="form-textarea" placeholder="Identify the main legal issues the FTC will focus on (false advertising, misleading claims, etc.)..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🛡️</span>
+                            Legal Defense Strategy
+                        </label>
+                        <select class="form-select">
+                            <option value="">Select legal approach...</option>
+                            <option value="technical-error">Technical error - not intentional deception</option>
+                            <option value="immediate-correction">Immediate correction and transparency</option>
+                            <option value="minimal-harm">Minimal consumer harm argument</option>
+                            <option value="industry-standard">Industry standard practices defense</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">💾 Save Assessment</button>
+                        <button type="button" class="btn btn-primary">📋 Complete Risk Analysis</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- FTC Response (Encouraged to wait for Crisis Analysis) -->
+            <div class="work-card encouraged-section" id="ftcResponseCard">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📄</span>
+                        <span class="tooltip" data-tooltip="Réponse officielle à la Federal Trade Commission pour expliquer ce qui s'est passé et comment nous corrigeons le problème">Official FTC Response</span>
+                    </h2>
+                    <div class="card-status status-waiting">WAITING FOR ANALYSIS</div>
+                </div>
+
+                <div class="encouraged-overlay" id="ftcEncouragedOverlay">
+                    <div class="encouraged-message">
+                        <div class="encouraged-title">
+                            <span>⏳</span>
+                            Recommended: Wait for Crisis Analysis
+                        </div>
+                        <div class="encouraged-description">
+                            For a stronger legal response, it's recommended to wait for the technical analysis from Crisis Analysis Team. However, you can start working if needed.
+                        </div>
+                        <button class="continue-anyway" onclick="dismissEncouragement()">Continue Anyway</button>
+                    </div>
+                </div>
+
+                <form class="legal-form" id="ftcResponseForm">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>📋</span>
+                            Response Summary
+                        </label>
+                        <textarea class="form-textarea" placeholder="Brief summary of our official position for the FTC..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🔍</span>
+                            <span class="tooltip" data-tooltip="Expliquer exactement ce qui s'est mal passé techniquement - important pour montrer que ce n'était pas intentionnel">Technical Explanation</span>
+                        </label>
+                        <textarea class="form-textarea large" placeholder="Detailed explanation of what happened technically (based on Crisis Analysis Team findings)..."></textarea>
+                    </div>
+
+                    <div class="ftc-editor">
+                        <div class="ftc-header">
+                            <div class="ftc-title">OFFICIAL RESPONSE TO FTC INQUIRY</div>
+                            <div class="ftc-ref">Ref: BLOOM-2025-001 | Date: January 20, 2025</div>
+                        </div>
+                        <div class="ftc-content" id="ftcPreview">
+                            Your official FTC response will appear here as you write...
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>✅</span>
+                            <span class="tooltip" data-tooltip="Actions concrètes pour corriger le problème et éviter que ça se reproduise">Corrective Actions</span>
+                        </label>
+                        <textarea class="form-textarea" placeholder="List the specific actions BloomTech will take to fix this issue and prevent future occurrences..."></textarea>
+                    </div>
+
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary">💾 Save Draft</button>
-                        <button type="button" class="btn btn-primary">📤 Submit for Review</button>
+                        <button type="button" class="btn btn-success" onclick="submitFTCResponse()">📤 Submit to FTC & Approve Media</button>
                     </div>
                 </form>
             </div>
 
-            <!-- Technical Analysis (Bloqué jusqu'à réception des specs Tech) -->
-            <div class="work-card blocked-section" id="technicalAnalysisCard">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <span>🔍</span>
-                        Technical Legal Analysis
-                    </h2>
-                    <div class="card-status status-blocked">Blocked</div>
-                </div>
-                
-                <div class="blocked-overlay" id="technicalBlockedOverlay">
-                    <div class="blocked-message">
-                        <div class="blocked-title">
-                            <span>⏳</span>
-                            Waiting for Technical Team
-                        </div>
-                        <div class="blocked-description">
-                            Cannot complete legal analysis without technical specifications of the system bug. 
-                            Tech team must provide root cause analysis first.
-                        </div>
-                        <div class="waiting-indicator">
-                            <div class="waiting-dot"></div>
-                            <div class="waiting-dot"></div>
-                            <div class="waiting-dot"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <form class="work-form" id="technicalAnalysisForm">
-                    <div class="form-group">
-                        <label class="form-label">Technical Liability Assessment</label>
-                        <textarea class="form-textarea" placeholder="Based on technical specifications, assess legal liability..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Regulatory Compliance Review</label>
-                        <textarea class="form-textarea" placeholder="Review technical fix against regulatory requirements..."></textarea>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">💾 Save Analysis</button>
-                        <button type="button" class="btn btn-success">✅ Complete & Share with Media</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Risk Mitigation Plan -->
+            <!-- Legal Approval for Media -->
             <div class="work-card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>🛡️</span>
-                        Risk Mitigation Plan
+                        <span>✅</span>
+                        <span class="tooltip" data-tooltip="Donner l'autorisation légale à l'équipe Media pour qu'ils puissent communiquer publiquement">Media Communication Approval</span>
                     </h2>
-                    <div class="card-status status-available">Available</div>
+                    <div class="card-status status-available">AVAILABLE</div>
                 </div>
-                
-                <form class="work-form" id="riskMitigationForm">
-                    <div class="form-group">
-                        <label class="form-label">Immediate Legal Actions</label>
-                        <textarea class="form-textarea" placeholder="List immediate steps to minimize legal exposure..."></textarea>
+
+                <div class="analysis-panel">
+                    <div class="analysis-header">
+                        <span>⚖️</span>
+                        <div class="analysis-title">Legal Position for Public Communication</div>
                     </div>
-                    
+                    <p style="color: #374151; margin-bottom: 1rem;">
+                        This will be shared with Media Team to guide their press release and public statements.
+                    </p>
+                </div>
+
+                <form class="legal-form" id="mediaApprovalForm">
                     <div class="form-group">
-                        <label class="form-label">Long-term Compliance Strategy</label>
-                        <textarea class="form-textarea" placeholder="Outline long-term compliance improvements..."></textarea>
+                        <label class="form-label">
+                            <span>📢</span>
+                            Approved Key Messages
+                        </label>
+                        <textarea class="form-textarea" placeholder="What can Media Team safely say publicly? (approved talking points)..."></textarea>
                     </div>
-                    
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>🚫</span>
+                            <span class="tooltip" data-tooltip="Ce que l'équipe Media ne doit JAMAIS dire publiquement car cela pourrait aggraver les problèmes légaux">Legal Restrictions</span>
+                        </label>
+                        <textarea class="form-textarea" placeholder="What should Media Team NEVER say publicly? (legal red lines)..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>⚖️</span>
+                            Legal Tone Guidance
+                        </label>
+                        <select class="form-select">
+                            <option value="">Select recommended tone...</option>
+                            <option value="transparent">Transparent & Apologetic</option>
+                            <option value="factual">Factual & Technical</option>
+                            <option value="minimal">Minimal Admission</option>
+                            <option value="defensive">Defensive but Cooperative</option>
+                        </select>
+                    </div>
+
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">💾 Save Plan</button>
-                        <button type="button" class="btn btn-primary">📋 Finalize Plan</button>
+                        <button type="button" class="btn btn-secondary">💾 Save Guidelines</button>
+                        <button type="button" class="btn btn-success" onclick="approveMediaCommunication()">✅ Approve Media Communication</button>
                     </div>
                 </form>
             </div>
-
         </section>
 
         <!-- Sidebar -->
         <aside class="sidebar">
-            
-            <!-- Dependencies Tracking -->
+            <!-- Dependencies -->
             <div class="sidebar-card">
                 <h3 class="sidebar-title">
                     <span>🔗</span>
                     Team Dependencies
                 </h3>
-                
-                <div class="dependency-list">
-                    <div class="dependency-item waiting" id="techDependency">
-                        <div class="dependency-name">Tech Specifications</div>
-                        <div class="dependency-status waiting">Waiting</div>
-                    </div>
+                <div class="dependency-item waiting" id="crisisDependency">
+                    <div class="dependency-name">Crisis Analysis Report</div>
+                    <div class="dependency-status waiting">WAITING</div>
                 </div>
+                <p style="font-size: 0.875rem; color: var(--text-gray); margin-top: 1rem;">
+                    💡 <strong>Tip:</strong> You can start risk assessment, but wait for technical details before finalizing FTC response.
+                </p>
             </div>
 
-            <!-- Team Communications -->
+            <!-- Team Communication Chat -->
             <div class="sidebar-card">
                 <h3 class="sidebar-title">
                     <span>💬</span>
                     Team Chat
                 </h3>
-                
                 <div class="chat-container">
                     <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message system">
+                            <div class="message-sender">System</div>
+                            Legal Response Team activated. Crisis management protocol engaged.
+                        </div>
                         <div class="chat-message received">
-                            <div class="message-sender">Tech Team</div>
-                            Working on root cause analysis. Will have specs in 20 minutes.
+                            <div class="message-sender">Crisis Analysis</div>
+                            Working on technical root cause analysis. Will have findings for you soon!
                         </div>
                         <div class="chat-message received">
                             <div class="message-sender">Media Team</div>
-                            Legal: We need your position ASAP for our press release!
+                            URGENT: Need legal position ASAP! Journalists are asking questions.
                         </div>
                     </div>
-                    
                     <div class="chat-input-container">
                         <input type="text" class="chat-input" placeholder="Message teams..." id="chatInput" maxlength="200">
                         <button class="chat-send" onclick="sendMessage()">📤</button>
@@ -749,65 +941,66 @@
                 </div>
             </div>
 
-            <!-- Deliverables Status -->
+            <!-- Deliverables -->
             <div class="sidebar-card">
                 <h3 class="sidebar-title">
                     <span>📋</span>
                     Your Deliverables
                 </h3>
-                
                 <div class="deliverables-list">
                     <div class="deliverable-item">
-                        <div class="deliverable-name">FTC Response Draft</div>
-                        <div class="deliverable-actions">
-                            <button class="deliverable-btn btn-view">👁️</button>
-                            <button class="deliverable-btn btn-mark-done" onclick="markDeliverableComplete('ftc-response')">✅</button>
-                        </div>
+                        <div class="deliverable-name">Risk Assessment</div>
+                        <button class="deliverable-btn" onclick="markComplete('risk-assessment')">Complete</button>
                     </div>
-                    
                     <div class="deliverable-item">
-                        <div class="deliverable-name">Technical Analysis</div>
-                        <div class="deliverable-actions">
-                            <button class="deliverable-btn btn-view">👁️</button>
-                            <button class="deliverable-btn btn-mark-done" onclick="markDeliverableComplete('tech-analysis')" disabled>✅</button>
-                        </div>
+                        <div class="deliverable-name">FTC Response</div>
+                        <button class="deliverable-btn" onclick="markComplete('ftc-response')">Complete</button>
                     </div>
-                    
                     <div class="deliverable-item">
-                        <div class="deliverable-name">Risk Mitigation</div>
-                        <div class="deliverable-actions">
-                            <button class="deliverable-btn btn-view">👁️</button>
-                            <button class="deliverable-btn btn-mark-done" onclick="markDeliverableComplete('risk-plan')">✅</button>
-                        </div>
+                        <div class="deliverable-name">Media Approval</div>
+                        <button class="deliverable-btn" onclick="markComplete('media-approval')">Complete</button>
                     </div>
                 </div>
             </div>
 
+            <!-- Legal Resources -->
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">
+                    <span>📚</span>
+                    Legal Resources
+                </h3>
+                <div style="display: grid; gap: 0.5rem;">
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem;">📄 FTC Guidelines</button>
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem;">⚖️ Precedent Cases</button>
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem;">📊 Compliance Checklist</button>
+                    <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem;">🏛️ Regulatory Database</button>
+                </div>
+            </div>
         </aside>
     </main>
 
-    <!-- Emergency Override Button (for instructor) -->
-    <button class="emergency-override" onclick="emergencyOverride()" title="Instructor: Emergency unblock">🔓 Override</button>
-
     <script>
-        // État global de l'équipe Legal
-        let teamState = {
+        // État global Legal Team avec clés uniformisées
+        let legalState = {
             dependenciesReceived: {
-                techSpecs: false
+                crisisAnalysis: false
             },
             deliverablesCompleted: {
+                riskAssessment: false,
                 ftcResponse: false,
-                techAnalysis: false,
-                riskPlan: false
+                mediaApproval: false
             },
-            chatMessages: [],
-            startTime: new Date()
+            startTime: new Date(),
+            legalDeadline: new Date(new Date().getTime() + 30 * 60 * 1000), // 30 minutes
+            encouragementDismissed: false
         };
 
-        // Timer global
-        function updateTimer() {
+        // Timer management
+        function updateTimers() {
             const now = new Date();
-            const elapsed = now - teamState.startTime;
+            
+            // Crisis timer global
+            const elapsed = now - legalState.startTime;
             const totalTime = 90 * 60 * 1000; // 90 minutes
             const remaining = Math.max(0, totalTime - elapsed);
             
@@ -817,198 +1010,208 @@
             
             const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             document.getElementById('crisisTimer').textContent = display;
+
+            // Legal deadline timer (30 minutes)
+            const legalRemaining = Math.max(0, legalState.legalDeadline - now);
+            const legalMinutes = Math.floor(legalRemaining / (1000 * 60));
+            const legalSeconds = Math.floor((legalRemaining % (1000 * 60)) / 1000);
+            
+            const legalDisplay = `00:${legalMinutes.toString().padStart(2, '0')}:${legalSeconds.toString().padStart(2, '0')}`;
+            const legalElement = document.getElementById('legalDeadline');
+            legalElement.textContent = legalDisplay;
+
+            // Critical deadline warning
+            if (legalRemaining <= 10 * 60 * 1000) { // 10 minutes left
+                legalElement.classList.add('critical');
+            }
+
+            if (legalRemaining <= 0) {
+                legalElement.textContent = 'DEADLINE PASSED';
+                legalElement.classList.add('critical');
+                handleLegalDeadlinePassed();
+            }
         }
 
-        // Gestion des dépendances
+        // Check dependencies - utilise les clés uniformisées
         function checkDependencies() {
-            // Simulation : vérifier si Tech Team a livré (en vrai, ça viendrait d'une API ou localStorage partagé)
-            const techStatus = localStorage.getItem('tech_team_completed') === 'true';
-            
-            if (techStatus && !teamState.dependenciesReceived.techSpecs) {
-                receiveTechSpecs();
+            // Vérifier si Crisis Analysis a terminé
+            const crisisStatus = localStorage.getItem('team_crisis_analysis_complete') === 'true';
+
+            if (crisisStatus && !legalState.dependenciesReceived.crisisAnalysis) {
+                receiveCrisisAnalysis();
             }
         }
 
-        function receiveTechSpecs() {
-            teamState.dependenciesReceived.techSpecs = true;
+        function receiveCrisisAnalysis() {
+            legalState.dependenciesReceived.crisisAnalysis = true;
             
-            // Débloquer la section d'analyse technique
-            const blockedOverlay = document.getElementById('technicalBlockedOverlay');
-            const cardStatus = document.querySelector('#technicalAnalysisCard .card-status');
-            const dependency = document.getElementById('techDependency');
+            // Mettre à jour l'affichage des dépendances
+            const crisisDependency = document.getElementById('crisisDependency');
+            crisisDependency.className = 'dependency-item received';
+            crisisDependency.querySelector('.dependency-status').textContent = 'RECEIVED';
+            crisisDependency.querySelector('.dependency-status').className = 'dependency-status received';
+
+            // Changer le statut de la carte FTC Response
+            const cardStatus = document.querySelector('#ftcResponseCard .card-status');
+            cardStatus.textContent = 'URGENT';
+            cardStatus.className = 'card-status status-urgent';
+
+            // Auto-dismiss l'encouragement si pas encore fait
+            if (!legalState.encouragementDismissed) {
+                setTimeout(() => {
+                    dismissEncouragement();
+                }, 2000);
+            }
+
+            // Chat notification
+            addChatMessage('Crisis Analysis', 'Technical analysis complete! Root cause identified - you can now finalize FTC response.', 'received');
+            addChatMessage('System', '✅ Crisis analysis received. FTC response can now be completed with technical details.', 'system');
             
-            blockedOverlay.style.display = 'none';
-            cardStatus.textContent = 'Available';
+            console.log('[Legal] Crisis analysis received - FTC response can be enhanced');
+        }
+
+        // Gestion de l'encouragement (pas blocage)
+        function dismissEncouragement() {
+            legalState.encouragementDismissed = true;
+            const overlay = document.getElementById('ftcEncouragedOverlay');
+            overlay.classList.add('hidden');
+            
+            // Mettre à jour le statut
+            const cardStatus = document.querySelector('#ftcResponseCard .card-status');
+            cardStatus.textContent = 'ACTIVE';
             cardStatus.className = 'card-status status-available';
-            
-            dependency.className = 'dependency-item received';
-            dependency.querySelector('.dependency-status').textContent = 'Received';
-            dependency.querySelector('.dependency-status').className = 'dependency-status received';
-            
-            // Mettre à jour le statut de l'équipe
-            updateTeamStatus();
-            
-            // Ajouter un message de chat automatique
-            addChatMessage('Tech Team', 'Root cause analysis complete! Technical specs sent to Legal team.', 'received');
-            
-            // Activer le bouton d'analyse technique
-            const techAnalysisBtn = document.querySelector('#technicalAnalysisForm .btn-mark-done');
-            if (techAnalysisBtn) {
-                techAnalysisBtn.disabled = false;
-            }
-            
-            console.log('[Legal] Tech specs received - Technical analysis unlocked');
         }
 
-        function updateTeamStatus() {
-            const statusDot = document.getElementById('teamStatusDot');
-            const statusText = document.getElementById('teamStatusText');
-            
-            const allDependenciesReceived = Object.values(teamState.dependenciesReceived).every(dep => dep);
-            const allDeliverablesCompleted = Object.values(teamState.deliverablesCompleted).every(del => del);
-            
-            if (allDeliverablesCompleted) {
-                statusDot.className = 'status-dot complete';
-                statusText.textContent = 'All Tasks Complete';
-            } else if (allDependenciesReceived) {
-                statusDot.className = 'status-dot working';
-                statusText.textContent = 'Working';
-            } else {
-                statusDot.className = 'status-dot waiting';
-                statusText.textContent = 'Waiting for Dependencies';
-            }
-        }
-
-        // Gestion du chat
+        // Chat system amélioré
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
-            
             if (!message) return;
-            
+
             addChatMessage('Legal Team', message, 'sent');
             input.value = '';
-            
-            // Simuler une réponse occasionnelle
-            if (Math.random() > 0.7) {
-                setTimeout(() => {
-                    const responses = [
-                        'Media Team: Understood, updating our timeline.',
-                        'Strategy Team: Thanks for the update.',
-                        'Tech Team: Working on it!',
-                        'Influencer Team: Need that legal position urgently!'
-                    ];
-                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                    const [sender, msg] = randomResponse.split(': ');
-                    addChatMessage(sender, msg, 'received');
-                }, 2000 + Math.random() * 3000);
+
+            // Simulation de réponses contextuelles
+            setTimeout(() => {
+                simulateTeamResponse(message);
+            }, 1000 + Math.random() * 2000);
+        }
+
+        function simulateTeamResponse(originalMessage) {
+            const responses = {
+                'legal position': [
+                    'Media Team: Thanks! Working on press release now.',
+                    'Crisis Analysis: Happy to help with any technical questions.',
+                    'Strategy Team: This helps with our board presentation.'
+                ],
+                'ftc': [
+                    'Crisis Analysis: We have all technical details ready for FTC response.',
+                    'Media Team: Do we have green light for public communication?',
+                    'Strategy Team: FTC response will be crucial for board meeting.'
+                ],
+                'media': [
+                    'Media Team: Standing by for legal approval to communicate!',
+                    'Media Team: Journalists are getting impatient - need guidance.',
+                    'Strategy Team: Media strategy depends on legal position.'
+                ],
+                'default': [
+                    'Crisis Analysis: Roger that, Legal team.',
+                    'Media Team: Understood, keeping you posted.',
+                    'Strategy Team: Thanks for the update.',
+                    'Crisis Analysis: Let us know if you need more technical info.',
+                    'Media Team: Working on our response in parallel.'
+                ]
+            };
+
+            // Choisir une réponse basée sur le message
+            let responseArray = responses.default;
+            for (let keyword in responses) {
+                if (originalMessage.toLowerCase().includes(keyword) && keyword !== 'default') {
+                    responseArray = responses[keyword];
+                    break;
+                }
             }
+
+            const response = responseArray[Math.floor(Math.random() * responseArray.length)];
+            const [sender, msg] = response.includes(':') ? response.split(': ') : ['Team', response];
+            addChatMessage(sender, msg, 'received');
         }
 
         function addChatMessage(sender, message, type) {
             const chatMessages = document.getElementById('chatMessages');
             const messageElement = document.createElement('div');
             messageElement.className = `chat-message ${type}`;
-            
             messageElement.innerHTML = `
                 <div class="message-sender">${sender}</div>
                 ${message}
             `;
-            
             chatMessages.appendChild(messageElement);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            // Stocker le message pour persistance
-            teamState.chatMessages.push({ sender, message, type, timestamp: new Date() });
         }
 
-        // Gestion des livrables
-        function markDeliverableComplete(deliverableId) {
-            if (deliverableId === 'tech-analysis' && !teamState.dependenciesReceived.techSpecs) {
-                alert('Cannot complete technical analysis without tech specifications!');
-                return;
-            }
-            
-            teamState.deliverablesCompleted[deliverableId] = true;
+        // Gestion des livrables avec clés uniformisées
+        function markComplete(deliverableId) {
+            legalState.deliverablesCompleted[deliverableId] = true;
             
             // Mise à jour visuelle
             const deliverableItem = event.target.closest('.deliverable-item');
             deliverableItem.style.opacity = '0.7';
-            event.target.textContent = '✅';
+            event.target.textContent = '✅ Done';
             event.target.disabled = true;
+
+            // Stocker avec les clés uniformisées
+            const keyMapping = {
+                'risk-assessment': 'team_legal_risk_complete',
+                'ftc-response': 'team_legal_position_complete',
+                'media-approval': 'team_legal_media_complete'
+            };
+
+            localStorage.setItem(keyMapping[deliverableId], 'true');
             
-            // Notifier les autres équipes
-            notifyOtherTeams(deliverableId);
-            
-            // Mettre à jour le statut global
-            updateTeamStatus();
+            // Message de confirmation dans le chat
+            const messages = {
+                'risk-assessment': 'Risk assessment completed and documented.',
+                'ftc-response': 'FTC response submitted - Media team can now reference our legal position.',
+                'media-approval': 'Media communication approved - they can proceed with press release.'
+            };
+
+            addChatMessage('System', `✅ ${messages[deliverableId]}`, 'system');
             
             console.log(`[Legal] Deliverable completed: ${deliverableId}`);
         }
 
-        function notifyOtherTeams(deliverableId) {
-            // Simulation de notification aux autres équipes
-            const notifications = {
-                'ftc-response': {
-                    target: 'media_team',
-                    message: 'Legal position established for press communications'
-                },
-                'tech-analysis': {
-                    target: 'media_team',
-                    message: 'Technical legal analysis complete - safe to communicate fix timeline'
-                },
-                'risk-plan': {
-                    target: 'strategy_team',
-                    message: 'Risk mitigation strategy ready for board presentation'
+        // Fonctions des formulaires
+        function submitFTCResponse() {
+            if (!legalState.dependenciesReceived.crisisAnalysis) {
+                if (confirm('Submit FTC response without Crisis Analysis data? (Recommended to wait for technical details)')) {
+                    markComplete('ftc-response');
                 }
-            };
+            } else {
+                markComplete('ftc-response');
+            }
+        }
+
+        function approveMediaCommunication() {
+            markComplete('media-approval');
             
-            const notification = notifications[deliverableId];
-            if (notification) {
-                // Stocker dans localStorage pour que les autres équipes puissent récupérer
-                localStorage.setItem(`legal_${deliverableId}_complete`, 'true');
-                localStorage.setItem(`legal_${deliverableId}_message`, notification.message);
-                
-                // Ajouter message de confirmation dans le chat
-                addChatMessage('System', `✅ ${notification.message} - Sent to ${notification.target.replace('_', ' ')}`, 'sent');
-            }
+            // Notification spéciale pour Media Team
+            addChatMessage('Legal Team', 'APPROVED: Media team cleared for public communication. Legal guidelines provided.', 'sent');
         }
 
-        // Fonction d'urgence pour l'instructeur
-        function emergencyOverride() {
-            const password = prompt('Emergency override password:');
-            if (password === 'bloomtech2025') {
-                // Débloquer toutes les sections
-                teamState.dependenciesReceived.techSpecs = true;
-                receiveTechSpecs();
-                
-                // Marquer certains livrables comme complétés
-                Object.keys(teamState.deliverablesCompleted).forEach(key => {
-                    teamState.deliverablesCompleted[key] = true;
-                });
-                
-                updateTeamStatus();
-                alert('Emergency override activated - All sections unlocked');
-                console.log('[Legal] Emergency override activated by instructor');
-            }
-        }
-
-        // Gestion des formulaires
-        function setupFormHandlers() {
-            // Auto-save des formulaires
-            const forms = ['ftcResponseForm', 'technicalAnalysisForm', 'riskMitigationForm'];
+        // Auto-save functionality
+        function setupAutoSave() {
+            const forms = ['riskAssessmentForm', 'ftcResponseForm', 'mediaApprovalForm'];
             
             forms.forEach(formId => {
                 const form = document.getElementById(formId);
                 if (form) {
-                    const inputs = form.querySelectorAll('textarea, input');
+                    const inputs = form.querySelectorAll('textarea, input, select');
                     inputs.forEach(input => {
                         input.addEventListener('input', () => {
-                            // Auto-save vers localStorage
                             localStorage.setItem(`legal_${formId}_${input.name || 'content'}`, input.value);
                         });
                         
-                        // Charger contenu sauvegardé
+                        // Charger le contenu sauvegardé
                         const savedContent = localStorage.getItem(`legal_${formId}_${input.name || 'content'}`);
                         if (savedContent) {
                             input.value = savedContent;
@@ -1018,46 +1221,16 @@
             });
         }
 
-        // Simulation d'événements externes
-        function simulateExternalEvents() {
-            // Simuler réception de specs techniques après un délai
-            setTimeout(() => {
-                if (!teamState.dependenciesReceived.techSpecs) {
-                    // Simuler que Tech Team a terminé
-                    localStorage.setItem('tech_team_completed', 'true');
-                    console.log('[Simulation] Tech team marked as completed');
-                }
-            }, 30000); // 30 secondes pour les tests
-            
-            // Simuler messages de chat aléatoires
-            const chatEvents = [
-                { sender: 'CEO', message: 'Legal team - how are we doing on FTC response?', delay: 45000 },
-                { sender: 'Media Team', message: 'Urgent: Journalists asking about our legal position!', delay: 60000 },
-                { sender: 'Strategy Team', message: 'Board wants legal summary in 30 minutes', delay: 75000 }
-            ];
-            
-            chatEvents.forEach(event => {
-                setTimeout(() => {
-                    addChatMessage(event.sender, event.message, 'received');
-                }, event.delay);
-            });
-        }
-
-        // Gestion des événements du CEO Dashboard
-        function handleCEOEvents() {
-            // Écouter les événements du dashboard CEO
+        // Gestion des événements externes (CEO dashboard)
+        function handleExternalEvents() {
             window.addEventListener('storage', (e) => {
                 if (e.key === 'ceo_broadcast_message') {
                     const message = e.newValue;
                     if (message) {
-                        addChatMessage('CEO BROADCAST', message, 'received');
-                        
-                        // Afficher notification visuelle
-                        showCEOBroadcast(message);
+                        addChatMessage('CEO BROADCAST', message, 'system');
                     }
                 }
-                
-                // Gérer les événements de crise spécifiques
+
                 if (e.key === 'crisis_event_triggered') {
                     const eventData = JSON.parse(e.newValue || '{}');
                     handleCrisisEvent(eventData);
@@ -1065,71 +1238,74 @@
             });
         }
 
-        function showCEOBroadcast(message) {
-            const broadcast = document.createElement('div');
-            broadcast.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: linear-gradient(135deg, var(--legal-primary), var(--legal-secondary));
-                color: white;
-                padding: 2rem;
-                border-radius: 1rem;
-                box-shadow: 0 20px 40px rgba(220, 38, 38, 0.4);
-                z-index: 10000;
-                text-align: center;
-                animation: slideInUp 0.5s ease-out;
-                max-width: 500px;
-                border: 2px solid rgba(255, 255, 255, 0.2);
-            `;
-            
-            broadcast.innerHTML = `
-                <h2 style="margin: 0 0 1rem 0; font-size: 1.25rem; font-weight: 800;">📢 CEO MESSAGE</h2>
-                <p style="margin: 0 0 1rem 0; font-size: 1rem; line-height: 1.5;">${message}</p>
-                <button onclick="this.parentElement.remove()" style="
-                    background: rgba(255, 255, 255, 0.2);
-                    color: white;
-                    border: 1px solid white;
-                    padding: 0.5rem 1rem;
-                    border-radius: 0.5rem;
-                    cursor: pointer;
-                    font-weight: 600;
-                ">Understood</button>
-            `;
-            
-            document.body.appendChild(broadcast);
-            
-            setTimeout(() => {
-                if (broadcast.parentNode) {
-                    broadcast.remove();
-                }
-            }, 8000);
-        }
-
         function handleCrisisEvent(eventData) {
             switch(eventData.type) {
                 case 'journalist-call':
-                    addChatMessage('URGENT', 'Journalist demands legal statement in 15 minutes!', 'received');
-                    // Réduire le temps pour certaines tâches
+                    addChatMessage('URGENT', 'Media Team: Journalist demanding legal statement NOW! Need FTC position immediately.', 'received');
                     break;
+                    
                 case 'investor-panic':
-                    addChatMessage('Strategy Team', 'Legal: Investor wants liability assessment NOW!', 'received');
+                    addChatMessage('Strategy Team', 'URGENT: Investor wants to know our legal liability. Need risk assessment ASAP!', 'received');
                     break;
+                    
+                case 'viral-tweet':
+                    addChatMessage('Media Team', 'Viral negative tweet! Can we legally respond? Need approval for counter-statement.', 'received');
+                    break;
+                    
                 default:
                     console.log(`[Legal] Unhandled crisis event: ${eventData.type}`);
             }
         }
 
-        // Gestion du chat avec Enter
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
+        // Deadline passed handler
+        function handleLegalDeadlinePassed() {
+            addChatMessage('System', '⚠️ LEGAL DEADLINE PASSED: Media team may proceed with limited legal guidance.', 'system');
+            
+            setTimeout(() => {
+                addChatMessage('Media Team', 'Legal deadline passed - we\'re proceeding with best judgment on press release.', 'received');
+            }, 2000);
+        }
+
+        // Simulation d'événements programmés
+        function simulatePressureEvents() {
+            const events = [
+                {
+                    time: 60000, // 1 minute
+                    sender: "Media Team",
+                    message: "Legal: Journalists asking about liability. Do we have a legal position yet?",
+                    type: "received"
+                },
+                {
+                    time: 300000, // 5 minutes
+                    sender: "Strategy Team",
+                    message: "Board wants to know: what's our legal exposure? Need risk assessment.",
+                    type: "received"
+                },
+                {
+                    time: 600000, // 10 minutes
+                    sender: "Media Team",
+                    message: "URGENT: Need legal approval for press statement. Deadline approaching fast!",
+                    type: "received"
+                },
+                {
+                    time: 1200000, // 20 minutes
+                    sender: "Crisis Analysis",
+                    message: "Legal: Technical analysis shows system error was not intentional. This helps your FTC response.",
+                    type: "received"
+                }
+            ];
+
+            events.forEach(event => {
+                setTimeout(() => {
+                    addChatMessage(event.sender, event.message, event.type);
+                }, event.time);
+            });
+        }
+
+        // Gestion des événements clavier
+        document.addEventListener('keypress', function(e) {
+            if (e.target.id === 'chatInput' && e.key === 'Enter') {
+                sendMessage();
             }
         });
 
@@ -1137,37 +1313,24 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('[Legal Team] Interface initialized');
             
-            // Démarrer les timers et gestionnaires
-            setInterval(updateTimer, 1000);
+            // Démarrer les timers et vérifications
+            setInterval(updateTimers, 1000);
             setInterval(checkDependencies, 5000);
             
-            // Configurer les formulaires
-            setupFormHandlers();
+            // Configuration des features
+            setupAutoSave();
+            handleExternalEvents();
             
-            // Écouter les événements CEO
-            handleCEOEvents();
+            // Démarrer la simulation de pression
+            simulatePressureEvents();
             
-            // Simuler des événements pour les tests
-            if (window.location.search.includes('demo=true')) {
-                simulateExternalEvents();
-            }
+            // Message d'accueil avec instructions
+            setTimeout(() => {
+                addChatMessage('System', '⚖️ Legal crisis mode activated. Assess risks and prepare FTC response. Media team awaits your approval.', 'system');
+            }, 2000);
             
-            // Message de bienvenue
-            addChatMessage('System', 'Legal Response Team activated. Waiting for technical specifications...', 'received');
-            
-            // Mise à jour initiale du statut
-            updateTeamStatus();
+            console.log('[Legal Team] All systems active - Crisis legal response engaged');
         });
-
-        // Ajout des styles d'animation
-        const animationStyles = document.createElement('style');
-        animationStyles.textContent = `
-            @keyframes slideInUp {
-                from { opacity: 0; transform: translate(-50%, -50%) translateY(30px); }
-                to { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
-            }
-        `;
-        document.head.appendChild(animationStyles);
     </script>
 </body>
 </html>

@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+switch(techState.systemStatus) {
+                case 'degraded':
+                    statusDot.<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BloomTech Crisis | Technical Recovery Team</title>
+    <title>BloomTech Crisis | Crisis Analysis Team</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -572,7 +574,52 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive */
+        /* Tooltips pour l'accessibilité */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted var(--text-gray);
+        }
+
+        .tooltip::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark-bg);
+            color: var(--text-white);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            z-index: 1000;
+            border: 1px solid var(--border-gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            margin-bottom: 5px;
+            max-width: 250px;
+            white-space: normal;
+        }
+
+        .tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .help-icon {
+            color: var(--tech-primary);
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
+            cursor: help;
+        }
+
+        .simplified-term {
+            color: var(--tech-primary);
+            font-weight: 600;
+        }
         @media (max-width: 1200px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -605,14 +652,14 @@
     <header class="team-header">
         <div class="header-content">
             <h1 class="team-title">
-                <span class="team-icon">💻</span>
-                Technical Recovery Team
+                <span class="team-icon">🔍</span>
+                Crisis Analysis Team
             </h1>
             
             <div class="system-status">
                 <div class="status-indicator">
                     <div class="status-dot" id="systemStatusDot"></div>
-                    <span id="systemStatusText">SYSTEM DEGRADED</span>
+                    <span id="systemStatusText" class="tooltip" data-tooltip="L'état général de la crise - Rouge = critique, Orange = dégradé, Vert = sous contrôle">CRISIS STATUS: CRITICAL</span>
                 </div>
                 
                 <div class="crisis-timer" id="crisisTimer">01:30:00</div>
@@ -631,26 +678,28 @@
                 <div class="card-header">
                     <h2 class="card-title">
                         <span>🔍</span>
-                        Root Cause Analysis
+                        <span class="tooltip" data-tooltip="Analyser ce qui a causé la crise marketing pour comprendre l'origine du problème">Crisis Root Cause Analysis</span>
+                        <span class="help-icon">💡</span>
                     </h2>
                     <div class="card-status status-active">ACTIVE</div>
                 </div>
                 
-                <!-- Error Logs Terminal -->
+                <!-- Error Analysis Terminal -->
                 <div class="terminal-section">
                     <div class="terminal-header">
                         <div class="terminal-dot dot-red"></div>
                         <div class="terminal-dot dot-yellow"></div>
                         <div class="terminal-dot dot-green"></div>
-                        <span style="margin-left: 0.5rem;">error_logs.txt</span>
+                        <span style="margin-left: 0.5rem;" class="tooltip" data-tooltip="Journal d'erreurs - traces de ce qui s'est mal passé lors de la crise">crisis_timeline.log</span>
+                        <span class="help-icon">ℹ️</span>
                     </div>
                     <div class="terminal-content" id="errorLogs">
-                        <div class="log-entry error">[2025-01-20 08:42:15] ERROR: Database connection failed - campaign_content.db</div>
-                        <div class="log-entry error">[2025-01-20 08:42:16] ERROR: Fallback to competitor_analysis.db</div>
-                        <div class="log-entry warning">[2025-01-20 08:42:17] WARN: Using unvalidated content source</div>
-                        <div class="log-entry error">[2025-01-20 08:42:18] ERROR: Content validation BYPASSED</div>
-                        <div class="log-entry info">[2025-01-20 08:42:19] INFO: Campaign published with competitor content</div>
-                        <div class="log-entry error">[2025-01-20 09:15:23] ERROR: 47 customer complaints received</div>
+                        <div class="log-entry error">[2025-01-20 08:42:15] ERROR: Primary database connection failed - campaign_content.db</div>
+                        <div class="log-entry error">[2025-01-20 08:42:16] ERROR: System switched to backup - competitor_analysis.db</div>
+                        <div class="log-entry warning">[2025-01-20 08:42:17] WARN: Using unvalidated content from backup source</div>
+                        <div class="log-entry error">[2025-01-20 08:42:18] ERROR: Content validation process BYPASSED</div>
+                        <div class="log-entry info">[2025-01-20 08:42:19] INFO: Marketing campaign launched with competitor content</div>
+                        <div class="log-entry error">[2025-01-20 09:15:23] ERROR: 47 customer complaints received within 3 hours</div>
                     </div>
                 </div>
                 
@@ -658,38 +707,39 @@
                     <div class="form-group">
                         <label class="form-label">
                             <span>🐛</span>
-                            Primary Root Cause
+                            <span class="tooltip" data-tooltip="Quelle est la cause principale qui a déclenché toute cette crise ?">Primary Root Cause</span>
                         </label>
                         <select class="form-select">
                             <option value="">Select primary cause...</option>
-                            <option value="db-failure">Database connection failure</option>
-                            <option value="fallback-error">Faulty fallback mechanism</option>
-                            <option value="validation-bypass">Content validation bypass</option>
-                            <option value="human-error">Human configuration error</option>
+                            <option value="db-failure" class="tooltip" data-tooltip="Le système principal est tombé en panne">System failure during campaign launch</option>
+                            <option value="fallback-error" class="tooltip" data-tooltip="Le système de secours a mal fonctionné">Faulty backup system activation</option>
+                            <option value="validation-bypass" class="tooltip" data-tooltip="Les vérifications de sécurité ont été ignorées">Content validation was bypassed</option>
+                            <option value="human-error" class="tooltip" data-tooltip="Erreur humaine dans la configuration">Human configuration error</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">
                             <span>📝</span>
-                            Technical Analysis
+                            <span class="tooltip" data-tooltip="Expliquez en détail ce qui s'est passé et pourquoi">Detailed Crisis Analysis</span>
                         </label>
-                        <textarea class="form-textarea code-input" placeholder="Detailed technical analysis of the failure..."></textarea>
+                        <textarea class="form-textarea code-input" placeholder="Explain what happened and why this crisis occurred..."></textarea>
                     </div>
                     
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">💾 git commit</button>
-                        <button type="button" class="btn btn-primary" onclick="completeRootCause()">✅ Complete Analysis</button>
+                        <button type="button" class="btn btn-secondary">💾 <span class="simplified-term">Save Draft</span></button>
+                        <button type="button" class="btn btn-primary" onclick="completeRootCause()">✅ <span class="simplified-term">Complete Analysis</span></button>
                     </div>
                 </form>
             </div>
 
-            <!-- System Metrics -->
+            <!-- Crisis Impact Metrics -->
             <div class="work-card">
                 <div class="card-header">
                     <h2 class="card-title">
                         <span>📊</span>
-                        System Impact Metrics
+                        <span class="tooltip" data-tooltip="Mesures de l'impact de la crise sur l'entreprise">Crisis Impact Assessment</span>
+                        <span class="help-icon">📈</span>
                     </h2>
                     <div class="card-status status-active">MONITORING</div>
                 </div>
@@ -697,29 +747,30 @@
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-value critical" id="errorRate">127%</div>
-                        <div class="metric-label">Error Rate</div>
+                        <div class="metric-label tooltip" data-tooltip="Augmentation des problèmes par rapport à la normale">Error Increase</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-value critical" id="userComplaints">47</div>
-                        <div class="metric-label">User Complaints</div>
+                        <div class="metric-label tooltip" data-tooltip="Nombre de clients mécontents qui se sont plaints">Customer Complaints</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-value warning" id="systemLoad">85%</div>
-                        <div class="metric-label">System Load</div>
+                        <div class="metric-label tooltip" data-tooltip="Charge de travail sur les équipes et systèmes">Crisis Load</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-value critical" id="uptime">97.2%</div>
-                        <div class="metric-label">Uptime</div>
+                        <div class="metric-label tooltip" data-tooltip="Pourcentage de temps où tout fonctionne normalement">System Stability</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Fix Implementation -->
+            <!-- Solution Implementation -->
             <div class="work-card">
                 <div class="card-header">
                     <h2 class="card-title">
                         <span>🔧</span>
-                        Fix Implementation Plan
+                        <span class="tooltip" data-tooltip="Plan pour corriger le problème et rétablir la situation normale">Crisis Solution Plan</span>
+                        <span class="help-icon">🛠️</span>
                     </h2>
                     <div class="card-status status-pending">PENDING</div>
                 </div>
@@ -728,34 +779,34 @@
                     <div class="form-group">
                         <label class="form-label">
                             <span>⚡</span>
-                            Immediate Hotfix (Priority 1)
+                            <span class="tooltip" data-tooltip="Actions immédiates pour stopper la crise rapidement">Immediate Crisis Response (Priority 1)</span>
                         </label>
-                        <textarea class="form-textarea code-input" placeholder="Steps for immediate system fix..."></textarea>
+                        <textarea class="form-textarea code-input" placeholder="What needs to be done immediately to stop the crisis..."></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">
                             <span>⏱️</span>
-                            Estimated Fix Time
+                            <span class="tooltip" data-tooltip="Combien de temps faut-il pour résoudre le problème ?">Estimated Recovery Time</span>
                         </label>
                         <select class="form-select">
-                            <option value="30min">30 minutes (hotfix only)</option>
-                            <option value="2hours">2 hours (full fix)</option>
-                            <option value="1day">24 hours (complete overhaul)</option>
+                            <option value="30min">30 minutes (emergency fix only)</option>
+                            <option value="2hours">2 hours (complete solution)</option>
+                            <option value="1day">24 hours (full system overhaul)</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">
                             <span>🧪</span>
-                            Testing Strategy
+                            <span class="tooltip" data-tooltip="Comment vérifier que la solution fonctionne ?">Solution Testing Strategy</span>
                         </label>
-                        <textarea class="form-textarea code-input" placeholder="How will you test the fix..."></textarea>
+                        <textarea class="form-textarea code-input" placeholder="How will you verify the solution works..."></textarea>
                     </div>
                     
                     <div class="form-actions">
-                        <button type="button" class="btn btn-warning">🚨 Deploy Hotfix</button>
-                        <button type="button" class="btn btn-primary" onclick="completeImplementation()">📋 Finalize Plan</button>
+                        <button type="button" class="btn btn-warning">🚨 <span class="simplified-term">Deploy Emergency Fix</span></button>
+                        <button type="button" class="btn btn-primary" onclick="completeImplementation()">📋 <span class="simplified-term">Finalize Solution Plan</span></button>
                     </div>
                 </form>
             </div>
@@ -765,7 +816,8 @@
                 <div class="card-header">
                     <h2 class="card-title">
                         <span>🛡️</span>
-                        Prevention & Monitoring
+                        <span class="tooltip" data-tooltip="Mesures pour éviter que cette crise se reproduise à l'avenir">Future Crisis Prevention</span>
+                        <span class="help-icon">🔮</span>
                     </h2>
                     <div class="card-status status-pending">PENDING</div>
                 </div>
@@ -774,22 +826,22 @@
                     <div class="form-group">
                         <label class="form-label">
                             <span>🔐</span>
-                            Security Improvements
+                            <span class="tooltip" data-tooltip="Améliorations de sécurité pour éviter les erreurs futures">Security & Process Improvements</span>
                         </label>
-                        <textarea class="form-textarea code-input" placeholder="Security measures to prevent recurrence..."></textarea>
+                        <textarea class="form-textarea code-input" placeholder="What processes need to be improved to prevent this crisis..."></textarea>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">
                             <span>📡</span>
-                            Monitoring Setup
+                            <span class="tooltip" data-tooltip="Systèmes d'alerte pour détecter les problèmes plus tôt">Early Warning Systems</span>
                         </label>
-                        <textarea class="form-textarea code-input" placeholder="Monitoring and alerting systems..."></textarea>
+                        <textarea class="form-textarea code-input" placeholder="How to detect similar problems before they become crises..."></textarea>
                     </div>
                     
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">💾 Save Config</button>
-                        <button type="button" class="btn btn-primary" onclick="completePrevention()">🚀 Deploy Monitoring</button>
+                        <button type="button" class="btn btn-secondary">💾 <span class="simplified-term">Save Prevention Plan</span></button>
+                        <button type="button" class="btn btn-primary" onclick="completePrevention()">🚀 <span class="simplified-term">Deploy Monitoring</span></button>
                     </div>
                 </form>
             </div>

@@ -1,6 +1,4 @@
-switch(techState.systemStatus) {
-                case 'degraded':
-                    statusDot.<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,9 +10,6 @@ switch(techState.systemStatus) {
             --tech-primary: #10b981;
             --tech-secondary: #059669;
             --tech-accent: #d1fae5;
-            --tech-dark: #064e3b;
-            --terminal-green: #00ff88;
-            --terminal-bg: #0d1117;
             --warning-orange: #f59e0b;
             --danger-red: #ef4444;
             --info-blue: #3b82f6;
@@ -24,7 +19,6 @@ switch(techState.systemStatus) {
             --text-white: #f9fafb;
             --text-gray: #d1d5db;
             --border-gray: #374151;
-            --code-bg: #0d1117;
         }
 
         * {
@@ -41,7 +35,42 @@ switch(techState.systemStatus) {
             overflow-x: hidden;
         }
 
-        /* Header Tech Team */
+        /* Tooltips essentiels seulement */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dotted var(--tech-primary);
+        }
+
+        .tooltip::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark-bg);
+            color: var(--text-white);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 1000;
+            border: 1px solid var(--border-gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            margin-bottom: 8px;
+            max-width: 300px;
+            white-space: normal;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Header */
         .team-header {
             background: linear-gradient(135deg, var(--tech-primary), var(--tech-secondary));
             padding: 1.5rem 2rem;
@@ -65,10 +94,6 @@ switch(techState.systemStatus) {
             display: flex;
             align-items: center;
             gap: 1rem;
-        }
-
-        .team-icon {
-            font-size: 2rem;
         }
 
         .system-status {
@@ -97,15 +122,6 @@ switch(techState.systemStatus) {
             animation: pulse 2s infinite;
         }
 
-        .status-dot.degraded {
-            background: var(--warning-orange);
-        }
-
-        .status-dot.healthy {
-            background: var(--tech-primary);
-            animation: none;
-        }
-
         .crisis-timer {
             font-family: 'JetBrains Mono', monospace;
             font-size: 1.25rem;
@@ -126,7 +142,6 @@ switch(techState.systemStatus) {
             gap: 2rem;
         }
 
-        /* Section de travail principale */
         .work-section {
             display: grid;
             gap: 2rem;
@@ -137,7 +152,6 @@ switch(techState.systemStatus) {
             border-radius: 1rem;
             padding: 2rem;
             border: 1px solid var(--border-gray);
-            position: relative;
         }
 
         .card-header {
@@ -162,7 +176,6 @@ switch(techState.systemStatus) {
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-family: 'JetBrains Mono', monospace;
         }
 
         .status-active {
@@ -175,88 +188,54 @@ switch(techState.systemStatus) {
             color: white;
         }
 
-        .status-complete {
-            background: var(--info-blue);
-            color: white;
-        }
-
-        /* Terminal-style sections */
-        .terminal-section {
-            background: var(--terminal-bg);
-            border-radius: 0.75rem;
-            border: 1px solid #30363d;
-            overflow: hidden;
+        /* Métriques simplifiées */
+        .metrics-simple {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
             margin: 1rem 0;
         }
 
-        .terminal-header {
-            background: #21262d;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #30363d;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .metric-card {
+            background: linear-gradient(135deg, #1f2937, #374151);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-gray);
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 800;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-        }
-
-        .terminal-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .dot-red { background: #ff5f56; }
-        .dot-yellow { background: #ffbd2e; }
-        .dot-green { background: #27ca3f; }
-
-        .terminal-content {
-            padding: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            color: var(--terminal-green);
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .log-entry {
             margin-bottom: 0.5rem;
-            opacity: 0;
-            animation: fadeInLog 0.5s ease-out forwards;
         }
 
-        .log-entry.error {
-            color: #ff6b6b;
+        .metric-value.critical { color: var(--danger-red); }
+        .metric-value.warning { color: var(--warning-orange); }
+        .metric-value.good { color: var(--tech-primary); }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            font-weight: 500;
         }
 
-        .log-entry.warning {
-            color: #feca57;
-        }
-
-        .log-entry.success {
-            color: var(--terminal-green);
-        }
-
-        .log-entry.info {
-            color: #74b9ff;
-        }
-
-        /* Formulaires techniques */
-        .tech-form {
+        /* Formulaires */
+        .analysis-form {
             display: grid;
             gap: 1.5rem;
         }
 
         .form-group {
             display: grid;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .form-label {
             font-weight: 600;
             color: var(--text-gray);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -265,13 +244,12 @@ switch(techState.systemStatus) {
         .form-input,
         .form-textarea,
         .form-select {
-            background: var(--code-bg);
-            border: 1px solid #30363d;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-gray);
             border-radius: 0.5rem;
-            padding: 0.75rem;
+            padding: 0.875rem;
             color: var(--text-white);
-            font-size: 0.875rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
             transition: border-color 0.3s ease;
         }
 
@@ -285,59 +263,10 @@ switch(techState.systemStatus) {
 
         .form-textarea {
             resize: vertical;
-            min-height: 120px;
+            min-height: 100px;
+            line-height: 1.5;
         }
 
-        .code-input {
-            background: var(--terminal-bg);
-            border: 1px solid #30363d;
-            color: var(--terminal-green);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Metrics Dashboard */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .metric-card {
-            background: var(--terminal-bg);
-            border: 1px solid #30363d;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 0.25rem;
-        }
-
-        .metric-value.critical {
-            color: var(--danger-red);
-        }
-
-        .metric-value.warning {
-            color: var(--warning-orange);
-        }
-
-        .metric-value.good {
-            color: var(--tech-primary);
-        }
-
-        .metric-label {
-            font-size: 0.75rem;
-            color: var(--text-gray);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Boutons techniques */
         .btn {
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
@@ -349,7 +278,6 @@ switch(techState.systemStatus) {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
         }
 
         .btn-primary {
@@ -360,17 +288,6 @@ switch(techState.systemStatus) {
         .btn-primary:hover {
             background: var(--tech-secondary);
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-danger {
-            background: var(--danger-red);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--warning-orange);
-            color: white;
         }
 
         .btn-secondary {
@@ -407,43 +324,35 @@ switch(techState.systemStatus) {
             gap: 0.5rem;
         }
 
-        /* System Monitoring */
-        .monitor-item {
+        /* Communication Focus */
+        .team-dependency {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem;
-            background: var(--terminal-bg);
+            background: var(--dark-bg);
             border-radius: 0.5rem;
             margin-bottom: 0.75rem;
-            border-left: 4px solid var(--neutral-gray);
-            font-family: 'JetBrains Mono', monospace;
+            border-left: 4px solid var(--warning-orange);
+        }
+
+        .dependency-name {
             font-size: 0.875rem;
-        }
-
-        .monitor-item.critical {
-            border-left-color: var(--danger-red);
-        }
-
-        .monitor-item.warning {
-            border-left-color: var(--warning-orange);
-        }
-
-        .monitor-item.healthy {
-            border-left-color: var(--tech-primary);
-        }
-
-        .monitor-name {
             font-weight: 500;
         }
 
-        .monitor-value {
+        .dependency-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            background: var(--warning-orange);
+            color: white;
             font-weight: 600;
         }
 
-        /* Team Communications */
+        /* Chat simplifié */
         .chat-container {
-            height: 280px;
+            height: 250px;
             display: flex;
             flex-direction: column;
         }
@@ -451,14 +360,14 @@ switch(techState.systemStatus) {
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 0.5rem;
-            background: var(--terminal-bg);
+            padding: 1rem;
+            background: var(--dark-bg);
             border-radius: 0.5rem;
             margin-bottom: 1rem;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
-            border: 1px solid #30363d;
+            border: 1px solid var(--border-gray);
         }
 
         .chat-message {
@@ -466,7 +375,6 @@ switch(techState.systemStatus) {
             border-radius: 0.5rem;
             font-size: 0.875rem;
             line-height: 1.4;
-            font-family: 'JetBrains Mono', monospace;
         }
 
         .chat-message.sent {
@@ -477,7 +385,7 @@ switch(techState.systemStatus) {
         }
 
         .chat-message.received {
-            background: #30363d;
+            background: var(--border-gray);
             color: var(--text-white);
             align-self: flex-start;
             max-width: 80%;
@@ -497,13 +405,12 @@ switch(techState.systemStatus) {
 
         .chat-input {
             flex: 1;
-            background: var(--terminal-bg);
-            border: 1px solid #30363d;
+            background: var(--dark-bg);
+            border: 1px solid var(--border-gray);
             border-radius: 0.5rem;
             padding: 0.75rem;
             color: var(--text-white);
             font-size: 0.875rem;
-            font-family: 'JetBrains Mono', monospace;
         }
 
         .chat-send {
@@ -526,41 +433,30 @@ switch(techState.systemStatus) {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
-            background: var(--terminal-bg);
+            padding: 1rem;
+            background: var(--dark-bg);
             border-radius: 0.5rem;
-            border: 1px solid #30363d;
+            border: 1px solid var(--border-gray);
         }
 
         .deliverable-name {
             font-size: 0.875rem;
             font-weight: 500;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .deliverable-actions {
-            display: flex;
-            gap: 0.5rem;
         }
 
         .deliverable-btn {
-            padding: 0.25rem 0.75rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 0.25rem;
             font-size: 0.75rem;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .btn-commit {
             background: var(--tech-primary);
             color: white;
         }
 
-        .btn-deploy {
-            background: var(--info-blue);
-            color: white;
+        .deliverable-btn:hover {
+            background: var(--tech-secondary);
         }
 
         /* Animations */
@@ -569,57 +465,7 @@ switch(techState.systemStatus) {
             50% { opacity: 0.7; transform: scale(1.05); }
         }
 
-        @keyframes fadeInLog {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Tooltips pour l'accessibilité */
-        .tooltip {
-            position: relative;
-            cursor: help;
-            border-bottom: 1px dotted var(--text-gray);
-        }
-
-        .tooltip::before {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--dark-bg);
-            color: var(--text-white);
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            white-space: nowrap;
-            z-index: 1000;
-            border: 1px solid var(--border-gray);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            margin-bottom: 5px;
-            max-width: 250px;
-            white-space: normal;
-        }
-
-        .tooltip:hover::before {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .help-icon {
-            color: var(--tech-primary);
-            font-size: 0.875rem;
-            margin-left: 0.5rem;
-            cursor: help;
-        }
-
-        .simplified-term {
-            color: var(--tech-primary);
-            font-weight: 600;
-        }
+        /* Responsive */
         @media (max-width: 1200px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -632,36 +478,31 @@ switch(techState.systemStatus) {
                 flex-direction: column;
                 gap: 1rem;
             }
-            
-            .team-title {
-                font-size: 1.5rem;
-            }
-            
+
             .main-container {
                 padding: 1rem;
             }
-            
-            .metrics-grid {
+
+            .metrics-simple {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
+
 <body>
-    <!-- Header Tech Team -->
+    <!-- Header -->
     <header class="team-header">
         <div class="header-content">
             <h1 class="team-title">
-                <span class="team-icon">🔍</span>
+                <span>🔍</span>
                 Crisis Analysis Team
             </h1>
-            
             <div class="system-status">
                 <div class="status-indicator">
                     <div class="status-dot" id="systemStatusDot"></div>
-                    <span id="systemStatusText" class="tooltip" data-tooltip="L'état général de la crise - Rouge = critique, Orange = dégradé, Vert = sous contrôle">CRISIS STATUS: CRITICAL</span>
+                    <span id="systemStatusText">CRISIS STATUS: CRITICAL</span>
                 </div>
-                
                 <div class="crisis-timer" id="crisisTimer">01:30:00</div>
             </div>
         </div>
@@ -669,237 +510,165 @@ switch(techState.systemStatus) {
 
     <!-- Main Content -->
     <main class="main-container">
-        
         <!-- Section de travail principale -->
         <section class="work-section">
-            
+            <!-- Crisis Overview -->
+            <div class="work-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📊</span>
+                        Crisis Impact Overview
+                    </h2>
+                    <div class="card-status status-active">ANALYZING</div>
+                </div>
+
+                <div class="metrics-simple">
+                    <div class="metric-card">
+                        <div class="metric-value critical">47</div>
+                        <div class="metric-label">Customer Complaints</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value critical">-12%</div>
+                        <div class="metric-label">Stock Price</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value warning">75K+</div>
+                        <div class="metric-label">Ad Impressions Failed</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value critical">1.8/5</div>
+                        <div class="metric-label">Current Rating</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Root Cause Analysis -->
             <div class="work-card">
                 <div class="card-header">
                     <h2 class="card-title">
                         <span>🔍</span>
-                        <span class="tooltip" data-tooltip="Analyser ce qui a causé la crise marketing pour comprendre l'origine du problème">Crisis Root Cause Analysis</span>
-                        <span class="help-icon">💡</span>
+                        <span class="tooltip" data-tooltip="Identifier ce qui a causé cette crise pour aider les autres équipes à comprendre">Root Cause Analysis</span>
                     </h2>
                     <div class="card-status status-active">ACTIVE</div>
                 </div>
-                
-                <!-- Error Analysis Terminal -->
-                <div class="terminal-section">
-                    <div class="terminal-header">
-                        <div class="terminal-dot dot-red"></div>
-                        <div class="terminal-dot dot-yellow"></div>
-                        <div class="terminal-dot dot-green"></div>
-                        <span style="margin-left: 0.5rem;" class="tooltip" data-tooltip="Journal d'erreurs - traces de ce qui s'est mal passé lors de la crise">crisis_timeline.log</span>
-                        <span class="help-icon">ℹ️</span>
-                    </div>
-                    <div class="terminal-content" id="errorLogs">
-                        <div class="log-entry error">[2025-01-20 08:42:15] ERROR: Primary database connection failed - campaign_content.db</div>
-                        <div class="log-entry error">[2025-01-20 08:42:16] ERROR: System switched to backup - competitor_analysis.db</div>
-                        <div class="log-entry warning">[2025-01-20 08:42:17] WARN: Using unvalidated content from backup source</div>
-                        <div class="log-entry error">[2025-01-20 08:42:18] ERROR: Content validation process BYPASSED</div>
-                        <div class="log-entry info">[2025-01-20 08:42:19] INFO: Marketing campaign launched with competitor content</div>
-                        <div class="log-entry error">[2025-01-20 09:15:23] ERROR: 47 customer complaints received within 3 hours</div>
-                    </div>
-                </div>
-                
-                <form class="tech-form" id="rootCauseForm">
+
+                <form class="analysis-form" id="rootCauseForm">
                     <div class="form-group">
                         <label class="form-label">
-                            <span>🐛</span>
-                            <span class="tooltip" data-tooltip="Quelle est la cause principale qui a déclenché toute cette crise ?">Primary Root Cause</span>
+                            <span>🎯</span>
+                            What happened exactly?
                         </label>
                         <select class="form-select">
-                            <option value="">Select primary cause...</option>
-                            <option value="db-failure" class="tooltip" data-tooltip="Le système principal est tombé en panne">System failure during campaign launch</option>
-                            <option value="fallback-error" class="tooltip" data-tooltip="Le système de secours a mal fonctionné">Faulty backup system activation</option>
-                            <option value="validation-bypass" class="tooltip" data-tooltip="Les vérifications de sécurité ont été ignorées">Content validation was bypassed</option>
-                            <option value="human-error" class="tooltip" data-tooltip="Erreur humaine dans la configuration">Human configuration error</option>
+                            <option value="">Select the main problem...</option>
+                            <option value="db-failure">Database failure during campaign launch</option>
+                            <option value="backup-error">Faulty backup system connected to competitor data</option>
+                            <option value="validation-bypass">Content validation was skipped</option>
+                            <option value="human-error">Human configuration error</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label">
                             <span>📝</span>
-                            <span class="tooltip" data-tooltip="Expliquez en détail ce qui s'est passé et pourquoi">Detailed Crisis Analysis</span>
+                            Crisis Summary (for other teams)
                         </label>
-                        <textarea class="form-textarea code-input" placeholder="Explain what happened and why this crisis occurred..."></textarea>
+                        <textarea class="form-textarea" placeholder="Explain in simple terms what went wrong and why. Other teams need to understand this quickly..."></textarea>
                     </div>
-                    
+
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">💾 <span class="simplified-term">Save Draft</span></button>
-                        <button type="button" class="btn btn-primary" onclick="completeRootCause()">✅ <span class="simplified-term">Complete Analysis</span></button>
+                        <button type="button" class="btn btn-secondary">💾 Save Draft</button>
+                        <button type="button" class="btn btn-primary" onclick="completeRootCause()">✅ Share with Teams</button>
                     </div>
                 </form>
             </div>
 
-            <!-- Crisis Impact Metrics -->
-            <div class="work-card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <span>📊</span>
-                        <span class="tooltip" data-tooltip="Mesures de l'impact de la crise sur l'entreprise">Crisis Impact Assessment</span>
-                        <span class="help-icon">📈</span>
-                    </h2>
-                    <div class="card-status status-active">MONITORING</div>
-                </div>
-                
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-value critical" id="errorRate">127%</div>
-                        <div class="metric-label tooltip" data-tooltip="Augmentation des problèmes par rapport à la normale">Error Increase</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value critical" id="userComplaints">47</div>
-                        <div class="metric-label tooltip" data-tooltip="Nombre de clients mécontents qui se sont plaints">Customer Complaints</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value warning" id="systemLoad">85%</div>
-                        <div class="metric-label tooltip" data-tooltip="Charge de travail sur les équipes et systèmes">Crisis Load</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value critical" id="uptime">97.2%</div>
-                        <div class="metric-label tooltip" data-tooltip="Pourcentage de temps où tout fonctionne normalement">System Stability</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Solution Implementation -->
+            <!-- Solution Timeline -->
             <div class="work-card">
                 <div class="card-header">
                     <h2 class="card-title">
                         <span>🔧</span>
-                        <span class="tooltip" data-tooltip="Plan pour corriger le problème et rétablir la situation normale">Crisis Solution Plan</span>
-                        <span class="help-icon">🛠️</span>
+                        <span class="tooltip" data-tooltip="Legal Team a besoin de cette timeline pour évaluer les responsabilités">Fix Timeline & Action Plan</span>
                     </h2>
                     <div class="card-status status-pending">PENDING</div>
                 </div>
-                
-                <form class="tech-form" id="fixImplementationForm">
+
+                <form class="analysis-form" id="solutionForm">
                     <div class="form-group">
                         <label class="form-label">
                             <span>⚡</span>
-                            <span class="tooltip" data-tooltip="Actions immédiates pour stopper la crise rapidement">Immediate Crisis Response (Priority 1)</span>
+                            Immediate emergency actions (next 30 minutes)
                         </label>
-                        <textarea class="form-textarea code-input" placeholder="What needs to be done immediately to stop the crisis..."></textarea>
+                        <textarea class="form-textarea" placeholder="What needs to be done RIGHT NOW to stop the bleeding..."></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label">
                             <span>⏱️</span>
-                            <span class="tooltip" data-tooltip="Combien de temps faut-il pour résoudre le problème ?">Estimated Recovery Time</span>
+                            <span class="tooltip" data-tooltip="Media Team a besoin de savoir combien de temps pour informer les journalistes">Estimated fix time</span>
                         </label>
                         <select class="form-select">
-                            <option value="30min">30 minutes (emergency fix only)</option>
+                            <option value="30min">30 minutes (quick fix)</option>
                             <option value="2hours">2 hours (complete solution)</option>
-                            <option value="1day">24 hours (full system overhaul)</option>
+                            <option value="1day">24 hours (full overhaul)</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label class="form-label">
-                            <span>🧪</span>
-                            <span class="tooltip" data-tooltip="Comment vérifier que la solution fonctionne ?">Solution Testing Strategy</span>
+                            <span>🛡️</span>
+                            Prevention plan (avoid future crises)
                         </label>
-                        <textarea class="form-textarea code-input" placeholder="How will you verify the solution works..."></textarea>
+                        <textarea class="form-textarea" placeholder="What changes will prevent this from happening again..."></textarea>
                     </div>
-                    
+
                     <div class="form-actions">
-                        <button type="button" class="btn btn-warning">🚨 <span class="simplified-term">Deploy Emergency Fix</span></button>
-                        <button type="button" class="btn btn-primary" onclick="completeImplementation()">📋 <span class="simplified-term">Finalize Solution Plan</span></button>
+                        <button type="button" class="btn btn-secondary">💾 Save Plan</button>
+                        <button type="button" class="btn btn-primary" onclick="completeImplementation()">🚀 Send to Legal & Media</button>
                     </div>
                 </form>
             </div>
-
-            <!-- Prevention Measures -->
-            <div class="work-card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <span>🛡️</span>
-                        <span class="tooltip" data-tooltip="Mesures pour éviter que cette crise se reproduise à l'avenir">Future Crisis Prevention</span>
-                        <span class="help-icon">🔮</span>
-                    </h2>
-                    <div class="card-status status-pending">PENDING</div>
-                </div>
-                
-                <form class="tech-form" id="preventionForm">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span>🔐</span>
-                            <span class="tooltip" data-tooltip="Améliorations de sécurité pour éviter les erreurs futures">Security & Process Improvements</span>
-                        </label>
-                        <textarea class="form-textarea code-input" placeholder="What processes need to be improved to prevent this crisis..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span>📡</span>
-                            <span class="tooltip" data-tooltip="Systèmes d'alerte pour détecter les problèmes plus tôt">Early Warning Systems</span>
-                        </label>
-                        <textarea class="form-textarea code-input" placeholder="How to detect similar problems before they become crises..."></textarea>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary">💾 <span class="simplified-term">Save Prevention Plan</span></button>
-                        <button type="button" class="btn btn-primary" onclick="completePrevention()">🚀 <span class="simplified-term">Deploy Monitoring</span></button>
-                    </div>
-                </form>
-            </div>
-
         </section>
 
         <!-- Sidebar -->
         <aside class="sidebar">
-            
-            <!-- System Monitoring -->
+            <!-- Dependencies -->
             <div class="sidebar-card">
                 <h3 class="sidebar-title">
-                    <span>⚡</span>
-                    Live System Status
+                    <span>🔗</span>
+                    Teams Waiting for You
                 </h3>
-                
-                <div class="monitor-item critical">
-                    <div class="monitor-name">Campaign DB</div>
-                    <div class="monitor-value">OFFLINE</div>
+                <div class="team-dependency">
+                    <div class="dependency-name">Legal Team</div>
+                    <div class="dependency-status">WAITING</div>
                 </div>
-                
-                <div class="monitor-item warning">
-                    <div class="monitor-name">API Gateway</div>
-                    <div class="monitor-value">DEGRADED</div>
+                <div class="team-dependency">
+                    <div class="dependency-name">Media Team</div>
+                    <div class="dependency-status">WAITING</div>
                 </div>
-                
-                <div class="monitor-item healthy">
-                    <div class="monitor-name">User Auth</div>
-                    <div class="monitor-value">HEALTHY</div>
-                </div>
-                
-                <div class="monitor-item warning">
-                    <div class="monitor-name">CDN Status</div>
-                    <div class="monitor-value">SLOW</div>
-                </div>
+                <p style="font-size: 0.875rem; color: var(--text-gray); margin-top: 1rem;">
+                    ⚠️ <strong>You're first in line!</strong> Other teams need your analysis to move forward.
+                </p>
             </div>
 
-            <!-- Team Communications -->
+            <!-- Team Communication -->
             <div class="sidebar-card">
                 <h3 class="sidebar-title">
                     <span>💬</span>
-                    Dev Team Chat
+                    Team Chat
                 </h3>
-                
                 <div class="chat-container">
                     <div class="chat-messages" id="chatMessages">
                         <div class="chat-message received">
                             <div class="message-sender">Legal Team</div>
-                            Tech: Need root cause analysis for FTC response!
+                            We need your technical analysis to respond to FTC!
                         </div>
                         <div class="chat-message received">
                             <div class="message-sender">Media Team</div>
-                            How long for the fix? Journalists asking questions.
+                            Journalists are calling - need timeline estimate ASAP!
                         </div>
                     </div>
-                    
                     <div class="chat-input-container">
-                        <input type="text" class="chat-input" placeholder="// Comment to teams..." id="chatInput" maxlength="200">
+                        <input type="text" class="chat-input" placeholder="Message teams..." id="chatInput" maxlength="200">
                         <button class="chat-send" onclick="sendMessage()">📤</button>
                     </div>
                 </div>
@@ -909,49 +678,41 @@ switch(techState.systemStatus) {
             <div class="sidebar-card">
                 <h3 class="sidebar-title">
                     <span>📋</span>
-                    Code Deliverables
+                    Your Deliverables
                 </h3>
-                
                 <div class="deliverables-list">
                     <div class="deliverable-item">
-                        <div class="deliverable-name">root_cause.md</div>
-                        <div class="deliverable-actions">
-                            <button class="deliverable-btn btn-deploy">👁️</button>
-                            <button class="deliverable-btn btn-commit" onclick="commitDeliverable('hotfix')">git push</button>
-                        </div>
+                        <div class="deliverable-name">Crisis Analysis Summary</div>
+                        <button class="deliverable-btn" onclick="markComplete('analysis')">Complete</button>
                     </div>
-                    
                     <div class="deliverable-item">
-                        <div class="deliverable-name">monitoring.yml</div>
-                        <div class="deliverable-actions">
-                            <button class="deliverable-btn btn-deploy">👁️</button>
-                            <button class="deliverable-btn btn-commit" onclick="commitDeliverable('monitoring')">git push</button>
-                        </div>
+                        <div class="deliverable-name">Technical Timeline</div>
+                        <button class="deliverable-btn" onclick="markComplete('timeline')">Complete</button>
+                    </div>
+                    <div class="deliverable-item">
+                        <div class="deliverable-name">Prevention Plan</div>
+                        <button class="deliverable-btn" onclick="markComplete('prevention')">Complete</button>
                     </div>
                 </div>
             </div>
-
         </aside>
     </main>
 
     <script>
-        // État global de l'équipe Tech
-        let techState = {
+        // État global
+        let teamState = {
             deliverablesCompleted: {
-                rootCause: false,
-                hotfix: false,
-                monitoring: false
+                analysis: false,
+                timeline: false,
+                prevention: false
             },
-            systemStatus: 'degraded',
-            chatMessages: [],
-            startTime: new Date(),
-            logIndex: 0
+            startTime: new Date()
         };
 
-        // Timer global
+        // Timer
         function updateTimer() {
             const now = new Date();
-            const elapsed = now - techState.startTime;
+            const elapsed = now - teamState.startTime;
             const totalTime = 90 * 60 * 1000; // 90 minutes
             const remaining = Math.max(0, totalTime - elapsed);
             
@@ -963,382 +724,84 @@ switch(techState.systemStatus) {
             document.getElementById('crisisTimer').textContent = display;
         }
 
-        // Simulation de logs en temps réel
-        function addLiveLog() {
-            const logs = [
-                { type: 'error', message: '[' + new Date().toISOString().slice(11, 19) + '] ERROR: Connection timeout - retry attempt failed' },
-                { type: 'warning', message: '[' + new Date().toISOString().slice(11, 19) + '] WARN: High CPU usage detected - 89%' },
-                { type: 'info', message: '[' + new Date().toISOString().slice(11, 19) + '] INFO: Backup system activated' },
-                { type: 'error', message: '[' + new Date().toISOString().slice(11, 19) + '] ERROR: Failed to load campaign_content.db' },
-                { type: 'success', message: '[' + new Date().toISOString().slice(11, 19) + '] SUCCESS: Failsafe protocol engaged' }
-            ];
-            
-            const randomLog = logs[Math.floor(Math.random() * logs.length)];
-            const errorLogsContainer = document.getElementById('errorLogs');
-            
-            const logElement = document.createElement('div');
-            logElement.className = `log-entry ${randomLog.type}`;
-            logElement.textContent = randomLog.message;
-            logElement.style.animationDelay = `${techState.logIndex * 0.1}s`;
-            
-            errorLogsContainer.appendChild(logElement);
-            errorLogsContainer.scrollTop = errorLogsContainer.scrollHeight;
-            
-            techState.logIndex++;
-            
-            // Limiter le nombre de logs pour éviter la surcharge
-            if (errorLogsContainer.children.length > 20) {
-                errorLogsContainer.removeChild(errorLogsContainer.firstChild);
-            }
-        }
-
-        // Mise à jour des métriques système
-        function updateMetrics() {
-            const metrics = {
-                errorRate: document.getElementById('errorRate'),
-                userComplaints: document.getElementById('userComplaints'),
-                systemLoad: document.getElementById('systemLoad'),
-                uptime: document.getElementById('uptime')
-            };
-            
-            // Simulation de métriques qui évoluent
-            if (techState.systemStatus === 'degraded') {
-                const errorRate = 120 + Math.floor(Math.random() * 20);
-                const complaints = 47 + Math.floor(Math.random() * 10);
-                const load = 80 + Math.floor(Math.random() * 15);
-                const uptime = 97.1 + Math.random() * 0.3;
-                
-                metrics.errorRate.textContent = errorRate + '%';
-                metrics.userComplaints.textContent = complaints;
-                metrics.systemLoad.textContent = load + '%';
-                metrics.uptime.textContent = uptime.toFixed(1) + '%';
-            }
-        }
-
-        // Gestion des livrables
-        function completeRootCause() {
-            if (!validateForm('rootCauseForm')) return;
-            
-            techState.deliverablesCompleted.rootCause = true;
-            
-            // Notification aux autres équipes
-            localStorage.setItem('tech_team_completed', 'true');
-            localStorage.setItem('tech_root_cause_complete', 'true');
-            localStorage.setItem('tech_root_cause_message', 'Root cause analysis complete: Database failover error identified');
-            
-            // Mise à jour visuelle
-            updateCardStatus('rootCauseForm', 'complete');
-            
-            // Message de chat
-            addChatMessage('Tech Team', '✅ Root cause analysis complete. Database failover bug identified and documented.', 'sent');
-            
-            // Débloquer l'équipe Legal
-            console.log('[Tech] Root cause complete - Legal team unblocked');
-            
-            // Améliorer les métriques système
-            techState.systemStatus = 'fixing';
-            updateSystemStatus();
-        }
-
-        function completeImplementation() {
-            if (!validateForm('fixImplementationForm')) return;
-            
-            techState.deliverablesCompleted.hotfix = true;
-            
-            // Notification
-            localStorage.setItem('tech_hotfix_complete', 'true');
-            localStorage.setItem('tech_hotfix_message', 'Hotfix deployed - system stability restored');
-            
-            updateCardStatus('fixImplementationForm', 'complete');
-            addChatMessage('Tech Team', '🚀 Hotfix deployed successfully. System returning to normal operation.', 'sent');
-            
-            // Améliorer les métriques
-            techState.systemStatus = 'recovering';
-            updateSystemStatus();
-            
-            console.log('[Tech] Hotfix complete - System recovering');
-        }
-
-        function completePrevention() {
-            if (!validateForm('preventionForm')) return;
-            
-            techState.deliverablesCompleted.monitoring = true;
-            
-            // Notification
-            localStorage.setItem('tech_monitoring_complete', 'true');
-            localStorage.setItem('tech_monitoring_message', 'Enhanced monitoring and prevention systems deployed');
-            
-            updateCardStatus('preventionForm', 'complete');
-            addChatMessage('Tech Team', '🛡️ Monitoring systems deployed. Future incidents will be caught early.', 'sent');
-            
-            techState.systemStatus = 'healthy';
-            updateSystemStatus();
-            
-            console.log('[Tech] Prevention measures complete - All deliverables finished');
-        }
-
-        function commitDeliverable(deliverableId) {
-            const deliverableMap = {
-                'root-cause': 'rootCause',
-                'hotfix': 'hotfix', 
-                'monitoring': 'monitoring'
-            };
-            
-            const actualId = deliverableMap[deliverableId];
-            if (!techState.deliverablesCompleted[actualId]) {
-                alert('Complete the work before committing!');
-                return;
-            }
-            
-            // Animation de commit
-            const button = event.target;
-            button.textContent = 'committed ✅';
-            button.disabled = true;
-            button.style.background = 'var(--tech-primary)';
-            
-            addChatMessage('System', `📤 ${deliverableId} committed to main branch`, 'sent');
-        }
-
-        function validateForm(formId) {
-            const form = document.getElementById(formId);
-            const inputs = form.querySelectorAll('textarea, select');
-            
-            for (let input of inputs) {
-                if (!input.value.trim()) {
-                    alert('Please complete all fields before submitting.');
-                    input.focus();
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        function updateCardStatus(formId, status) {
-            const card = document.getElementById(formId).closest('.work-card');
-            const statusElement = card.querySelector('.card-status');
-            
-            switch(status) {
-                case 'complete':
-                    statusElement.textContent = 'COMPLETE';
-                    statusElement.className = 'card-status status-complete';
-                    card.style.opacity = '0.8';
-                    break;
-            }
-        }
-
-        function updateSystemStatus() {
-            const statusDot = document.getElementById('systemStatusDot');
-            const statusText = document.getElementById('systemStatusText');
-            
-            switch(techState.systemStatus) {
-                case 'degraded':
-                    statusDot.className = 'status-dot';
-                    statusText.textContent = 'SYSTEM DEGRADED';
-                    break;
-                case 'fixing':
-                    statusDot.className = 'status-dot degraded';
-                    statusText.textContent = 'FIXING IN PROGRESS';
-                    break;
-                case 'recovering':
-                    statusDot.className = 'status-dot degraded';
-                    statusText.textContent = 'SYSTEM RECOVERING';
-                    break;
-                case 'healthy':
-                    statusDot.className = 'status-dot healthy';
-                    statusText.textContent = 'SYSTEM HEALTHY';
-                    break;
-            }
-        }
-
-        // Gestion du chat
+        // Chat
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
-            
             if (!message) return;
-            
-            addChatMessage('Tech Team', message, 'sent');
+
+            addChatMessage('Crisis Analysis', message, 'sent');
             input.value = '';
-            
-            // Simuler des réponses
-            if (Math.random() > 0.6) {
-                setTimeout(() => {
-                    const responses = [
-                        'Legal Team: Thanks for the update!',
-                        'Media Team: ETA on full system recovery?',
-                        'Strategy Team: Board wants technical summary.',
-                        'CEO: Status report needed ASAP!'
-                    ];
-                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                    const [sender, msg] = randomResponse.split(': ');
-                    addChatMessage(sender, msg, 'received');
-                }, 1000 + Math.random() * 3000);
-            }
+
+            // Simulation de réponse
+            setTimeout(() => {
+                const responses = [
+                    'Legal Team: Got it, thanks for the update!',
+                    'Media Team: Perfect, updating our timeline.',
+                    'Strategy Team: This helps with our board prep.'
+                ];
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                const [sender, msg] = response.split(': ');
+                addChatMessage(sender, msg, 'received');
+            }, 1000 + Math.random() * 2000);
         }
 
         function addChatMessage(sender, message, type) {
             const chatMessages = document.getElementById('chatMessages');
             const messageElement = document.createElement('div');
             messageElement.className = `chat-message ${type}`;
-            
             messageElement.innerHTML = `
                 <div class="message-sender">${sender}</div>
                 ${message}
             `;
-            
             chatMessages.appendChild(messageElement);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            techState.chatMessages.push({ sender, message, type, timestamp: new Date() });
         }
 
-        // Gestion des événements CEO
-        function handleCEOEvents() {
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'ceo_broadcast_message') {
-                    const message = e.newValue;
-                    if (message) {
-                        addChatMessage('CEO BROADCAST', message, 'received');
-                        showCEOBroadcast(message);
-                    }
-                }
-                
-                if (e.key === 'crisis_event_triggered') {
-                    const eventData = JSON.parse(e.newValue || '{}');
-                    handleCrisisEvent(eventData);
-                }
-            });
+        // Gestion des livrables
+        function markComplete(deliverableId) {
+            teamState.deliverablesCompleted[deliverableId] = true;
+            
+            // Mise à jour visuelle
+            const deliverableItem = event.target.closest('.deliverable-item');
+            deliverableItem.style.opacity = '0.7';
+            event.target.textContent = '✅ Done';
+            event.target.disabled = true;
+
+            // Notification aux autres équipes
+            localStorage.setItem(`crisis_analysis_${deliverableId}_complete`, 'true');
+            
+            // Message de confirmation
+            addChatMessage('System', `✅ ${deliverableId} completed and shared with waiting teams`, 'sent');
+            
+            console.log(`[Crisis Analysis] Deliverable completed: ${deliverableId}`);
         }
 
-        function showCEOBroadcast(message) {
-            const broadcast = document.createElement('div');
-            broadcast.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: linear-gradient(135deg, var(--tech-primary), var(--tech-secondary));
-                color: white;
-                padding: 2rem;
-                border-radius: 1rem;
-                box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4);
-                z-index: 10000;
-                text-align: center;
-                animation: slideInUp 0.5s ease-out;
-                max-width: 500px;
-                border: 2px solid rgba(255, 255, 255, 0.2);
-            `;
-            
-            broadcast.innerHTML = `
-                <h2 style="margin: 0 0 1rem 0; font-size: 1.25rem; font-weight: 800;">📢 CEO ALERT</h2>
-                <p style="margin: 0 0 1rem 0; font-size: 1rem; line-height: 1.5;">${message}</p>
-                <button onclick="this.parentElement.remove()" style="
-                    background: rgba(255, 255, 255, 0.2);
-                    color: white;
-                    border: 1px solid white;
-                    padding: 0.5rem 1rem;
-                    border-radius: 0.5rem;
-                    cursor: pointer;
-                    font-weight: 600;
-                ">Roger that</button>
-            `;
-            
-            document.body.appendChild(broadcast);
-            
-            setTimeout(() => {
-                if (broadcast.parentNode) {
-                    broadcast.remove();
-                }
-            }, 8000);
+        // Fonctions des formulaires
+        function completeRootCause() {
+            markComplete('analysis');
         }
 
-        function handleCrisisEvent(eventData) {
-            switch(eventData.type) {
-                case 'investor-panic':
-                    addChatMessage('URGENT', 'Investor demanding technical explanation of the outage!', 'received');
-                    break;
-                case 'competitor-attack':
-                    addChatMessage('Strategy Team', 'Competitor claiming superior reliability - need our uptime stats!', 'received');
-                    break;
-                default:
-                    console.log(`[Tech] Unhandled crisis event: ${eventData.type}`);
-            }
+        function completeImplementation() {
+            markComplete('timeline');
+            markComplete('prevention');
         }
 
-        // Auto-save des formulaires
-        function setupAutoSave() {
-            const forms = ['rootCauseForm', 'fixImplementationForm', 'preventionForm'];
-            
-            forms.forEach(formId => {
-                const form = document.getElementById(formId);
-                if (form) {
-                    const inputs = form.querySelectorAll('textarea, input, select');
-                    inputs.forEach(input => {
-                        input.addEventListener('input', () => {
-                            localStorage.setItem(`tech_${formId}_${input.name || 'content'}`, input.value);
-                        });
-                        
-                        // Charger contenu sauvegardé
-                        const savedContent = localStorage.getItem(`tech_${formId}_${input.name || 'content'}`);
-                        if (savedContent) {
-                            input.value = savedContent;
-                        }
-                    });
-                }
-            });
-        }
-
-        // Gestion de l'input chat avec Enter
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
+        // Gestion des événements clavier
+        document.addEventListener('keypress', function(e) {
+            if (e.target.id === 'chatInput' && e.key === 'Enter') {
+                sendMessage();
             }
         });
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('[Tech Team] Interface initialized');
-            
-            // Démarrer les timers et simulations
+            console.log('[Crisis Analysis] Team interface initialized');
             setInterval(updateTimer, 1000);
-            setInterval(addLiveLog, 8000); // Nouveau log toutes les 8 secondes
-            setInterval(updateMetrics, 5000); // Métriques toutes les 5 secondes
             
-            // Configurer auto-save
-            setupAutoSave();
-            
-            // Écouter événements CEO
-            handleCEOEvents();
-            
-            // Message de bienvenue
-            addChatMessage('System', 'Tech Team activated. System degraded - immediate action required.', 'received');
-            
-            // État initial
-            updateSystemStatus();
+            // Message d'accueil
+            addChatMessage('System', 'Crisis Analysis Team activated. You are first in the response chain!', 'received');
         });
-
-        // Styles d'animation
-        const animationStyles = document.createElement('style');
-        animationStyles.textContent = `
-            @keyframes slideInUp {
-                from { opacity: 0; transform: translate(-50%, -50%) translateY(30px); }
-                to { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
-            }
-        `;
-        document.head.appendChild(animationStyles);
     </script>
 </body>
-</html>root-cause')">git push</button>
-                        </div>
-                    </div>
-                    
-                    <div class="deliverable-item">
-                        <div class="deliverable-name">hotfix_v1.2.1</div>
-                        <div class="deliverable-actions">
-                            <button class="deliverable-btn btn-deploy">👁️</button>
-                            <button class="deliverable-btn btn-commit" onclick="commitDeliverable('
+</html>

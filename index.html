@@ -319,17 +319,63 @@
         .button-tooltip:hover::after {
             content: attr(data-tooltip);
             position: absolute;
-            bottom: 100%;
+            top: -60px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
             white-space: nowrap;
             z-index: 1000;
-            margin-bottom: 0.5rem;
+            max-width: 300px;
+            white-space: normal;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .button-tooltip:hover::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid rgba(0, 0, 0, 0.9);
+            z-index: 1001;
+        }
+
+        .email-easter-egg {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 6px;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #1e40af;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .email-easter-egg:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateX(2px);
+        }
+
+        .email-easter-egg.discovered {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #065f46;
+        }
+
+        .email-easter-egg.discovered::after {
+            content: " ✓ Found";
+            font-weight: 600;
+            color: #10b981;
         }
 
         .analysis-grid {
@@ -745,7 +791,7 @@ Be specific and use evidence from the emails to support your analysis."
                     </div>
                 </div>
 
-                <button class="validate-analysis" id="validateBtn" onclick="validateAnalysis()">
+                <button class="validate-analysis button-tooltip" id="validateBtn" onclick="validateAnalysis()" data-tooltip="Select 4 problems and write detailed analysis to proceed">
                     🎯 Submit Analysis & Proceed to Team Assignment
                 </button>
 
@@ -1113,6 +1159,7 @@ Board Chair
 
         let selectedProblems = [];
         let phase1Completed = false;
+        let easterEggsFound = [];
 
         // Initialize simulation
         function startSimulation() {
@@ -1120,6 +1167,7 @@ Board Chair
             document.getElementById('phase1').classList.add('active');
             loadEmails();
             loadProblems();
+            // Easter egg tracking will be setup by DOMContentLoaded
         }
 
         // Load emails into the inbox
@@ -1169,21 +1217,116 @@ Board Chair
             updateValidateButton();
         }
 
+        // Track easter eggs - simplified approach
+        function discoverEasterEgg(element, index) {
+            if (!element.classList.contains('discovered')) {
+                element.classList.add('discovered');
+                if (!easterEggsFound.includes(index)) {
+                    easterEggsFound.push(index);
+                    updateEasterEggCounter();
+                    showNotification(`🎯 Clue discovered! (${easterEggsFound.length}/8)`);
+                }
+            }
+        }
+
+        function updateEasterEggCounter() {
+            const counter = document.getElementById('easterEggCounter');
+            const count = document.getElementById('easterEggCount');
+            
+            if (counter && count) {
+                count.textContent = `${easterEggsFound.length}/8`;
+                
+                if (easterEggsFound.length > 0) {
+                    counter.classList.add('visible');
+                }
+                
+                // Achievement unlock
+                if (easterEggsFound.length >= 5) {
+                    showNotification("🎯 Detective Level: Excellent! You're gathering crucial intel for Phase 2");
+                }
+            }
+        }
+
+        // Setup easter egg tracking - simplified
+        function setupEasterEggTracking() {
+            setTimeout(() => {
+                const easterEggs = document.querySelectorAll('.email-easter-egg');
+                easterEggs.forEach((egg, index) => {
+                    egg.addEventListener('click', () => {
+                        discoverEasterEgg(egg, index);
+                    });
+                    
+                    // Auto-discover on scroll into view (simplified)
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
+                                setTimeout(() => {
+                                    discoverEasterEgg(egg, index);
+                                }, 1000); // Delay to ensure they actually read it
+                            }
+                        });
+                    }, { threshold: 0.7 });
+                    observer.observe(egg);
+                });
+            }, 500);
+        }
+
         // Update validate button state
         function updateValidateButton() {
             const justificationText = document.getElementById('justificationText').value.trim();
             const validateBtn = document.getElementById('validateBtn');
             
-            if (selectedProblems.length === 4 && justificationText.length > 100) {
+            // Update progress indicators
+            const problemsCount = document.getElementById('problemsCount');
+            const problemsProgress = document.getElementById('problemsProgress');
+            const analysisCount = document.getElementById('analysisCount');
+            const analysisProgress = document.getElementById('analysisProgress');
+            
+            // Problems progress
+            problemsCount.textContent = `${selectedProblems.length}/4`;
+            const problemsPercent = (selectedProblems.length / 4) * 100;
+            problemsProgress.style.width = `${problemsPercent}%`;
+            problemsProgress.className = `progress-bar-fill ${problemsPercent === 100 ? 'complete' : 'partial'}`;
+            
+            // Analysis progress
+            const analysisLength = justificationText.length;
+            analysisCount.textContent = `${analysisLength}/100`;
+            const analysisPercent = Math.min((analysisLength / 100) * 100, 100);
+            analysisProgress.style.width = `${analysisPercent}%`;
+            analysisProgress.className = `progress-bar-fill ${analysisPercent >= 100 ? 'complete' : 'partial'}`;
+            
+            // Button state
+            if (selectedProblems.length === 4 && analysisLength >= 100) {
                 validateBtn.disabled = false;
+                validateBtn.setAttribute('data-tooltip', 'Analysis complete! Click to proceed to team selection');
             } else {
                 validateBtn.disabled = true;
+                if (selectedProblems.length < 4) {
+                    validateBtn.setAttribute('data-tooltip', `Select ${4 - selectedProblems.length} more problem(s)`);
+                } else if (analysisLength < 100) {
+                    validateBtn.setAttribute('data-tooltip', `Write ${100 - analysisLength} more characters in your analysis`);
+                }
             }
         }
 
-        // Listen to justification text changes
+        // Listen to justification text changes - more robust event binding
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('justificationText').addEventListener('input', updateValidateButton);
+            const justificationTextarea = document.getElementById('justificationText');
+            if (justificationTextarea) {
+                justificationTextarea.addEventListener('input', updateValidateButton);
+                justificationTextarea.addEventListener('keyup', updateValidateButton);
+                justificationTextarea.addEventListener('paste', () => {
+                    setTimeout(updateValidateButton, 100); // Delay for paste to register
+                });
+            }
+            
+            // Initialize progress indicators
+            setTimeout(() => {
+                updateValidateButton(); // Initial state
+            }, 100);
+            
+            // Setup easter egg tracking after DOM is ready
+            setupEasterEggTracking();
         });
 
         // Validate analysis

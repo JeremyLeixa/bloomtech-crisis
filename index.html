@@ -1393,10 +1393,10 @@ function setupAutoSave() {
                 //setupEasterEggTracking();
                 
                 // Setup auto-save
-                //setupAutoSave();
+                setupAutoSave();
                 
                 // Load any saved draft
-                //setTimeout(loadSavedDraft, 500);
+                setTimeout(loadSavedDraft, 500);
                 
                 console.log('🎉 Simulation initialized successfully');
                 
@@ -1495,7 +1495,7 @@ function setupAutoSave() {
         // Join team function
         function joinTeam(teamType) {
             const teamUrls = {
-                crisis: 'teams/tech.html',
+                crisis: 'teams/crisis-analysis.html',
                 legal: 'teams/legal.html',
                 media: 'teams/media-response.html',
                 influencer: 'teams/influencer-relations.html',

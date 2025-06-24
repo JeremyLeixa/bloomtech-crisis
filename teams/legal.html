@@ -1331,6 +1331,43 @@
             
             console.log('[Legal Team] All systems active - Crisis legal response engaged');
         });
+        // Auto-detection Crisis Analysis completion
+function checkCrisisAnalysisStatus() {
+    const crisisComplete = localStorage.getItem('crisis_analysis_complete') === 'true';
+    
+    if (crisisComplete) {
+        // Hide waiting message
+        const waitingSection = document.querySelector('.waiting-message'); // Adapte le sélecteur
+        if (waitingSection) {
+            waitingSection.style.display = 'none';
+        }
+        
+        // Enable blocked sections
+        const blockedSections = document.querySelectorAll('.blocked-section'); // Adapte le sélecteur
+        blockedSections.forEach(section => {
+            section.classList.remove('blocked');
+            section.classList.add('enabled');
+        });
+        
+        // Show success notification
+        const notification = document.createElement('div');
+        notification.textContent = '✅ Crisis Analysis data received! FTC Response section unlocked.';
+        notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 1rem; border-radius: 8px; z-index: 1000;';
+        document.body.appendChild(notification);
+        
+        // Remove notification after 4 seconds
+        setTimeout(() => notification.remove(), 4000);
+        
+        // Stop checking once received
+        clearInterval(statusCheckInterval);
+    }
+}
+
+// Check every 5 seconds
+const statusCheckInterval = setInterval(checkCrisisAnalysisStatus, 5000);
+
+// Also check immediately on page load
+checkCrisisAnalysisStatus();
     </script>
 </body>
 </html>

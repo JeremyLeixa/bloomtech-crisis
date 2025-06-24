@@ -976,14 +976,38 @@
             // Hide waiting overlay
             document.getElementById('technicalWaitingOverlay').classList.add('hidden');
             
-            // Load crisis analysis data
-            const crisisData = {
-                summary: localStorage.getItem('crisis_analysis_summary') || 'Technical malfunction in advertising system led to competitor slogans being displayed on BloomTech campaigns.',
-                timeline: localStorage.getItem('crisis_analysis_timeline') || 'Issue detected at 08:45 AM, system taken offline at 09:15 AM, fix implemented by 10:30 AM.',
-                prevention: localStorage.getItem('crisis_analysis_prevention') || 'Implemented dual-verification system and automated competitor content detection.'
+            // Load crisis analysis data from JSON storage
+            let crisisData = {
+                summary: 'Technical analysis not yet available...',
+                timeline: 'Timeline not yet available...',
+                prevention: 'Prevention plan not yet available...'
             };
             
-            // Populate analysis sections
+            // Try to get data from crisis_analysis_draft (JSON format)
+            const crisisDraft = localStorage.getItem('crisis_analysis_draft');
+            if (crisisDraft) {
+                try {
+                    const parsedData = JSON.parse(crisisDraft);
+                    crisisData = {
+                        summary: parsedData.summary || crisisData.summary,
+                        timeline: parsedData.timeline || crisisData.timeline,
+                        prevention: parsedData.prevention || crisisData.prevention
+                    };
+                } catch (e) {
+                    console.warn('[Legal] Could not parse crisis_analysis_draft JSON:', e);
+                }
+            }
+            
+            // Try alternative keys if JSON parsing failed
+            if (!crisisDraft) {
+                crisisData = {
+                    summary: localStorage.getItem('crisis_analysis_summary') || crisisData.summary,
+                    timeline: localStorage.getItem('crisis_analysis_timeline') || crisisData.timeline,
+                    prevention: localStorage.getItem('crisis_analysis_prevention') || crisisData.prevention
+                };
+            }
+            
+            // Populate analysis sections with real data
             document.getElementById('crisisSummary').textContent = crisisData.summary;
             document.getElementById('technicalTimeline').textContent = crisisData.timeline;
             document.getElementById('preventionPlan').textContent = crisisData.prevention;
@@ -991,7 +1015,7 @@
             // Add chat notification
             addChatMessage('System', '✅ Crisis analysis received. Legal analysis can now be completed with technical details.', 'system');
             
-            console.log('[Legal] Crisis analysis received and processed');
+            console.log('[Legal] Crisis analysis received and processed:', crisisData);
         }
 
         function startTimers() {

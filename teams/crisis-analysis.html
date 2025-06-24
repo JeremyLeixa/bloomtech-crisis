@@ -605,7 +605,7 @@
         function updateDeliverable(deliverableNum) {
             const textarea = document.getElementById(['', 'summary', 'timeline', 'prevention'][deliverableNum]);
             const content = textarea.value.trim();
-            const isComplete = content.length >= 50; // Minimum content requirement
+            const isComplete = content.length >= 150; // Increased minimum content requirement
             
             deliverableStates[deliverableNum] = isComplete;
             

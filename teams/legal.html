@@ -1138,13 +1138,13 @@ checkCrisisAnalysisStatus();
 
         // Check dependencies - utilise les clés uniformisées
         function checkDependencies() {
-            // Vérifier si Crisis Analysis a terminé
-            const crisisStatus = localStorage.getItem('team_crisis_analysis_complete') === 'true';
+    const crisisStatus = localStorage.getItem('team_crisis_analysis_complete') === 'true';
+    if (crisisStatus && !legalState.dependenciesReceived.crisisAnalysis) {
+        receiveCrisisAnalysis();
+    }
+} // ← FERMER checkDependencies ici
 
-            if (crisisStatus && !legalState.dependenciesReceived.crisisAnalysis) {
-                receiveCrisisAnalysis();
-            }
-function receiveCrisisAnalysis() {
+function receiveCrisisAnalysis() {  // ← SORTIR la fonction au niveau global
     console.log('[DEBUG] receiveCrisisAnalysis() TRIGGERED!');
     legalState.dependenciesReceived.crisisAnalysis = true;
     

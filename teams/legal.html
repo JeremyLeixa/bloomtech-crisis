@@ -1040,6 +1040,11 @@
     </main>
 
     <script>
+        // Debug auto-detection - à virer après test
+setInterval(() => {
+    const crisisStatus = localStorage.getItem('crisis_analysis_complete');
+    console.log('[DEBUG AUTO-DETECT] crisis_analysis_complete =', crisisStatus);
+}, 3000);
         // État global Legal Team avec clés uniformisées
         let legalState = {
             dependenciesReceived: {
@@ -1101,6 +1106,7 @@
                 receiveCrisisAnalysis();
             }
 function receiveCrisisAnalysis() {
+    console.log('[DEBUG] receiveCrisisAnalysis() TRIGGERED!');
     legalState.dependenciesReceived.crisisAnalysis = true;
     
     // Récupérer et afficher les données de Crisis Analysis (NOUVEAU)

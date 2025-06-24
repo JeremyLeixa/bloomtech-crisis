@@ -1067,36 +1067,50 @@
             }
         }
 
-        function approveMediaCommunication() {
-            const approvedMessages = document.getElementById('approvedMessages').value.trim();
-            const restrictedTopics = document.getElementById('restrictedTopics').value.trim();
-            const approvalStatus = document.getElementById('approvalStatus').value;
-            
-            if (!approvedMessages || !restrictedTopics || approvalStatus === 'pending') {
-                alert('Please complete all media approval fields and set approval status.');
-                return;
-            }
-            
-            legalState.mediaApprovalComplete = true;
-            localStorage.setItem('legal_media_approval_complete', 'true');
-            
-            // Store media approval data
-            const approvalData = {
-                approvedMessages, restrictedTopics, approvalStatus,
-                approvedAt: new Date().toISOString()
-            };
-            localStorage.setItem('legal_media_approval_data', JSON.stringify(approvalData));
-            
-            // Update UI
-            const mediaCard = document.getElementById('mediaApprovalForm').closest('.work-card');
-            const statusBadge = mediaCard.querySelector('.card-status');
-            statusBadge.textContent = 'SENT';
-            statusBadge.className = 'card-status status-completed';
-
-            
-            updateOverallStatus();
-            console.log('[Legal] Media approval sent:', approvalStatus);
-        }
+      function approveMediaCommunication() {
+    console.log('=== DEBUG START ===');
+    
+    const approvedMessagesElement = document.getElementById('approvedMessages');
+    const restrictedTopicsElement = document.getElementById('restrictedTopics');
+    const approvalStatusElement = document.getElementById('approvalStatus');
+    
+    console.log('Elements found:', {
+        approvedMessages: approvedMessagesElement,
+        restrictedTopics: restrictedTopicsElement,
+        approvalStatus: approvalStatusElement
+    });
+    
+    const approvedMessages = approvedMessagesElement.value;
+    const restrictedTopics = restrictedTopicsElement.value;
+    const approvalStatus = approvalStatusElement.value;
+    
+    console.log('Values extracted:', {
+        approvedMessages: approvedMessages,
+        restrictedTopics: restrictedTopics,
+        approvalStatus: approvalStatus
+    });
+    
+    const approvalData = {
+        approvedMessages, 
+        restrictedTopics, 
+        approvalStatus,
+        approvedAt: new Date().toISOString()
+    };
+    
+    console.log('Data object created:', approvalData);
+    
+    const jsonString = JSON.stringify(approvalData);
+    console.log('JSON string:', jsonString);
+    
+    localStorage.setItem('legal_media_approval_data', jsonString);
+    console.log('Saved to localStorage');
+    
+    // Vérification immédiate
+    const savedData = localStorage.getItem('legal_media_approval_data');
+    console.log('Retrieved from localStorage:', savedData);
+    
+    console.log('=== DEBUG END ===');
+}
 
         function updateOverallStatus() {
             const legalStatus = document.getElementById('legalStatus');

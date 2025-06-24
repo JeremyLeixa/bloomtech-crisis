@@ -1005,7 +1005,7 @@
             statusBadge.textContent = 'COMPLETED';
             statusBadge.className = 'card-status status-completed';
             
-            addChatMessage('System', '✅ Risk Assessment complete. Analysis available to other teams.', 'system');
+            //addChatMessage('System', '✅ Risk Assessment complete. Analysis available to other teams.', 'system');
             updateOverallStatus();
             
             console.log('[Legal] Risk assessment completed');
@@ -1038,7 +1038,7 @@
             statusBadge.textContent = 'SUBMITTED';
             statusBadge.className = 'card-status status-completed';
             
-            addChatMessage('System', '📤 FTC Response submitted. Legal position established.', 'system');
+            //addChatMessage('System', '📤 FTC Response submitted. Legal position established.', 'system');
             updateOverallStatus();
             
             console.log('[Legal] FTC response completed and submitted');
@@ -1092,13 +1092,7 @@
             const statusBadge = mediaCard.querySelector('.card-status');
             statusBadge.textContent = 'SENT';
             statusBadge.className = 'card-status status-completed';
-            
-            // Notify Media Team
-            if (approvalStatus === 'approved') {
-                addChatMessage('Media Team', 'Legal approval received! Starting press release immediately.', 'received');
-            } else if (approvalStatus === 'conditional') {
-                addChatMessage('Media Team', 'Conditional approval received. Reviewing restrictions before proceeding.', 'received');
-            }
+
             
             updateOverallStatus();
             console.log('[Legal] Media approval sent:', approvalStatus);
@@ -1112,7 +1106,7 @@
                 legalStatus.style.color = '#10b981';
                 localStorage.setItem('legal_team_complete', 'true');
                 
-                addChatMessage('System', '🎉 Legal Team objectives complete! All deliverables submitted.', 'system');
+               
                 
                 // Celebrate completion
                 setTimeout(() => {
@@ -1127,17 +1121,17 @@
         function scheduleEvents() {
             // Media pressure at 1 minute
             setTimeout(() => {
-                addChatMessage('Media Team', 'Legal, we need approval guidance ASAP. Journalists are asking questions!', 'received');
+                //addChatMessage('Media Team', 'Legal, we need approval guidance ASAP. Journalists are asking questions!', 'received');
             }, 60000);
             
             // Strategy pressure at 5 minutes
             setTimeout(() => {
-                addChatMessage('Strategy Team', 'Legal team, board wants risk assessment for emergency meeting. How exposed are we?', 'received');
+                //addChatMessage('Strategy Team', 'Legal team, board wants risk assessment for emergency meeting. How exposed are we?', 'received');
             }, 300000);
             
             // Urgent approval request at 10 minutes
             setTimeout(() => {
-                addChatMessage('Media Team', 'URGENT: Major news outlet wants statement in 20 minutes. Can we get approval status?', 'received');
+                //addChatMessage('Media Team', 'URGENT: Major news outlet wants statement in 20 minutes. Can we get approval status?', 'received');
             }, 600000);
             
             // Crisis Analysis delivers at 20 minutes
@@ -1145,7 +1139,7 @@
                 if (!legalState.crisisAnalysisReceived) {
                     localStorage.setItem('crisis_analysis_complete', 'true');
                     receiveCrisisAnalysis();
-                    addChatMessage('Crisis Analysis', 'Technical analysis complete! Root cause identified - you can now finalize FTC response.', 'received');
+                   // addChatMessage('Crisis Analysis', 'Technical analysis complete! Root cause identified - you can now finalize FTC response.', 'received');
                 }
             }, 1200000);
         }
@@ -1158,7 +1152,7 @@
         window.addEventListener('storage', function(e) {
             if (e.key === 'ceo_broadcast') {
                 const broadcast = JSON.parse(e.newValue);
-                addChatMessage('CEO', broadcast.message, 'system');
+               // addChatMessage('CEO', broadcast.message, 'system');
             }
         });
 

@@ -459,117 +459,7 @@
             transform: none !important;
         }
 
-        /* Chat System */
-        .chat-container {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 350px;
-            background: var(--card-bg);
-            border-radius: 1rem;
-            border: 1px solid var(--border-gray);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            overflow: hidden;
-            z-index: 1000;
-        }
-
-        .chat-header {
-            background: var(--legal-primary);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-title {
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .chat-toggle {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .chat-body {
-            height: 300px;
-            overflow-y: auto;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .chat-message {
-            max-width: 80%;
-            padding: 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.875rem;
-            line-height: 1.4;
-        }
-
-        .chat-message.sent {
-            background: var(--legal-primary);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 0.25rem;
-        }
-
-        .chat-message.received {
-            background: var(--dark-bg);
-            color: var(--text-white);
-            align-self: flex-start;
-            border-bottom-left-radius: 0.25rem;
-        }
-
-        .chat-message.system {
-            background: var(--warning-orange);
-            color: white;
-            align-self: center;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-
-        .chat-sender {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.75rem;
-            opacity: 0.8;
-        }
-
-        .chat-input-container {
-            padding: 1rem;
-            border-top: 1px solid var(--border-gray);
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: var(--dark-bg);
-            border: 1px solid var(--border-gray);
-            border-radius: 1rem;
-            padding: 0.75rem;
-            color: var(--text-white);
-            font-size: 0.875rem;
-        }
-
-        .chat-send {
-            background: var(--legal-primary);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -893,23 +783,7 @@
         </div>
     </div>
 
-    <!-- Chat System -->
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="chat-title">📞 Inter-Team Communication</div>
-            <button class="chat-toggle" onclick="toggleChat()">−</button>
-        </div>
-        <div class="chat-body" id="chatBody">
-            <div class="chat-message system">
-                <div class="chat-sender">System</div>
-                Legal Team communication channel active. Other teams are standing by.
-            </div>
-        </div>
-        <div class="chat-input-container">
-            <input type="text" class="chat-input" id="chatInput" placeholder="Message other teams..." onkeypress="if(event.key==='Enter') sendMessage()">
-            <button class="chat-send" onclick="sendMessage()">📤</button>
-        </div>
-    </div>
+    
 
     <script>
         // Global state management
@@ -1012,8 +886,7 @@
             document.getElementById('technicalTimeline').textContent = crisisData.timeline;
             document.getElementById('preventionPlan').textContent = crisisData.prevention;
             
-            // Add chat notification
-            addChatMessage('System', '✅ Crisis analysis received. Legal analysis can now be completed with technical details.', 'system');
+           
             
             console.log('[Legal] Crisis analysis received and processed:', crisisData);
         }
@@ -1277,95 +1150,9 @@
             }, 1200000);
         }
 
-        // Chat functionality
-        function toggleChat() {
-            const chatBody = document.getElementById('chatBody');
-            const toggleBtn = document.querySelector('.chat-toggle');
-            
-            if (chatBody.style.display === 'none') {
-                chatBody.style.display = 'flex';
-                toggleBtn.textContent = '−';
-            } else {
-                chatBody.style.display = 'none';
-                toggleBtn.textContent = '+';
-            }
-        }
+      
 
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (!message) return;
-            
-            addChatMessage('Legal Team', message, 'sent');
-            input.value = '';
-            
-            // Simulate team responses
-            setTimeout(() => {
-                simulateTeamResponse(message);
-            }, 1000 + Math.random() * 2000);
-        }
-
-        function simulateTeamResponse(originalMessage) {
-            const responses = {
-                'legal position': [
-                    'Media Team: Thanks! Working on press release now.',
-                    'Crisis Analysis: Happy to help with any technical questions.',
-                    'Strategy Team: This helps with our board presentation.'
-                ],
-                'ftc': [
-                    'Crisis Analysis: We have all technical details ready for FTC response.',
-                    'Media Team: Do we have green light for public communication?',
-                    'Strategy Team: FTC response will be crucial for board meeting.'
-                ],
-                'media': [
-                    'Media Team: Standing by for legal approval to communicate!',
-                    'Media Team: Journalists are getting impatient - need guidance.',
-                    'Strategy Team: Media strategy depends on legal position.'
-                ],
-                'default': [
-                    'Crisis Analysis: Roger that, Legal team.',
-                    'Media Team: Understood, keeping you posted.',
-                    'Strategy Team: Thanks for the update.',
-                    'Crisis Analysis: Let us know if you need more technical info.',
-                    'Media Team: Working on our response in parallel.'
-                ]
-            };
-            
-            // Choose response based on message content
-            let responseArray = responses.default;
-            for (let keyword in responses) {
-                if (originalMessage.toLowerCase().includes(keyword) && keyword !== 'default') {
-                    responseArray = responses[keyword];
-                    break;
-                }
-            }
-            
-            const response = responseArray[Math.floor(Math.random() * responseArray.length)];
-            const [sender, msg] = response.includes(':') ? response.split(': ') : ['Team', response];
-            
-            addChatMessage(sender, msg, 'received');
-        }
-
-        function addChatMessage(sender, message, type) {
-            const chatBody = document.getElementById('chatBody');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${type}`;
-            
-            if (type !== 'system') {
-                messageDiv.innerHTML = `
-                    <div class="chat-sender">${sender}</div>
-                    ${message}
-                `;
-            } else {
-                messageDiv.innerHTML = `
-                    <div class="chat-sender">${sender}</div>
-                    ${message}
-                `;
-            }
-            
-            chatBody.appendChild(messageDiv);
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
+        
 
         // CEO Dashboard Integration (receives broadcasts)
         window.addEventListener('storage', function(e) {

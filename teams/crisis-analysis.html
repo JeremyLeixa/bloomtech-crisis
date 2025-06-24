@@ -670,17 +670,17 @@
             document.getElementById('sendToLegal').textContent = '✅ Analysis Sent Successfully';
             document.getElementById('sendToLegal').style.background = 'linear-gradient(135deg, #10b981, #059669)';
             
-            // Update waiting teams
+            // Update waiting teams (remplace les lignes existantes)
             document.getElementById('legalTeam').classList.remove('blocked');
             document.getElementById('legalTeam').innerHTML = `
                 <div class="team-name">⚖️ Legal Response</div>
-                <div class="team-status" style="color: #10b981;">Analysis Received</div>
+                <div class="team-status" style="color: #10b981;">✅ Analysis Received</div>
             `;
             
             document.getElementById('mediaTeam').classList.remove('blocked');
             document.getElementById('mediaTeam').innerHTML = `
                 <div class="team-name">📰 Media Response</div>
-                <div class="team-status" style="color: #10b981;">Analysis Received</div>
+                <div class="team-status" style="color: #10b981;">✅ Analysis Received</div>
             `;
             
             showNotification('Analysis successfully sent to Legal and Media teams!');

@@ -1331,27 +1331,17 @@
             
             console.log('[Legal Team] All systems active - Crisis legal response engaged');
         });
-        // Auto-detection Crisis Analysis completion
+       // Auto-detection Crisis Analysis completion - Version corrigée
 function checkCrisisAnalysisStatus() {
     const crisisComplete = localStorage.getItem('crisis_analysis_complete') === 'true';
     
-    if (crisisComplete) {
-        // Hide waiting message
-        const waitingSection = document.querySelector('.waiting-message'); // Adapte le sélecteur
-        if (waitingSection) {
-            waitingSection.style.display = 'none';
-        }
-        
-        // Enable blocked sections
-        const blockedSections = document.querySelectorAll('.blocked-section'); // Adapte le sélecteur
-        blockedSections.forEach(section => {
-            section.classList.remove('blocked');
-            section.classList.add('enabled');
-        });
+    if (crisisComplete && !legalState.dependenciesReceived.crisisAnalysis) {
+        // Utilise la fonction existante de ton interface
+        receiveCrisisAnalysis();
         
         // Show success notification
         const notification = document.createElement('div');
-        notification.textContent = '✅ Crisis Analysis data received! FTC Response section unlocked.';
+        notification.textContent = '✅ Crisis Analysis data received! FTC Response section enhanced.';
         notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 1rem; border-radius: 8px; z-index: 1000;';
         document.body.appendChild(notification);
         

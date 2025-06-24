@@ -1098,35 +1098,53 @@
             if (crisisStatus && !legalState.dependenciesReceived.crisisAnalysis) {
                 receiveCrisisAnalysis();
             }
-        }
-
-        function receiveCrisisAnalysis() {
-            legalState.dependenciesReceived.crisisAnalysis = true;
+function receiveCrisisAnalysis() {
+    legalState.dependenciesReceived.crisisAnalysis = true;
+    
+    // Récupérer et afficher les données de Crisis Analysis (NOUVEAU)
+    const analysisData = localStorage.getItem('crisis_analysis_data');
+    if (analysisData) {
+        try {
+            const data = JSON.parse(analysisData);
             
-            // Mettre à jour l'affichage des dépendances
-            const crisisDependency = document.getElementById('crisisDependency');
-            crisisDependency.className = 'dependency-item received';
-            crisisDependency.querySelector('.dependency-status').textContent = 'RECEIVED';
-            crisisDependency.querySelector('.dependency-status').className = 'dependency-status received';
-
-            // Changer le statut de la carte FTC Response
-            const cardStatus = document.querySelector('#ftcResponseCard .card-status');
-            cardStatus.textContent = 'URGENT';
-            cardStatus.className = 'card-status status-urgent';
-
-            // Auto-dismiss l'encouragement si pas encore fait
-            if (!legalState.encouragementDismissed) {
-                setTimeout(() => {
-                    dismissEncouragement();
-                }, 2000);
-            }
-
-            // Chat notification
-            addChatMessage('Crisis Analysis', 'Technical analysis complete! Root cause identified - you can now finalize FTC response.', 'received');
-            addChatMessage('System', '✅ Crisis analysis received. FTC response can now be completed with technical details.', 'system');
+            // Afficher la section Technical Analysis
+            document.getElementById('analysisReceivedCard').style.display = 'block';
             
-            console.log('[Legal] Crisis analysis received - FTC response can be enhanced');
+            // Remplir les contenus avec les vraies données
+            document.getElementById('crisisSummary').textContent = data.summary || 'No summary provided';
+            document.getElementById('technicalTimeline').textContent = data.timeline || 'No timeline provided';
+            document.getElementById('preventionPlan').textContent = data.prevention || 'No prevention plan provided';
+            
+            console.log('[Legal] Technical analysis data loaded successfully');
+        } catch (error) {
+            console.error('[Legal] Error parsing crisis analysis data:', error);
         }
+    }
+    
+    // Tout le code existant reste identique (INCHANGÉ)
+    const crisisDependency = document.getElementById('crisisDependency');
+    crisisDependency.className = 'dependency-item received';
+    crisisDependency.querySelector('.dependency-status').textContent = 'RECEIVED';
+    crisisDependency.querySelector('.dependency-status').className = 'dependency-status received';
+    
+    // Changer le statut de la carte FTC Response
+    const cardStatus = document.querySelector('#ftcResponseCard .card-status');
+    cardStatus.textContent = 'URGENT';
+    cardStatus.className = 'card-status status-urgent';
+    
+    // Auto-dismiss l'encouragement si pas encore fait
+    if (!legalState.encouragementDismissed) {
+        setTimeout(() => {
+            dismissEncouragement();
+        }, 2000);
+    }
+    
+    // Chat notification
+    addChatMessage('Crisis Analysis', 'Technical analysis complete! Root cause identified - you can now finalize FTC response.', 'received');
+    addChatMessage('System', '✅ Crisis analysis received. FTC response can now be completed with technical details.', 'system');
+    
+    console.log('[Legal] Crisis analysis received - FTC response can be enhanced');
+}
 
         // Gestion de l'encouragement (pas blocage)
         function dismissEncouragement() {

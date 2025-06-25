@@ -870,9 +870,14 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             initializeMediaInterface();
-            checkLegalApprovalStatus();
             startTimers();
             loadSavedData();
+            scheduleJournalistPressure();
+            
+            // Vérification immédiate au cas où Legal aurait déjà terminé
+            setTimeout(() => {
+                checkLegalApprovalStatus();
+            }, 1000);
         });
 
         function initializeMediaInterface() {
@@ -887,7 +892,49 @@
             });
         }
 
+        function scheduleJournalistPressure() {
+    // Alerte 1 - 90 secondes après l'ouverture
+    setTimeout(() => {
+        showNotification('📞 Breaking: Tech journalist from TechCrunch requesting immediate statement!');
+    }, 90000);
+    
+    // Alerte 2 - 3 minutes
+    setTimeout(() => {
+        showNotification('📱 URGENT: Viral tweet gaining traction - need counter-narrative NOW!');
+    }, 180000);
+    
+    // Alerte 3 - 5 minutes
+    setTimeout(() => {
+        showNotification('📺 CNN business reporter calling in 10 minutes for live segment!');
+    }, 300000);
+    
+    // Alerte 4 - 8 minutes (si pas de Legal approval)
+    setTimeout(() => {
+        if (!mediaState.legalApprovalReceived) {
+            showNotification('⚠️ DEADLINE ALERT: Press conference in 20 minutes - need content NOW!');
+        }
+    }, 480000);
+    
+    // Alerte finale - 12 minutes
+    setTimeout(() => {
+        showNotification('🔥 VIRAL: #BloomTechFail trending on Twitter - immediate response required!');
+    }, 720000);
+}
+        function checkLegalApprovalStatus() {
+            const legalApprovalComplete = localStorage.getItem('legal_media_approval_complete');
+            
+            if (legalApprovalComplete === 'true' && !mediaState.legalApprovalReceived) {
+                receiveLegalApproval();
+                return; // Stop checking once received
+            }
+            
+            // Continue checking every 3 seconds if not received yet
+            if (!mediaState.legalApprovalReceived) {
+                setTimeout(checkLegalApprovalStatus, 3000);
+            }
+        }
 
+        // Ajouter les alertes journalistes
         function scheduleJournalistPressure() {
             // Alerte 1 - 90 secondes après l'ouverture
             setTimeout(() => {
@@ -915,16 +962,6 @@
             setTimeout(() => {
                 showNotification('🔥 VIRAL: #BloomTechFail trending on Twitter - immediate response required!');
             }, 720000);
-        }
-        function checkLegalApprovalStatus() {
-            const legalApprovalComplete = localStorage.getItem('legal_media_approval_complete');
-            
-            if (legalApprovalComplete === 'true' && !mediaState.legalApprovalReceived) {
-                receiveLegalApproval();
-            } else {
-                // Check periodically for legal approval
-                setInterval(checkLegalApprovalStatus, 5000);
-            }
         }
 
         function receiveLegalApproval() {

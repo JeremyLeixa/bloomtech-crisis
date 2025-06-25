@@ -998,6 +998,14 @@
             
             legalState.riskAssessmentComplete = true;
             localStorage.setItem('legal_risk_assessment_complete', 'true');
+
+            // Fix : chercher le status badge différemment
+    const riskCard = document.getElementById('riskAssessmentForm').closest('.work-card');
+    const statusBadge = riskCard.querySelector('.card-header .card-status'); // Plus spécifique !
+    if (statusBadge) {
+        statusBadge.textContent = 'COMPLETED';
+        statusBadge.className = 'card-status status-completed';
+    }
             
             // Update UI
             const riskCard = document.getElementById('riskAssessmentForm').closest('.work-card');

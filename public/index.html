@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Claude IA - BloomTech Crisis</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 20px auto; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .chat-container {
+            border: 2px solid #eee;
+            border-radius: 10px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+        }
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .user { 
+            background: #007bff; 
+            color: white; 
+            margin-left: auto; 
+        }
+        .ai { 
+            background: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+        }
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .input-area button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Test Claude IA - @SarahGlowUp</h1>
+        <p><strong>Proxy:</strong> https://bloomtech-crisis-new.vercel.app</p>
+        
+        <div id="status" class="status loading">🔄 Test de connexion...</div>
+        
+        <div class="chat-container">
+            <div class="messages" id="messages">
+                <div class="message ai">
+                    <strong>@SarahGlowUp:</strong> Seriously BloomTech? Your campaign displayed my competitor's slogan on MY content! My DMs are FLOODED with confused followers. I'm posting about this disaster at noon unless you give me a REAL solution. Not corporate BS.
+                </div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="messageInput" placeholder="Négociez avec @SarahGlowUp..." disabled>
+                <button onclick="sendMessage()" id="sendBtn" disabled>Envoyer</button>
+            </div>
+        </div>
+        
+        <div id="debug" style="background: #f1f1f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;">
+            Debug: Initialisation...
+        </div>
+    </div>
+
+    <script>
+        const PROXY_URL = 'https://bloomtech-crisis-new.vercel.app';
+        
+        async function testConnection() {
+            const status = document.getElementById('status');
+            const debug = document.getElementById('debug');
+            
+            try {
+                debug.innerHTML = 'Test 1/2: Vérification proxy...';
+                
+                // Test basique du proxy
+                const proxyResponse = await fetch(`${PROXY_URL}/api/test`);
+                const proxyData = await proxyResponse.json();
+                
+                debug.innerHTML = `Test 1/2 ✅: ${JSON.stringify(proxyData)}<br>Test 2/2: Claude API...`;
+                
+                if (!proxyData.apiKeyConfigured) {
+                    throw new Error('Clé API non configurée');
+                }
+                
+                // Test Claude
+                const claudeResponse = await fetch(`${PROXY_URL}/api/claude-chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: "Test connection",
+                        influencer: "sarah"
+                    })
+                });
+                
+                if (claudeResponse.ok) {
+                    const claudeData = await claudeResponse.json();
+                    status.className = 'status success';
+                    status.innerHTML = '✅ Claude API opérationnel !';
+                    debug.innerHTML = `✅ Tout fonctionne !<br>Proxy: OK<br>Claude: OK<br>Réponse: ${claudeData.response?.substring(0, 50)}...`;
+                    
+                    // Activer le chat
+                    document.getElementById('messageInput').disabled = false;
+                    document.getElementById('sendBtn').disabled = false;
+                } else {
+                    const errorData = await claudeResponse.json();
+                    throw new Error(`Claude: ${claudeResponse.status} - ${errorData.error}`);
+                }
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.innerHTML = `❌ Erreur: ${error.message}`;
+                debug.innerHTML = `❌ Erreur détaillée: ${error.message}<br>Stack: ${error.stack}`;
+                console.error('Erreur complète:', error);
+            }
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            // Ajouter message utilisateur
+            addMessage(`Vous: ${message}`, 'user');
+            input.value = '';
+            
+            try {
+                const response = await fetch(`${PROXY_URL}/api/claude-chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        influencer: "sarah"
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addMessage(`@SarahGlowUp: ${data.response}`, 'ai');
+                } else {
+                    const errorData = await response.json();
+                    addMessage(`Erreur: ${errorData.error}`, 'ai');
+                }
+            } catch (error) {
+                addMessage(`Erreur réseau: ${error.message}`, 'ai');
+            }
+        }
+        
+        function addMessage(content, type) {
+            const messages = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.innerHTML = content;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        // Enter key
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        // Test auto au chargement
+        window.onload = testConnection;
+    </script>
+</body>
+</html>

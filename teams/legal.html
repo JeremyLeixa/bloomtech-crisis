@@ -786,7 +786,7 @@
     
 
     <script>
-       // Global state management
+      // Global state management
 const legalState = {
     riskAssessmentComplete: false,
     ftcResponseComplete: false,
@@ -868,22 +868,31 @@ function receiveCrisisAnalysis() {
         try {
             const parsedData = JSON.parse(crisisDraft);
             crisisData = {
-                summary: parsedData.summary || crisisData.summary,
-                timeline: parsedData.timeline || crisisData.timeline,
-                prevention: parsedData.prevention || crisisData.prevention
+                // Handle both naming conventions
+                summary: parsedData.summary || parsedData.deliverable1 || crisisData.summary,
+                timeline: parsedData.timeline || parsedData.deliverable2 || crisisData.timeline,
+                prevention: parsedData.prevention || parsedData.deliverable3 || crisisData.prevention
             };
         } catch (e) {
             console.warn('[Legal] Could not parse crisis_analysis_draft JSON:', e);
         }
     }
     
-    // Try alternative keys if JSON parsing failed
+    // Try crisis_analysis_data as fallback
     if (!crisisDraft) {
-        crisisData = {
-            summary: localStorage.getItem('crisis_analysis_summary') || crisisData.summary,
-            timeline: localStorage.getItem('crisis_analysis_timeline') || crisisData.timeline,
-            prevention: localStorage.getItem('crisis_analysis_prevention') || crisisData.prevention
-        };
+        const crisisAnalysisData = localStorage.getItem('crisis_analysis_data');
+        if (crisisAnalysisData) {
+            try {
+                const parsedData = JSON.parse(crisisAnalysisData);
+                crisisData = {
+                    summary: parsedData.summary || parsedData.deliverable1 || crisisData.summary,
+                    timeline: parsedData.timeline || parsedData.deliverable2 || crisisData.timeline,
+                    prevention: parsedData.prevention || parsedData.deliverable3 || crisisData.prevention
+                };
+            } catch (e) {
+                console.warn('[Legal] Could not parse crisis_analysis_data JSON:', e);
+            }
+        }
     }
     
     // Populate analysis sections with real data

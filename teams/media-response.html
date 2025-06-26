@@ -882,7 +882,6 @@
 
         function initializeMediaInterface() {
             console.log('[Media] Interface initialized');
-            scheduleJournalistPressure();
             
             // Add auto-save to all textareas
             document.querySelectorAll('textarea, select').forEach(element => {
@@ -890,36 +889,59 @@
                     saveDraft();
                 });
             });
+            
+            // Add press release preview update
+            setupPressPreview();
         }
 
-        function scheduleJournalistPressure() {
-    // Alerte 1 - 90 secondes après l'ouverture
-    setTimeout(() => {
-        showNotification('📞 Breaking: Tech journalist from TechCrunch requesting immediate statement!');
-    }, 90000);
-    
-    // Alerte 2 - 3 minutes
-    setTimeout(() => {
-        showNotification('📱 URGENT: Viral tweet gaining traction - need counter-narrative NOW!');
-    }, 180000);
-    
-    // Alerte 3 - 5 minutes
-    setTimeout(() => {
-        showNotification('📺 CNN business reporter calling in 10 minutes for live segment!');
-    }, 300000);
-    
-    // Alerte 4 - 8 minutes (si pas de Legal approval)
-    setTimeout(() => {
-        if (!mediaState.legalApprovalReceived) {
-            showNotification('⚠️ DEADLINE ALERT: Press conference in 20 minutes - need content NOW!');
+        function setupPressPreview() {
+            // Add event listeners for press release preview
+            const pressNotes = document.getElementById('pressNotes');
+            const pressStatus = document.getElementById('pressReleaseStatus');
+            
+            if (pressNotes) {
+                pressNotes.addEventListener('input', updatePressPreview);
+            }
+            if (pressStatus) {
+                pressStatus.addEventListener('change', updatePressPreview);
+            }
+            
+            // Initial preview update
+            updatePressPreview();
         }
-    }, 480000);
-    
-    // Alerte finale - 12 minutes
-    setTimeout(() => {
-        showNotification('🔥 VIRAL: #BloomTechFail trending on Twitter - immediate response required!');
-    }, 720000);
-}
+
+        function updatePressPreview() {
+            const pressNotes = document.getElementById('pressNotes')?.value || '';
+            const pressStatus = document.getElementById('pressReleaseStatus')?.value || '';
+            
+            let preview = '<p><strong>FOR IMMEDIATE RELEASE</strong><br>BloomTech Crisis Response | ' + new Date().toLocaleDateString() + '</p>';
+            
+            if (pressNotes) {
+                preview += '<hr style="margin: 1rem 0; border: 1px solid #e5e7eb;">';
+                preview += `<p><strong>Crisis Response Summary:</strong></p>`;
+                preview += `<p style="line-height: 1.6;">${pressNotes.replace(/\n/g, '<br>')}</p>`;
+            }
+            
+            if (pressStatus && pressStatus !== 'draft') {
+                preview += '<hr style="margin: 1rem 0; border: 1px solid #e5e7eb;">';
+                preview += `<p style="font-style: italic; color: #6b7280;"><strong>Status:</strong> ${pressStatus.charAt(0).toUpperCase() + pressStatus.slice(1).replace('-', ' ')}</p>`;
+            }
+            
+            if (mediaState.legalApprovalReceived) {
+                preview += '<hr style="margin: 1rem 0; border: 1px solid #e5e7eb;">';
+                preview += '<p style="font-size: 0.875rem; color: #059669;"><strong>✅ Legal Guidelines Applied</strong> - Communication approved for public release</p>';
+            }
+            
+            if (!pressNotes && (!pressStatus || pressStatus === 'draft')) {
+                preview = '<p><strong>Your press release content will appear here as you work on it...</strong></p>';
+            }
+            
+            const pressPreview = document.getElementById('pressPreview');
+            if (pressPreview) {
+                pressPreview.innerHTML = preview;
+            }
+        }
+
         function checkLegalApprovalStatus() {
             const legalApprovalComplete = localStorage.getItem('legal_media_approval_complete');
             

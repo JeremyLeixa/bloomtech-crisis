@@ -7,8 +7,25 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: ['https://claude.ai', 'http://localhost:3000', 'https://bloomtech-crisis-new.vercel.app'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 app.use(express.json());
+
+// Headers CORS supplémentaires
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
 
 // Route pour servir les fichiers statiques (ton escape game)
 app.use(express.static('public'));
@@ -100,9 +117,15 @@ Réponds comme ${profile.name} (en anglais, style DM Instagram, max 2-3 phrases,
     }
 });
 
-// Route de test
+// Route de test avec vérification clé API
 app.get('/api/test', (req, res) => {
-    res.json({ message: 'Proxy Claude API opérationnel !', timestamp: new Date() });
+    const hasApiKey = !!process.env.CLAUDE_API_KEY;
+    res.json({ 
+        message: 'Proxy Claude API opérationnel !', 
+        timestamp: new Date(),
+        apiKeyConfigured: hasApiKey,
+        apiKeyPreview: hasApiKey ? `${process.env.CLAUDE_API_KEY.substring(0, 12)}...` : 'NON CONFIGURÉE'
+    });
 });
 
 // Route santé

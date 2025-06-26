@@ -786,411 +786,417 @@
     
 
     <script>
-        // Global state management
-        const legalState = {
-            riskAssessmentComplete: false,
-            ftcResponseComplete: false,
-            mediaApprovalComplete: false,
-            crisisAnalysisReceived: false,
-            startTime: Date.now(),
-            legalDeadline: 30 * 60 * 1000, // 30 minutes
-            globalDeadline: 90 * 60 * 1000 // 90 minutes
-        };
+       // Global state management
+const legalState = {
+    riskAssessmentComplete: false,
+    ftcResponseComplete: false,
+    mediaApprovalComplete: false,
+    crisisAnalysisReceived: false,
+    startTime: Date.now(),
+    legalDeadline: 30 * 60 * 1000, // 30 minutes
+    globalDeadline: 90 * 60 * 1000 // 90 minutes
+};
 
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeLegalInterface();
-            checkCrisisAnalysisStatus();
-            startTimers();
-            loadSavedData();
-            scheduleEvents();
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initializeLegalInterface();
+    checkCrisisAnalysisStatus();
+    startTimers();
+    loadSavedData();
+});
+
+function initializeLegalInterface() {
+    console.log('[Legal] Interface initialized');
+    
+    // Add auto-save to all textareas
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            saveDraft(this.id);
         });
-
-        function initializeLegalInterface() {
-            console.log('[Legal] Interface initialized');
-            
-            // Add auto-save to all textareas
-            document.querySelectorAll('textarea').forEach(textarea => {
-                textarea.addEventListener('input', function() {
-                    saveDraft(this.id);
-                });
-            });
-
-            // Update FTC preview in real-time
-            const ftcFields = ['acknowledgment', 'correctiveActions', 'preventionMeasures', 'consumerRemediation'];
-            ftcFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field) {
-                    field.addEventListener('input', updateFTCPreview);
-                }
-            });
-        }
-
-        function checkCrisisAnalysisStatus() {
-            const crisisComplete = localStorage.getItem('crisis_analysis_complete');
-            
-            if (crisisComplete === 'true') {
-                receiveCrisisAnalysis();
-            } else {
-                // Check periodically for crisis analysis completion
-                setInterval(checkCrisisAnalysisStatus, 5000);
-            }
-        }
-
-        function receiveCrisisAnalysis() {
-            if (legalState.crisisAnalysisReceived) return;
-            
-            legalState.crisisAnalysisReceived = true;
-            
-            // Update status
-            document.getElementById('crisisStatus').textContent = 'Complete';
-            document.getElementById('technicalStatus').textContent = 'RECEIVED';
-            document.getElementById('technicalStatus').className = 'card-status status-available';
-            
-            // Hide waiting overlay
-            document.getElementById('technicalWaitingOverlay').classList.add('hidden');
-            
-            // Load crisis analysis data from JSON storage
-            let crisisData = {
-                summary: 'Technical analysis not yet available...',
-                timeline: 'Timeline not yet available...',
-                prevention: 'Prevention plan not yet available...'
-            };
-            
-            // Try to get data from crisis_analysis_draft (JSON format)
-            const crisisDraft = localStorage.getItem('crisis_analysis_draft');
-            if (crisisDraft) {
-                try {
-                    const parsedData = JSON.parse(crisisDraft);
-                    crisisData = {
-                        summary: parsedData.summary || crisisData.summary,
-                        timeline: parsedData.timeline || crisisData.timeline,
-                        prevention: parsedData.prevention || crisisData.prevention
-                    };
-                } catch (e) {
-                    console.warn('[Legal] Could not parse crisis_analysis_draft JSON:', e);
-                }
-            }
-            
-            // Try alternative keys if JSON parsing failed
-            if (!crisisDraft) {
-                crisisData = {
-                    summary: localStorage.getItem('crisis_analysis_summary') || crisisData.summary,
-                    timeline: localStorage.getItem('crisis_analysis_timeline') || crisisData.timeline,
-                    prevention: localStorage.getItem('crisis_analysis_prevention') || crisisData.prevention
-                };
-            }
-            
-            // Populate analysis sections with real data
-            document.getElementById('crisisSummary').textContent = crisisData.summary;
-            document.getElementById('technicalTimeline').textContent = crisisData.timeline;
-            document.getElementById('preventionPlan').textContent = crisisData.prevention;
-            
-           
-            
-            console.log('[Legal] Crisis analysis received and processed:', crisisData);
-        }
-
-        function startTimers() {
-            setInterval(function() {
-                const elapsed = Date.now() - legalState.startTime;
-                
-                // Global timer (90 minutes)
-                const globalRemaining = Math.max(0, legalState.globalDeadline - elapsed);
-                const globalMinutes = Math.floor(globalRemaining / 60000);
-                const globalSeconds = Math.floor((globalRemaining % 60000) / 1000);
-                document.getElementById('globalTimer').textContent = 
-                    `${globalMinutes}:${globalSeconds.toString().padStart(2, '0')}`;
-                
-                // Legal timer (30 minutes)
-                const legalRemaining = Math.max(0, legalState.legalDeadline - elapsed);
-                const legalMinutes = Math.floor(legalRemaining / 60000);
-                const legalSecondsVal = Math.floor((legalRemaining % 60000) / 1000);
-                document.getElementById('legalTimer').textContent = 
-                    `${legalMinutes}:${legalSecondsVal.toString().padStart(2, '0')}`;
-                
-                // Add urgency styling when time is running out
-                if (legalRemaining < 300000) { // Less than 5 minutes
-                    document.getElementById('legalTimer').style.color = '#dc2626';
-                }
-            }, 1000);
-        }
-
-        function saveDraft(type) {
-            const data = {};
-            
-            if (type === 'risk' || type.includes('ftc') || type.includes('Concerns')) {
-                data.ftcConcerns = document.getElementById('ftcConcerns')?.value || '';
-                data.riskMitigation = document.getElementById('riskMitigation')?.value || '';
-                data.compliancePlan = document.getElementById('compliancePlan')?.value || '';
-            }
-            
-            if (type === 'ftc' || type.includes('acknowledgment')) {
-                data.acknowledgment = document.getElementById('acknowledgment')?.value || '';
-                data.correctiveActions = document.getElementById('correctiveActions')?.value || '';
-                data.preventionMeasures = document.getElementById('preventionMeasures')?.value || '';
-                data.consumerRemediation = document.getElementById('consumerRemediation')?.value || '';
-            }
-            
-            if (type === 'media' || type.includes('approved')) {
-                data.approvedMessages = document.getElementById('approvedMessages')?.value || '';
-                data.restrictedTopics = document.getElementById('restrictedTopics')?.value || '';
-                data.approvalStatus = document.getElementById('approvalStatus')?.value || '';
-            }
-            
-            localStorage.setItem('legal_draft', JSON.stringify(data));
-            console.log('[Legal] Draft saved:', type);
-        }
-
-        function loadSavedData() {
-            const saved = localStorage.getItem('legal_draft');
-            if (saved) {
-                const data = JSON.parse(saved);
-                Object.keys(data).forEach(key => {
-                    const element = document.getElementById(key);
-                    if (element) {
-                        element.value = data[key];
-                    }
-                });
-                updateFTCPreview();
-            }
-        }
-
-        function updateFTCPreview() {
-            const acknowledgment = document.getElementById('acknowledgment')?.value || '';
-            const correctiveActions = document.getElementById('correctiveActions')?.value || '';
-            const preventionMeasures = document.getElementById('preventionMeasures')?.value || '';
-            const consumerRemediation = document.getElementById('consumerRemediation')?.value || '';
-            
-            let preview = '<p><strong>Federal Trade Commission</strong><br>Consumer Protection Bureau</p>';
-            
-            if (acknowledgment) {
-                preview += `<p><strong>Issue Acknowledgment:</strong><br>${acknowledgment}</p>`;
-            }
-            if (correctiveActions) {
-                preview += `<p><strong>Immediate Actions:</strong><br>${correctiveActions}</p>`;
-            }
-            if (preventionMeasures) {
-                preview += `<p><strong>Prevention Measures:</strong><br>${preventionMeasures}</p>`;
-            }
-            if (consumerRemediation) {
-                preview += `<p><strong>Consumer Remediation:</strong><br>${consumerRemediation}</p>`;
-            }
-            
-            if (acknowledgment || correctiveActions || preventionMeasures || consumerRemediation) {
-                preview += '<p><em>Respectfully submitted,<br>BloomTech Legal Department</em></p>';
-            } else {
-                preview = '<p><strong>Official response will appear here as you draft it below...</strong></p>';
-            }
-            
-            document.getElementById('ftcPreview').innerHTML = preview;
-        }
-
-        function completeRiskAssessment() {
-            const ftcConcerns = document.getElementById('ftcConcerns').value.trim();
-            const riskMitigation = document.getElementById('riskMitigation').value.trim();
-            const compliancePlan = document.getElementById('compliancePlan').value.trim();
-            
-            if (!ftcConcerns || !riskMitigation || !compliancePlan) {
-                alert('Please complete all risk assessment fields before submitting.');
-                return;
-            }
-            
-            legalState.riskAssessmentComplete = true;
-            localStorage.setItem('legal_risk_assessment_complete', 'true');
-
-            // Fix : chercher le status badge différemment
-    const riskCard = document.getElementById('riskAssessmentForm').closest('.work-card');
-    const statusBadge = riskCard.querySelector('.card-header .card-status'); // Plus spécifique !
-    if (statusBadge) {
-        statusBadge.textContent = 'COMPLETED';
-        statusBadge.className = 'card-status status-completed';
-    }
-            
-            // Update UI
-            const riskCard = document.getElementById('riskAssessmentForm').closest('.work-card');
-            const statusBadge = riskCard.querySelector('.card-header .card-status');
-            statusBadge.textContent = 'COMPLETED';
-            statusBadge.className = 'card-status status-completed';
-            
-            //addChatMessage('System', '✅ Risk Assessment complete. Analysis available to other teams.', 'system');
-            updateOverallStatus();
-            
-            console.log('[Legal] Risk assessment completed');
-        }
-
-        function completeFTCResponse() {
-            const acknowledgment = document.getElementById('acknowledgment').value.trim();
-            const correctiveActions = document.getElementById('correctiveActions').value.trim();
-            const preventionMeasures = document.getElementById('preventionMeasures').value.trim();
-            const consumerRemediation = document.getElementById('consumerRemediation').value.trim();
-            
-            if (!acknowledgment || !correctiveActions || !preventionMeasures || !consumerRemediation) {
-                alert('Please complete all sections of the FTC response before submitting.');
-                return;
-            }
-            
-            legalState.ftcResponseComplete = true;
-            localStorage.setItem('legal_ftc_response_complete', 'true');
-            
-            // Store FTC response content for other teams
-            const ftcData = {
-                acknowledgment, correctiveActions, preventionMeasures, consumerRemediation,
-                submittedAt: new Date().toISOString()
-            };
-            localStorage.setItem('legal_ftc_response_data', JSON.stringify(ftcData));
-            
-            // Update UI
-            const ftcCard = document.getElementById('ftcResponseForm').closest('.work-card');
-            const statusBadge = ftcCard.querySelector('.card-status');
-            statusBadge.textContent = 'SUBMITTED';
-            statusBadge.className = 'card-status status-completed';
-            
-            //addChatMessage('System', '📤 FTC Response submitted. Legal position established.', 'system');
-            updateOverallStatus();
-            
-            console.log('[Legal] FTC response completed and submitted');
-        }
-
-        function updateApprovalStatus() {
-            const status = document.getElementById('approvalStatus').value;
-            const mediaStatus = document.getElementById('mediaStatus');
-            
-            switch(status) {
-                case 'approved':
-                    mediaStatus.textContent = 'Approved';
-                    mediaStatus.style.color = '#10b981';
-                    break;
-                case 'conditional':
-                    mediaStatus.textContent = 'Conditional';
-                    mediaStatus.style.color = '#f59e0b';
-                    break;
-                case 'denied':
-                    mediaStatus.textContent = 'Denied';
-                    mediaStatus.style.color = '#dc2626';
-                    break;
-                default:
-                    mediaStatus.textContent = 'Waiting';
-                    mediaStatus.style.color = '#6b7280';
-            }
-        }
-
-      function approveMediaCommunication() {
-    console.log('=== DEBUG START ===');
-    
-    const approvedMessagesElement = document.getElementById('approvedMessages');
-    const restrictedTopicsElement = document.getElementById('restrictedTopics');
-    const approvalStatusElement = document.getElementById('approvalStatus');
-    
-    console.log('Elements found:', {
-        approvedMessages: approvedMessagesElement,
-        restrictedTopics: restrictedTopicsElement,
-        approvalStatus: approvalStatusElement
     });
-    
-    const approvedMessages = approvedMessagesElement.value;
-    const restrictedTopics = restrictedTopicsElement.value;
-    const approvalStatus = approvalStatusElement.value;
-    
-    console.log('Values extracted:', {
-        approvedMessages: approvedMessages,
-        restrictedTopics: restrictedTopics,
-        approvalStatus: approvalStatus
+
+    // Update FTC preview in real-time
+    const ftcFields = ['acknowledgment', 'correctiveActions', 'preventionMeasures', 'consumerRemediation'];
+    ftcFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('input', updateFTCPreview);
+        }
     });
-    
-    const approvalData = {
-        approvedMessages, 
-        restrictedTopics, 
-        approvalStatus,
-        approvedAt: new Date().toISOString()
-    };
-    
-    console.log('Data object created:', approvalData);
-    
-    const jsonString = JSON.stringify(approvalData);
-    console.log('JSON string:', jsonString);
-    
-    localStorage.setItem('legal_media_approval_data', jsonString);
-    console.log('Saved to localStorage');
-    
-    // Vérification immédiate
-    const savedData = localStorage.getItem('legal_media_approval_data');
-    console.log('Retrieved from localStorage:', savedData);
-    
-    console.log('=== DEBUG END ===');
 }
 
-        function updateOverallStatus() {
-            const legalStatus = document.getElementById('legalStatus');
-            
-            if (legalState.riskAssessmentComplete && legalState.ftcResponseComplete && legalState.mediaApprovalComplete) {
-                legalStatus.textContent = 'Complete';
-                legalStatus.style.color = '#10b981';
-                localStorage.setItem('legal_team_complete', 'true');
-                
-               
-                
-                // Celebrate completion
-                setTimeout(() => {
-                    alert('🎉 Congratulations! Legal Team has successfully completed all crisis response objectives.');
-                }, 1000);
-            } else {
-                const completed = [legalState.riskAssessmentComplete, legalState.ftcResponseComplete, legalState.mediaApprovalComplete].filter(Boolean).length;
-                legalStatus.textContent = `${completed}/3 Complete`;
-            }
+function checkCrisisAnalysisStatus() {
+    const crisisComplete = localStorage.getItem('crisis_analysis_complete');
+    
+    if (crisisComplete === 'true') {
+        receiveCrisisAnalysis();
+    } else {
+        // Check periodically for crisis analysis completion
+        setTimeout(checkCrisisAnalysisStatus, 5000);
+    }
+}
+
+function receiveCrisisAnalysis() {
+    if (legalState.crisisAnalysisReceived) return;
+    
+    legalState.crisisAnalysisReceived = true;
+    
+    // Update status
+    document.getElementById('crisisStatus').textContent = 'Complete';
+    const technicalStatus = document.getElementById('technicalStatus');
+    if (technicalStatus) {
+        technicalStatus.textContent = 'RECEIVED';
+        technicalStatus.className = 'card-status status-available';
+    }
+    
+    // Hide waiting overlay
+    const waitingOverlay = document.getElementById('technicalWaitingOverlay');
+    if (waitingOverlay) {
+        waitingOverlay.classList.add('hidden');
+    }
+    
+    // Load crisis analysis data from JSON storage
+    let crisisData = {
+        summary: 'Technical analysis not yet available...',
+        timeline: 'Timeline not yet available...',
+        prevention: 'Prevention plan not yet available...'
+    };
+    
+    // Try to get data from crisis_analysis_draft (JSON format)
+    const crisisDraft = localStorage.getItem('crisis_analysis_draft');
+    if (crisisDraft) {
+        try {
+            const parsedData = JSON.parse(crisisDraft);
+            crisisData = {
+                summary: parsedData.summary || crisisData.summary,
+                timeline: parsedData.timeline || crisisData.timeline,
+                prevention: parsedData.prevention || crisisData.prevention
+            };
+        } catch (e) {
+            console.warn('[Legal] Could not parse crisis_analysis_draft JSON:', e);
         }
+    }
+    
+    // Try alternative keys if JSON parsing failed
+    if (!crisisDraft) {
+        crisisData = {
+            summary: localStorage.getItem('crisis_analysis_summary') || crisisData.summary,
+            timeline: localStorage.getItem('crisis_analysis_timeline') || crisisData.timeline,
+            prevention: localStorage.getItem('crisis_analysis_prevention') || crisisData.prevention
+        };
+    }
+    
+    // Populate analysis sections with real data
+    const crisisSummaryEl = document.getElementById('crisisSummary');
+    const technicalTimelineEl = document.getElementById('technicalTimeline');
+    const preventionPlanEl = document.getElementById('preventionPlan');
+    
+    if (crisisSummaryEl) crisisSummaryEl.textContent = crisisData.summary;
+    if (technicalTimelineEl) technicalTimelineEl.textContent = crisisData.timeline;
+    if (preventionPlanEl) preventionPlanEl.textContent = crisisData.prevention;
+    
+    console.log('[Legal] Crisis analysis received and processed:', crisisData);
+}
 
-        function scheduleEvents() {
-            // Media pressure at 1 minute
-            setTimeout(() => {
-                //addChatMessage('Media Team', 'Legal, we need approval guidance ASAP. Journalists are asking questions!', 'received');
-            }, 60000);
-            
-            // Strategy pressure at 5 minutes
-            setTimeout(() => {
-                //addChatMessage('Strategy Team', 'Legal team, board wants risk assessment for emergency meeting. How exposed are we?', 'received');
-            }, 300000);
-            
-            // Urgent approval request at 10 minutes
-            setTimeout(() => {
-                //addChatMessage('Media Team', 'URGENT: Major news outlet wants statement in 20 minutes. Can we get approval status?', 'received');
-            }, 600000);
-            
-            // Crisis Analysis delivers at 20 minutes
-            setTimeout(() => {
-                if (!legalState.crisisAnalysisReceived) {
-                    localStorage.setItem('crisis_analysis_complete', 'true');
-                    receiveCrisisAnalysis();
-                   // addChatMessage('Crisis Analysis', 'Technical analysis complete! Root cause identified - you can now finalize FTC response.', 'received');
-                }
-            }, 1200000);
-        }
-
-      
-
+function startTimers() {
+    setInterval(function() {
+        const elapsed = Date.now() - legalState.startTime;
         
-
-        // CEO Dashboard Integration (receives broadcasts)
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'ceo_broadcast') {
-                const broadcast = JSON.parse(e.newValue);
-               // addChatMessage('CEO', broadcast.message, 'system');
+        // Global timer (90 minutes)
+        const globalRemaining = Math.max(0, legalState.globalDeadline - elapsed);
+        const globalMinutes = Math.floor(globalRemaining / 60000);
+        const globalSeconds = Math.floor((globalRemaining % 60000) / 1000);
+        const globalTimer = document.getElementById('globalTimer');
+        if (globalTimer) {
+            globalTimer.textContent = `${globalMinutes}:${globalSeconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Legal timer (30 minutes)
+        const legalRemaining = Math.max(0, legalState.legalDeadline - elapsed);
+        const legalMinutes = Math.floor(legalRemaining / 60000);
+        const legalSecondsVal = Math.floor((legalRemaining % 60000) / 1000);
+        const legalTimer = document.getElementById('legalTimer');
+        if (legalTimer) {
+            legalTimer.textContent = `${legalMinutes}:${legalSecondsVal.toString().padStart(2, '0')}`;
+            
+            // Add urgency styling when time is running out
+            if (legalRemaining < 300000) { // Less than 5 minutes
+                legalTimer.style.color = '#dc2626';
             }
-        });
+        }
+    }, 1000);
+}
 
-        // Emergency reset (hidden feature for instructor)
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.shiftKey && e.key === 'R') {
-                if (confirm('Reset Legal Team interface? This will clear all data.')) {
-                    localStorage.removeItem('legal_draft');
-                    localStorage.removeItem('legal_risk_assessment_complete');
-                    localStorage.removeItem('legal_ftc_response_complete');
-                    localStorage.removeItem('legal_media_approval_complete');
-                    localStorage.removeItem('legal_team_complete');
-                    location.reload();
+function saveDraft(type) {
+    const data = {};
+    
+    // Risk Assessment fields
+    const ftcConcerns = document.getElementById('ftcConcerns');
+    const riskMitigation = document.getElementById('riskMitigation');
+    const compliancePlan = document.getElementById('compliancePlan');
+    
+    if (ftcConcerns) data.ftcConcerns = ftcConcerns.value;
+    if (riskMitigation) data.riskMitigation = riskMitigation.value;
+    if (compliancePlan) data.compliancePlan = compliancePlan.value;
+    
+    // FTC Response fields
+    const acknowledgment = document.getElementById('acknowledgment');
+    const correctiveActions = document.getElementById('correctiveActions');
+    const preventionMeasures = document.getElementById('preventionMeasures');
+    const consumerRemediation = document.getElementById('consumerRemediation');
+    
+    if (acknowledgment) data.acknowledgment = acknowledgment.value;
+    if (correctiveActions) data.correctiveActions = correctiveActions.value;
+    if (preventionMeasures) data.preventionMeasures = preventionMeasures.value;
+    if (consumerRemediation) data.consumerRemediation = consumerRemediation.value;
+    
+    // Media Approval fields
+    const approvedMessages = document.getElementById('approvedMessages');
+    const restrictedTopics = document.getElementById('restrictedTopics');
+    const approvalStatus = document.getElementById('approvalStatus');
+    
+    if (approvedMessages) data.approvedMessages = approvedMessages.value;
+    if (restrictedTopics) data.restrictedTopics = restrictedTopics.value;
+    if (approvalStatus) data.approvalStatus = approvalStatus.value;
+    
+    localStorage.setItem('legal_draft', JSON.stringify(data));
+    console.log('[Legal] Draft saved:', type);
+}
+
+function loadSavedData() {
+    const saved = localStorage.getItem('legal_draft');
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            Object.keys(data).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = data[key];
                 }
+            });
+            updateFTCPreview();
+        } catch (e) {
+            console.warn('[Legal] Could not load saved data:', e);
+        }
+    }
+}
+
+function updateFTCPreview() {
+    const acknowledgment = document.getElementById('acknowledgment')?.value || '';
+    const correctiveActions = document.getElementById('correctiveActions')?.value || '';
+    const preventionMeasures = document.getElementById('preventionMeasures')?.value || '';
+    const consumerRemediation = document.getElementById('consumerRemediation')?.value || '';
+    
+    let preview = '<p><strong>Federal Trade Commission</strong><br>Consumer Protection Bureau</p>';
+    
+    if (acknowledgment) {
+        preview += `<p><strong>Issue Acknowledgment:</strong><br>${acknowledgment}</p>`;
+    }
+    if (correctiveActions) {
+        preview += `<p><strong>Immediate Actions:</strong><br>${correctiveActions}</p>`;
+    }
+    if (preventionMeasures) {
+        preview += `<p><strong>Prevention Measures:</strong><br>${preventionMeasures}</p>`;
+    }
+    if (consumerRemediation) {
+        preview += `<p><strong>Consumer Remediation:</strong><br>${consumerRemediation}</p>`;
+    }
+    
+    if (acknowledgment || correctiveActions || preventionMeasures || consumerRemediation) {
+        preview += '<p><em>Respectfully submitted,<br>BloomTech Legal Department</em></p>';
+    } else {
+        preview = '<p><strong>Official response will appear here as you draft it below...</strong></p>';
+    }
+    
+    const ftcPreview = document.getElementById('ftcPreview');
+    if (ftcPreview) {
+        ftcPreview.innerHTML = preview;
+    }
+}
+
+function completeRiskAssessment() {
+    const ftcConcerns = document.getElementById('ftcConcerns')?.value.trim();
+    const riskMitigation = document.getElementById('riskMitigation')?.value.trim();
+    const compliancePlan = document.getElementById('compliancePlan')?.value.trim();
+    
+    if (!ftcConcerns || !riskMitigation || !compliancePlan) {
+        alert('Please complete all risk assessment fields before submitting.');
+        return;
+    }
+    
+    legalState.riskAssessmentComplete = true;
+    localStorage.setItem('legal_risk_assessment_complete', 'true');
+    
+    // Store risk assessment data
+    const riskData = {
+        ftcConcerns, riskMitigation, compliancePlan,
+        completedAt: new Date().toISOString()
+    };
+    localStorage.setItem('legal_risk_assessment_data', JSON.stringify(riskData));
+    
+    // Update UI - Fixed querySelector
+    try {
+        const riskAssessmentCard = document.getElementById('riskAssessmentForm')?.closest('.work-card');
+        if (riskAssessmentCard) {
+            const statusBadge = riskAssessmentCard.querySelector('.card-header .card-status');
+            if (statusBadge) {
+                statusBadge.textContent = 'COMPLETED';
+                statusBadge.className = 'card-status status-completed';
             }
-        });
+        }
+    } catch (e) {
+        console.warn('[Legal] Could not update risk assessment UI:', e);
+    }
+    
+    updateOverallStatus();
+    console.log('[Legal] Risk assessment completed');
+}
+
+function completeFTCResponse() {
+    const acknowledgment = document.getElementById('acknowledgment')?.value.trim();
+    const correctiveActions = document.getElementById('correctiveActions')?.value.trim();
+    const preventionMeasures = document.getElementById('preventionMeasures')?.value.trim();
+    const consumerRemediation = document.getElementById('consumerRemediation')?.value.trim();
+    
+    if (!acknowledgment || !correctiveActions || !preventionMeasures || !consumerRemediation) {
+        alert('Please complete all sections of the FTC response before submitting.');
+        return;
+    }
+    
+    legalState.ftcResponseComplete = true;
+    localStorage.setItem('legal_ftc_response_complete', 'true');
+    
+    // Store FTC response content for other teams
+    const ftcData = {
+        acknowledgment, correctiveActions, preventionMeasures, consumerRemediation,
+        submittedAt: new Date().toISOString()
+    };
+    localStorage.setItem('legal_ftc_response_data', JSON.stringify(ftcData));
+    
+    // Update UI - Fixed querySelector
+    try {
+        const ftcResponseCard = document.getElementById('ftcResponseForm')?.closest('.work-card');
+        if (ftcResponseCard) {
+            const statusBadge = ftcResponseCard.querySelector('.card-header .card-status');
+            if (statusBadge) {
+                statusBadge.textContent = 'SUBMITTED';
+                statusBadge.className = 'card-status status-completed';
+            }
+        }
+    } catch (e) {
+        console.warn('[Legal] Could not update FTC response UI:', e);
+    }
+    
+    updateOverallStatus();
+    console.log('[Legal] FTC response completed and submitted');
+}
+
+function updateApprovalStatus() {
+    const status = document.getElementById('approvalStatus')?.value;
+    const mediaStatus = document.getElementById('mediaStatus');
+    
+    if (!mediaStatus || !status) return;
+    
+    switch(status) {
+        case 'approved':
+            mediaStatus.textContent = 'Approved';
+            mediaStatus.style.color = '#10b981';
+            break;
+        case 'conditional':
+            mediaStatus.textContent = 'Conditional';
+            mediaStatus.style.color = '#f59e0b';
+            break;
+        case 'denied':
+            mediaStatus.textContent = 'Denied';
+            mediaStatus.style.color = '#dc2626';
+            break;
+        default:
+            mediaStatus.textContent = 'Waiting';
+            mediaStatus.style.color = '#6b7280';
+    }
+}
+
+function approveMediaCommunication() {
+    const approvedMessages = document.getElementById('approvedMessages')?.value.trim();
+    const restrictedTopics = document.getElementById('restrictedTopics')?.value.trim();
+    const approvalStatus = document.getElementById('approvalStatus')?.value;
+    
+    if (!approvedMessages || !restrictedTopics || approvalStatus === 'pending') {
+        alert('Please complete all media approval fields and set approval status.');
+        return;
+    }
+    
+    legalState.mediaApprovalComplete = true;
+    localStorage.setItem('legal_media_approval_complete', 'true');
+    
+    // Store media approval data
+    const approvalData = {
+        approvedMessages, restrictedTopics, approvalStatus,
+        approvedAt: new Date().toISOString()
+    };
+    localStorage.setItem('legal_media_approval_data', JSON.stringify(approvalData));
+    
+    // Update UI - Fixed querySelector
+    try {
+        const mediaApprovalCard = document.getElementById('mediaApprovalForm')?.closest('.work-card');
+        if (mediaApprovalCard) {
+            const statusBadge = mediaApprovalCard.querySelector('.card-header .card-status');
+            if (statusBadge) {
+                statusBadge.textContent = 'SENT';
+                statusBadge.className = 'card-status status-completed';
+            }
+        }
+    } catch (e) {
+        console.warn('[Legal] Could not update media approval UI:', e);
+    }
+    
+    updateOverallStatus();
+    console.log('[Legal] Media approval sent:', approvalStatus);
+}
+
+function updateOverallStatus() {
+    const legalStatus = document.getElementById('legalStatus');
+    
+    if (!legalStatus) return;
+    
+    if (legalState.riskAssessmentComplete && legalState.ftcResponseComplete && legalState.mediaApprovalComplete) {
+        legalStatus.textContent = 'Complete';
+        legalStatus.style.color = '#10b981';
+        localStorage.setItem('legal_team_complete', 'true');
+        
+        setTimeout(() => {
+            alert('🎉 Congratulations! Legal Team has successfully completed all crisis response objectives.');
+        }, 1000);
+    } else {
+        const completed = [legalState.riskAssessmentComplete, legalState.ftcResponseComplete, legalState.mediaApprovalComplete].filter(Boolean).length;
+        legalStatus.textContent = `${completed}/3 Complete`;
+    }
+}
+
+// CEO Dashboard Integration (receives broadcasts)
+window.addEventListener('storage', function(e) {
+    if (e.key === 'ceo_broadcast') {
+        const broadcast = JSON.parse(e.newValue);
+        console.log('[Legal] CEO Broadcast received:', broadcast.message);
+    }
+});
+
+// Emergency reset (hidden feature for instructor)
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+        if (confirm('Reset Legal Team interface? This will clear all data.')) {
+            localStorage.removeItem('legal_draft');
+            localStorage.removeItem('legal_risk_assessment_complete');
+            localStorage.removeItem('legal_ftc_response_complete');
+            localStorage.removeItem('legal_media_approval_complete');
+            localStorage.removeItem('legal_team_complete');
+            localStorage.removeItem('legal_risk_assessment_data');
+            localStorage.removeItem('legal_ftc_response_data');
+            localStorage.removeItem('legal_media_approval_data');
+            location.reload();
+        }
+    }
+});
     </script>
 </body>
 </html>
